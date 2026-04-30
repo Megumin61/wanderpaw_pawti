@@ -1,0 +1,393 @@
+/* ============ PAWTI · 全局样式 ============ */
+
+/* 噪点纹理：给整站增加胶片颗粒感，呼应 iPhone 随手拍风格 */
+.noise-layer {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
+  opacity: 0.08;
+  mix-blend-mode: multiply;
+}
+
+/* 手写斜线纹理：卡片装饰 */
+.paper-texture {
+  background-image:
+    linear-gradient(rgba(43, 37, 32, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(43, 37, 32, 0.025) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ============ 宠物手绘插画 ============ */
+.pet-illustration {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* 正面插画卡片：让插画保持完整（contain），并与背景色融合 */
+.pet-card-front {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pet-card-front img {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.flip-card:hover .pet-card-front img {
+  transform: scale(1.05);
+}
+
+/* 正面底部：宠物中文名白色胶囊标签（参考图二 app 风格） */
+.pet-name-tag {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  padding: 3px 12px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 999px;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #2B2520;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+  z-index: 2;
+}
+@media (min-width: 768px) {
+  .pet-name-tag {
+    bottom: 10px;
+    padding: 4px 14px;
+    font-size: 13px;
+  }
+}
+
+/* ============ 翻转卡片 ============ */
+.flip-card {
+  perspective: 1200px;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.9s cubic-bezier(0.25, 1, 0.5, 1);
+  transform-style: preserve-3d;
+}
+/* 只在 flipped / 直接 hover 卡片本身 时翻面；不再影响 marquee 外层滚动 */
+.flip-card.flipped .flip-card-inner,
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+.flip-card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 1.25rem;
+  overflow: hidden;
+}
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
+/* ============ 2 行错落横向无限滚动（Pet Marquee） ============ */
+.pet-marquee-row {
+  width: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent 0%, #000 6%, #000 94%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 6%, #000 94%, transparent 100%);
+}
+
+/* 公共 track */
+.pet-marquee-track {
+  display: flex;
+  gap: 14px;
+  width: max-content;
+  padding: 8px 0;
+  will-change: transform;
+}
+
+/* 上行向左滚动 */
+.pet-marquee-row-left .pet-marquee-track {
+  animation: marqueeLeft 40s linear infinite;
+}
+/* 下行向右滚动（速度略快） */
+.pet-marquee-row-right .pet-marquee-track {
+  animation: marqueeRight 34s linear infinite;
+}
+
+/* 错落：下行整体向右缩进一段，形成视觉错位 */
+.pet-marquee-offset {
+  padding-left: 64px;
+}
+
+/* hover 整行暂停 */
+.pet-marquee-row:hover .pet-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes marqueeLeft {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes marqueeRight {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+/* 单个卡片尺寸（错落感：用 nth-child 做小随机） */
+.pet-card-wrapper {
+  width: 118px;
+  height: 118px;
+  transition: transform 0.35s ease;
+}
+.pet-card-wrapper:hover {
+  transform: translateY(-6px) scale(1.04);
+  z-index: 10;
+}
+/* 错落大小（奇偶不同） */
+.pet-card-wrapper:nth-child(3n)   { transform: translateY(6px); }
+.pet-card-wrapper:nth-child(3n):hover { transform: translateY(0) scale(1.04); }
+.pet-card-wrapper:nth-child(4n)   { transform: translateY(-4px); }
+.pet-card-wrapper:nth-child(4n):hover { transform: translateY(-10px) scale(1.04); }
+
+@media (min-width: 768px) {
+  .pet-card-wrapper { width: 146px; height: 146px; }
+}
+@media (min-width: 1280px) {
+  .pet-card-wrapper { width: 164px; height: 164px; }
+}
+
+/* ============ 大字标题 ============ */
+.hero-title {
+  font-family: 'Noto Serif SC', serif;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
+}
+
+/* 字迹浮动动画 */
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+.float-slow  { animation: floatY 6s ease-in-out infinite; }
+.float-med   { animation: floatY 4.5s ease-in-out infinite; }
+.float-fast  { animation: floatY 3.5s ease-in-out infinite; }
+
+/* 呼吸按钮 */
+@keyframes pulseRing {
+  0%   { box-shadow: 0 0 0 0 rgba(194, 109, 77, 0.4); }
+  70%  { box-shadow: 0 0 0 18px rgba(194, 109, 77, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(194, 109, 77, 0); }
+}
+.pulse-ring { animation: pulseRing 2.2s infinite; }
+
+/* 爪印飘落 */
+@keyframes pawDrop {
+  0%   { transform: translateY(-20vh) rotate(-30deg); opacity: 0; }
+  20%  { opacity: 0.5; }
+  100% { transform: translateY(120vh) rotate(40deg); opacity: 0; }
+}
+.paw-drop { animation: pawDrop linear infinite; }
+
+/* Slide 入场动画 */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anim-in {
+  animation: slideUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* 放大淡入 */
+@keyframes popIn {
+  0%   { opacity: 0; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.pop-in { animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* 进度条 glow */
+.progress-track {
+  background: linear-gradient(90deg, #C26D4D 0%, #E8A87C 100%);
+  box-shadow: 0 0 20px rgba(194, 109, 77, 0.4);
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 选项 hover 动效 */
+.option-card {
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  border: 2px solid rgba(43, 37, 32, 0.1);
+}
+.option-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(194, 109, 77, 0.5);
+  box-shadow: 0 12px 24px -8px rgba(43, 37, 32, 0.15);
+}
+.option-card.selected {
+  border-color: #C26D4D;
+  background: linear-gradient(135deg, #F3D5B5 0%, #F7F1E8 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px -10px rgba(194, 109, 77, 0.35);
+}
+
+/* 标签 Chip */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-family: 'DM Mono', monospace;
+  background: rgba(43, 37, 32, 0.06);
+  color: rgba(43, 37, 32, 0.75);
+  border: 1px solid rgba(43, 37, 32, 0.08);
+}
+.chip.accent {
+  background: rgba(194, 109, 77, 0.12);
+  color: #C26D4D;
+  border-color: rgba(194, 109, 77, 0.2);
+}
+
+/* 分隔的虚线（手账感） */
+.dashed-divider {
+  background-image: linear-gradient(to right, rgba(43, 37, 32, 0.25) 50%, transparent 50%);
+  background-size: 8px 1px;
+  background-repeat: repeat-x;
+  height: 1px;
+}
+
+/* 滚动条美化 */
+html { scroll-behavior: smooth; }
+body::-webkit-scrollbar { width: 8px; }
+body::-webkit-scrollbar-track { background: #F7F1E8; }
+body::-webkit-scrollbar-thumb { background: #C26D4D; border-radius: 4px; }
+
+/* 隐藏 section */
+.section-hidden { display: none; }
+
+/* 小标签旋转贴纸效果 */
+.sticker-tag {
+  transform: rotate(-4deg);
+  display: inline-block;
+}
+
+/* 手写下划线装饰 */
+.hand-underline {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12'><path d='M2 8 Q50 2, 100 6 T198 5' stroke='%23C26D4D' stroke-width='3' fill='none' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: bottom left;
+  background-size: 100% 8px;
+  padding-bottom: 8px;
+}
+
+/* 结果页大号字母动画 */
+@keyframes letterDrop {
+  0%   { opacity: 0; transform: translateY(-60px) rotate(-8deg); }
+  60%  { transform: translateY(10px) rotate(2deg); }
+  100% { opacity: 1; transform: translateY(0) rotate(0); }
+}
+.letter-drop span {
+  display: inline-block;
+  animation: letterDrop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.letter-drop span:nth-child(1) { animation-delay: 0.1s; }
+.letter-drop span:nth-child(2) { animation-delay: 0.2s; }
+.letter-drop span:nth-child(3) { animation-delay: 0.3s; }
+.letter-drop span:nth-child(4) { animation-delay: 0.4s; }
+
+/* 结果页宠物匹配的照片边框（仿宝丽来） */
+.polaroid {
+  background: #FBF7EE;
+  padding: 14px 14px 48px 14px;
+  box-shadow:
+    0 1px 2px rgba(43, 37, 32, 0.08),
+    0 10px 30px -8px rgba(43, 37, 32, 0.2);
+  transform: rotate(-2deg);
+  transition: transform 0.4s ease;
+}
+.polaroid:hover { transform: rotate(0); }
+.polaroid img { display: block; width: 100%; height: auto; }
+
+/* 多行省略 */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ============ 结果页 Step 2 额外样式 ============ */
+
+/* 打卡圆章（仿旅行护照盖章） */
+.stamp-circle {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: 2.5px dashed rgba(255, 240, 220, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 240, 220, 0.95);
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  text-align: center;
+  line-height: 1.2;
+  transform: rotate(-12deg);
+  background: rgba(194, 109, 77, 0.25);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+.stamp-circle span:first-child {
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+@media (min-width: 768px) {
+  .stamp-circle { width: 92px; height: 92px; font-size: 10px; }
+  .stamp-circle span:first-child { font-size: 13px; }
+}
+
+/* 照片配文（叠加在自拍照底部，手写电影感） */
+.photo-caption {
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.55),
+    0 0 24px rgba(0, 0, 0, 0.35);
+  letter-spacing: 0.02em;
+}
+
+/* 来信卡片整体 */
+.letter-card {
+  position: relative;
+}
+.letter-card::before {
+  content: '';
+  position: absolute;
+  top: -8px; left: -8px;
+  right: -8px; bottom: -8px;
+  border: 1px dashed rgba(43, 37, 32, 0.15);
+  border-radius: 24px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 信件正文手写字感（更松） */
+.letter-card .whitespace-pre-line {
+  text-indent: 0;
+}
+
+/* 城市大图 hover 微效果 */
