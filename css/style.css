@@ -756,6 +756,13 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
 
 /* 隐藏 section */
 .section-hidden { display: none; }
+/* 兜底：被隐藏 section 内部的 fixed 浮层也必须强制不可见，防止泄漏到其它页面 */
+.section-hidden .easter-egg-overlay,
+.section-hidden #quiz-easter-egg {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
 
 /* 小标签旋转贴纸效果 */
 .sticker-tag {
@@ -1103,6 +1110,15 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+/* 兜底：当 quiz section 被隐藏（display:none）时，彩蛋浮层（fixed 定位）也强制隐藏，
+   避免它因 fixed 脱离文档流而在结果页底部残留 */
+#section-quiz.section-hidden .easter-egg-overlay,
+#section-quiz.section-hidden .easter-egg-overlay.is-visible {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  display: none !important;
+}
 
 .easter-egg-inner {
   display: inline-flex;
@@ -1372,4 +1388,87 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
 .font-hand {
   font-family: 'Caveat', 'Noto Serif SC', cursive;
   font-weight: 600;
+}
+
+/* ====== 迷路宠格 ????? · 彩蛋视觉 ====== */
+.mystery-orb {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 160px;
+  height: 160px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #FBEFDB 0%, #E8DFCE 55%, #C9BFA1 100%);
+  border: 2px dashed rgba(104, 121, 73, 0.45);
+  box-shadow:
+    0 8px 30px rgba(104, 121, 73, 0.15),
+    inset 0 -10px 20px rgba(124, 107, 71, 0.12);
+  animation: mystery-float 4.5s ease-in-out infinite;
+}
+.mystery-orb::before,
+.mystery-orb::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(104, 121, 73, 0.25);
+}
+.mystery-orb::before {
+  inset: -14px;
+  animation: mystery-spin 22s linear infinite;
+}
+.mystery-orb::after {
+  inset: -28px;
+  border-style: dotted;
+  border-color: rgba(229, 168, 90, 0.35);
+  animation: mystery-spin 32s linear infinite reverse;
+}
+.mystery-q {
+  position: absolute;
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 900;
+  color: #687949;
+  user-select: none;
+  pointer-events: none;
+}
+.mystery-q:nth-child(1) {
+  font-size: 84px;
+  z-index: 3;
+  animation: mystery-pulse 2.4s ease-in-out infinite;
+}
+.mystery-q-2 {
+  font-size: 38px;
+  top: 18%;
+  right: 14%;
+  color: #E5A85A;
+  opacity: 0.85;
+  animation: mystery-pulse 3.1s ease-in-out infinite 0.4s;
+}
+.mystery-q-3 {
+  font-size: 30px;
+  bottom: 18%;
+  left: 16%;
+  color: #7C6B47;
+  opacity: 0.7;
+  animation: mystery-pulse 2.7s ease-in-out infinite 0.8s;
+}
+@keyframes mystery-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes mystery-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes mystery-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 0.7; }
+}
+.mystery-q:nth-child(1) {
+  /* 让中间问号有一种轻微浮动 */
+  animation: mystery-pulse-main 2.4s ease-in-out infinite;
+}
+@keyframes mystery-pulse-main {
+  0%, 100% { transform: scale(1) translateY(0); opacity: 1; }
+  50% { transform: scale(1.06) translateY(-2px); opacity: 0.85; }
 }

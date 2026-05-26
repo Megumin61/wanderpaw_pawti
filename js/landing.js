@@ -9,11 +9,12 @@
 import { FEATURED_PETS } from './data/pets.js';
 
 // —— 按宠物 id 映射的 emoji（气泡里展示）——
+// 注：id 名是历史命名，承载的角色已重映射；emoji 按"当前承载角色"调整
 const PET_EMOJI = {
-  husky: '🐺', collie: '🐶', orange: '🐱', ragdoll: '🐱',
+  husky: '🐺', collie: '🐶', orange: '🐼', ragdoll: '🐱',
   capybara: '🦫', shiba: '🐶', frenchie: '🐶', lihua: '🐱',
   calico: '🐱', corgi: '🐶', british: '🐱', golden: '🐶',
-  samoyed: '🐶', lop: '🐰', pomeranian: '🐶', siamese: '🐱',
+  samoyed: '🐶', lop: '🐰', pomeranian: '🐶', siamese: '🐹',
 };
 
 // hover-intent 延迟（毫秒）——停留超过这个时间才自动翻面

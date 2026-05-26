@@ -9,6 +9,9 @@ let userAnswers = new Array(QUESTIONS.length).fill(null);
 let currentIdx = 0;
 let onCompleteCallback = null;
 let isShowingActBreak = false;
+// 当前题目的"延迟跳转"定时器和处理函数（用于支持再次点击立即跳转）
+let pendingAdvanceTimer = null;
+let pendingAdvanceFn = null;
 
 // 彩蛋文案池（随机抽取，不用每题的 feedbacks）—— 森系语境
 const EASTER_EGGS = [
@@ -29,6 +32,9 @@ export function renderQuiz(container, onComplete) {
   userAnswers = new Array(QUESTIONS.length).fill(null);
   currentIdx = 0;
   isShowingActBreak = false;
+  // 清空可能残留的延迟跳转任务
+  if (pendingAdvanceTimer) { clearTimeout(pendingAdvanceTimer); pendingAdvanceTimer = null; }
+  pendingAdvanceFn = null;
 
   container.innerHTML = `
     <div class="min-h-screen flex items-center justify-center px-6 py-24 md:py-28 relative">
@@ -40,16 +46,16 @@ export function renderQuiz(container, onComplete) {
           <!-- 卷标 + 题号 -->
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
-              <span id="act-label" class="text-xs tracking-widest text-paw-ink font-mono uppercase font-bold">卷一</span>
+              <span id="act-label" class="text-xs tracking-widest text-paw-ink font-mono uppercase font-bold">幕一</span>
               <span class="text-paw-bark/50 text-xs">·</span>
               <span class="font-mono text-sm text-paw-bark">
                 <span id="q-current">01</span>
                 <span class="opacity-60"> / ${String(QUESTIONS.length).padStart(2, '0')}</span>
               </span>
             </div>
-            <div id="act-title-label" class="text-xs text-paw-bark tracking-widest font-medium">如果有一身毛</div>
+            <div id="act-title-label" class="text-xs text-paw-bark tracking-widest font-medium">行李箱被拉出来了</div>
           </div>
-          <!-- 4 段进度条 -->
+          <!-- 3 段进度条 -->
           <div id="progress-segments" class="flex gap-1.5">
             ${renderProgressSegments(0)}
           </div>
@@ -69,7 +75,7 @@ export function renderQuiz(container, onComplete) {
             上一题
           </button>
           <span id="skip-hint" class="font-mono text-xs text-paw-bark/70">
-            🐾 选择后自动跳转下一题
+            🐾 选择后自动跳转 · 再点一次立即下一题
           </span>
         </div>
 
@@ -99,14 +105,13 @@ export function renderQuiz(container, onComplete) {
   });
 }
 
-// ============ 4 段进度条渲染 ============
+// ============ 3 段进度条渲染 ============
 function renderProgressSegments(currentQ) {
-  // 4 幕的题目范围（16 题 = 4 卷 × 每卷 4 题）
+  // 3 幕的题目范围（13 题 = 幕一×3 + 幕二×7 + 幕三×3）
   const acts = [
-    { label: '卷一', start: 0,  end: 3  },
-    { label: '卷二', start: 4,  end: 7  },
-    { label: '卷三', start: 8,  end: 11 },
-    { label: '卷四', start: 12, end: 15 },
+    { label: '幕一', start: 0,  end: 2  },
+    { label: '幕二', start: 3,  end: 9  },
+    { label: '幕三', start: 10, end: 12 },
   ];
 
   return acts.map(act => {
@@ -164,6 +169,10 @@ function renderActBreak(container, actBreak, onContinue) {
 
 // ============ 题目渲染 ============
 function renderQuestion(container) {
+  // 进入新一题，清空可能残留的延迟跳转任务
+  if (pendingAdvanceTimer) { clearTimeout(pendingAdvanceTimer); pendingAdvanceTimer = null; }
+  pendingAdvanceFn = null;
+
   const q = QUESTIONS[currentIdx];
   const content = container.querySelector('#question-content');
 
@@ -171,7 +180,7 @@ function renderQuestion(container) {
   container.querySelector('#q-current').textContent = String(currentIdx + 1).padStart(2, '0');
   container.querySelector('#prev-btn').disabled = currentIdx === 0;
 
-  // 更新 4 段进度条
+  // 更新 3 段进度条
   const segContainer = container.querySelector('#progress-segments');
   if (segContainer) segContainer.innerHTML = renderProgressSegments(currentIdx);
 
@@ -218,6 +227,27 @@ function renderQuestion(container) {
   content.querySelectorAll('.option-card').forEach(btn => {
     btn.addEventListener('click', () => {
       const optIdx = parseInt(btn.dataset.optionIdx);
+
+      // 如果当前已有"待跳转"任务（用户刚选过），再次点击 → 立即跳转
+      if (pendingAdvanceFn) {
+        clearTimeout(pendingAdvanceTimer);
+        pendingAdvanceTimer = null;
+        const fn = pendingAdvanceFn;
+        pendingAdvanceFn = null;
+        // 如果用户改选了别的选项，更新答案并刷新视觉
+        if (userAnswers[currentIdx] !== optIdx) {
+          userAnswers[currentIdx] = optIdx;
+          content.querySelectorAll('.option-card').forEach(b => {
+            b.classList.remove('selected');
+            b.querySelector('.option-dot')?.classList.remove('active');
+          });
+          btn.classList.add('selected');
+          btn.querySelector('.option-dot')?.classList.add('active');
+        }
+        fn();
+        return;
+      }
+
       userAnswers[currentIdx] = optIdx;
 
       // 视觉反馈
@@ -231,8 +261,8 @@ function renderQuestion(container) {
       // 显示彩蛋
       showEasterEgg(container, currentIdx, optIdx);
 
-      // 延时自动进入下一题
-      setTimeout(() => {
+      // 真正的"跳转下一题/出结果"逻辑，封装为函数（再次点击可提前调用）
+      const advance = () => {
         hideEasterEgg(container);
 
         const nextIdx = currentIdx + 1;
@@ -257,10 +287,27 @@ function renderQuestion(container) {
           }
         } else {
           // 最后一题 → 计算结果
+          // 关键：先彻底清空彩蛋浮层（避免其 fixed 定位残影泄漏到结果页底部）
+          const overlay = container.querySelector('#quiz-easter-egg');
+          if (overlay) {
+            overlay.classList.remove('is-visible');
+            overlay.innerHTML = '';
+          }
           const result = calculatePersona(userAnswers);
           if (onCompleteCallback) onCompleteCallback(result);
         }
-      }, 1400);
+      };
+
+      // 延时自动进入下一题（按比例从 1400ms 减至 1050ms，约 0.75x）
+      pendingAdvanceFn = advance;
+      pendingAdvanceTimer = setTimeout(() => {
+        pendingAdvanceTimer = null;
+        // 防御：执行时再次确认 fn 还是当前任务
+        if (pendingAdvanceFn === advance) {
+          pendingAdvanceFn = null;
+          advance();
+        }
+      }, 1050);
     });
   });
 }

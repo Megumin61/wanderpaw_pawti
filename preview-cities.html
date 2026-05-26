@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PAWTI · 城市缩略图预览 · Batch 01</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700;900&family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Space Grotesk', 'Noto Serif SC', sans-serif;
+      background: linear-gradient(135deg, #FFFAF0 0%, #FBEFDB 100%);
+      color: #3D4A2A;
+    }
+    .grid-dots {
+      background-image: radial-gradient(circle, rgba(104, 121, 73, 0.10) 1px, transparent 1px);
+      background-size: 22px 22px;
+    }
+    .city-card {
+      background: #FFFAF0;
+      border: 2px solid #687949;
+      border-radius: 24px;
+      box-shadow: 6px 6px 0 #E3CE99;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .city-card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 10px 10px 0 #E3CE99;
+    }
+    .city-img-wrap {
+      background: #FBEFDB;
+      border-radius: 16px;
+      overflow: hidden;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .city-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .ref-img-wrap {
+      background: #FFFAF0;
+      border-radius: 12px;
+      overflow: hidden;
+      aspect-ratio: 1 / 1;
+      border: 1px dashed #687949;
+    }
+    .ref-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    .stamp {
+      display: inline-block;
+      padding: 4px 14px;
+      border: 2px solid #687949;
+      border-radius: 999px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      font-size: 11px;
+      color: #687949;
+      background: #FFFAF0;
+      transform: rotate(-2deg);
+    }
+    .palette-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: #FFFAF0;
+      border: 1px solid rgba(104, 121, 73, 0.3);
+      border-radius: 999px;
+      font-size: 11px;
+      font-family: monospace;
+    }
+    .palette-chip .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body class="grid-dots min-h-screen">
+
+  <div class="max-w-7xl mx-auto px-6 py-12 md:py-16">
+
+    <!-- 顶部 -->
+    <div class="text-center mb-12">
+      <span class="stamp">🐾 PAWTI · CITY THUMBNAIL · BATCH 01</span>
+      <h1 class="font-serif text-3xl md:text-5xl font-black mt-6 mb-3">城市缩略图素材 · 第 1 批</h1>
+      <p class="text-sm md:text-base text-[#7C6B47] max-w-2xl mx-auto">
+        柔和 3D 黏土轴测小岛风格 · 已对齐参考图风格 · 可直接抠图
+      </p>
+    </div>
+
+    <!-- 风格基准 + 5张参考图 -->
+    <div class="mb-12">
+      <h2 class="font-serif text-xl font-bold mb-4 flex items-center gap-2">
+        <span class="text-2xl">🎨</span> 风格参考（用户提供的 5 张原图）
+      </h2>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+        <div class="ref-img-wrap"><img src="https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/with/027adebf-689e-41ff-8370-5acb8c59f2a5/image.png" alt="参考1·成都" /></div>
+        <div class="ref-img-wrap"><img src="https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/with/5469aeb4-7799-415c-8a81-c0f662a430e6/image.png" alt="参考2·杭州" /></div>
+        <div class="ref-img-wrap"><img src="https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/with/9b2a5629-c9df-4673-8921-4d47f8794454/image.png" alt="参考3·小镇" /></div>
+        <div class="ref-img-wrap"><img src="https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/with/b13a16dd-4690-4bb8-aaf9-9895d0f01a0d/image.png" alt="参考4·新加坡" /></div>
+        <div class="ref-img-wrap"><img src="https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/with/5c14c141-556f-4193-ab1e-21bc5b7ae33f/image.png" alt="参考5·京都" /></div>
+      </div>
+
+      <div class="bg-[#FFFAF0] border-2 border-dashed border-[#687949]/40 rounded-2xl p-5 text-sm leading-relaxed">
+        <h3 class="font-bold text-[#687949] mb-3">📌 风格关键词</h3>
+        <div class="grid md:grid-cols-2 gap-3 mb-4">
+          <div><strong>📐 视角：</strong>45° 等距轴测 · 浮空有机小岛</div>
+          <div><strong>🎨 渲染：</strong>柔和 3D 黏土质感 · 微哑光 · AO 阴影</div>
+          <div><strong>🌈 色调：</strong>暖灰低饱和 · 鼠尾草绿主导 · 朱红/雾蓝点缀</div>
+          <div><strong>🖼️ 背景：</strong>纯白 · 易抠图 · 小岛下淡阴影</div>
+        </div>
+        <div class="flex flex-wrap gap-2 pt-3 border-t border-[#687949]/20">
+          <span class="palette-chip"><span class="swatch" style="background:#7E9B8C"></span>#7E9B8C 鼠尾草绿</span>
+          <span class="palette-chip"><span class="swatch" style="background:#E8D9B8"></span>#E8D9B8 米杏</span>
+          <span class="palette-chip"><span class="swatch" style="background:#C97060"></span>#C97060 哑朱红</span>
+          <span class="palette-chip"><span class="swatch" style="background:#A8C0BC"></span>#A8C0BC 雾蓝灰</span>
+          <span class="palette-chip"><span class="swatch" style="background:#D49870"></span>#D49870 蜜橙</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 城市图卡片网格 -->
+    <h2 class="font-serif text-xl font-bold mb-4 flex items-center gap-2">
+      <span class="text-2xl">🐾</span> 第 1 批 · 5 个城市素材
+    </h2>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12">
+
+      <!-- 北京 -->
+      <div class="city-card p-5">
+        <div class="city-img-wrap mb-4">
+          <img src="./generated/cities/city_beijing.png" alt="北京" />
+        </div>
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="font-serif text-2xl font-black">北京</h3>
+          <span class="tag bg-[#687949] text-white">BEIJING</span>
+        </div>
+        <p class="text-xs text-[#7C6B47] leading-relaxed">故宫角楼 · 天坛 · 长城 · 红灯笼</p>
+      </div>
+
+      <!-- 上海 -->
+      <div class="city-card p-5">
+        <div class="city-img-wrap mb-4">
+          <img src="./generated/cities/city_shanghai.png" alt="上海" />
+        </div>
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="font-serif text-2xl font-black">上海</h3>
+          <span class="tag bg-[#687949] text-white">SHANGHAI</span>
+        </div>
+        <p class="text-xs text-[#7C6B47] leading-relaxed">东方明珠 · 外滩 · 上海中心</p>
+      </div>
+
+      <!-- 巴黎 -->
+      <div class="city-card p-5">
+        <div class="city-img-wrap mb-4">
+          <img src="./generated/cities/city_paris.png" alt="巴黎" />
+        </div>
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="font-serif text-2xl font-black">巴黎</h3>
+          <span class="tag bg-[#687949] text-white">PARIS</span>
+        </div>
+        <p class="text-xs text-[#7C6B47] leading-relaxed">埃菲尔铁塔 · 凯旋门 · 圣母院</p>
+      </div>
+
+      <!-- 圣托里尼 -->
+      <div class="city-card p-5">
+        <div class="city-img-wrap mb-4">
+          <img src="./generated/cities/city_santorini.png" alt="圣托里尼" />
+        </div>
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="font-serif text-2xl font-black">圣托里尼</h3>
+          <span class="tag bg-[#687949] text-white">SANTORINI</span>
+        </div>
+        <p class="text-xs text-[#7C6B47] leading-relaxed">蓝顶白屋 · 风车 · 爱琴海岛崖</p>
+      </div>
+
+      <!-- 大理 -->
+      <div class="city-card p-5">
+        <div class="city-img-wrap mb-4">
+          <img src="./generated/cities/city_dali.png" alt="大理" />
+        </div>
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="font-serif text-2xl font-black">大理</h3>
+          <span class="tag bg-[#687949] text-white">DALI</span>
+        </div>
+        <p class="text-xs text-[#7C6B47] leading-relaxed">三塔 · 白族民居 · 洱海 · 苍山</p>
+      </div>
+
+      <!-- 占位提示 -->
+      <div class="city-card p-5 flex flex-col items-center justify-center text-center border-dashed" style="background: rgba(255,250,240,0.5);">
+        <div class="text-5xl mb-3">🐾</div>
+        <h3 class="font-serif text-xl font-bold mb-2">第 2 批预备</h3>
+        <p class="text-xs text-[#7C6B47]">东京 · 京都 · 成都<br>重庆 · 西安</p>
+      </div>
+
+    </div>
+
+    <!-- 检查清单 -->
+    <div class="bg-[#687949] text-[#FFFAF0] rounded-2xl p-6 md:p-8 mb-8">
+      <h2 class="font-serif text-xl font-bold mb-4 flex items-center gap-2">
+        <span>✅</span> 请帮我检查 5 个对齐点
+      </h2>
+      <ul class="space-y-2 text-sm leading-relaxed">
+        <li>1. <strong>渲染质感</strong> — 是否都是柔和 3D 黏土感（不是扁平矢量、不是水彩）？</li>
+        <li>2. <strong>色调一致</strong> — 是否都偏暖灰低饱和（鼠尾草绿主导）？</li>
+        <li>3. <strong>地标识别度</strong> — 一眼能不能认出是哪个城市？</li>
+        <li>4. <strong>背景纯净</strong> — 是否纯白可直接抠图？</li>
+        <li>5. <strong>构图一致</strong> — 是否都是浮空小岛 + 居中地标？</li>
+      </ul>
+      <p class="mt-4 text-xs opacity-80">通过 → 我直接开第 2 批 / 有偏差 → 告诉我具体哪张哪里需要重做</p>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="text-center text-sm text-[#7C6B47] py-6 border-t-2 border-dashed border-[#687949]/30">
+      <p>🌿 PAWTI · 城市缩略图素材库 · 第 1 批 / 共 6 批（30 城）</p>
+      <p class="mt-2">由 <a href="https://with.woa.com/" style="color: #8A2BE2;" target="_blank">With</a> 通过自然语言生成</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>

@@ -1,14 +1,115 @@
 // ============ 结果页模块（两步式） ============
 // Step 1：宠物人格结果（插画 + 人格描述）
 // Step 2：它去了哪里（城市高清图）+ 寄回的随手拍（左图右文）
+// 特殊：迷路宠格 ?????（isMystery=true）走单页彩蛋分支
 
 import { FEATURED_PETS, CITY_IMAGES, PET_LETTERS } from './data/pets.js';
 
 export function renderResult(container, result) {
-  const { persona, topTags, matchPercent } = result;
-  const pet = FEATURED_PETS.find(p => p.id === persona.petId) || FEATURED_PETS[0];
+  const { persona, topTags, matchPercent, isMystery } = result;
 
+  // 迷路宠格：彩蛋款单页结果
+  if (isMystery || persona.isMystery) {
+    renderMystery(container, persona, topTags, result);
+    return;
+  }
+
+  const pet = FEATURED_PETS.find(p => p.id === persona.petId) || FEATURED_PETS[0];
   renderStep1(container, persona, pet, topTags, matchPercent);
+}
+
+// ============ 彩蛋款：迷路宠格 ????? ============
+function renderMystery(container, persona, topTags, result) {
+  // 用户分布最高的几只"接近宠格"，给一种"我们差点抓住你"的感觉
+  const sorted = Object.entries(result.scores || {})
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+
+  container.innerHTML = `
+    <div class="min-h-screen py-24 md:py-28 px-6 md:px-10 relative overflow-hidden">
+      <div class="max-w-3xl mx-auto relative z-10 text-center">
+
+        <!-- 章戳 -->
+        <div class="mb-6 anim-in">
+          <span class="stamp-badge" style="border-color:#7C6B47; color:#7C6B47;">PAWTI · UNCATCHABLE</span>
+        </div>
+
+        <!-- 大问号视觉 -->
+        <div class="pop-in mb-6" style="animation-delay:0.2s">
+          <div class="mystery-orb">
+            <span class="mystery-q">?</span>
+            <span class="mystery-q mystery-q-2">?</span>
+            <span class="mystery-q mystery-q-3">?</span>
+          </div>
+        </div>
+
+        <!-- 主文案 -->
+        <h2 class="font-serif text-3xl sm:text-4xl md:text-5xl font-black mb-5 leading-tight text-paw-ink pop-in" style="animation-delay:0.4s">
+          恭喜你<br/>
+          你是最未曾捕捉无法拥有的<br/>
+          <span class="text-paw-forest">「?????」</span>
+        </h2>
+
+        <p class="font-hand text-2xl md:text-3xl text-paw-forest pop-in mb-8" style="animation-delay:0.55s">
+          "我们差点就抓住你了。"
+        </p>
+
+        <!-- 描述卡 -->
+        <div class="bg-paw-cream/95 border-2 border-paw-forest/30 rounded-3xl p-6 md:p-8 text-left pop-in paper-texture" style="animation-delay:0.7s; box-shadow:6px 6px 0 #E3CE99;">
+          <p class="font-serif text-base md:text-lg leading-loose text-paw-ink whitespace-pre-line">
+我们预设的所有 PAWTI，没有一只能完全装下你。
+
+这不是坏事。
+世界上最有意思的旅行者，往往最难被归类。
+
+你身上同时存在几个相反的部分——
+有那么一刻像哈士奇，有那么一刻像英短，
+有那么一刻像三花，又有那么一刻像狸花猫。
+
+所以，没有一只小的，能完全替你出发。
+
+——你只能自己去。
+          </p>
+
+          ${sorted.length > 0 ? `
+            <div class="mt-6 pt-5 border-t border-dashed border-paw-forest/30">
+              <div class="text-xs tracking-widest text-paw-bark mb-3 uppercase">差点就是 · ALMOST</div>
+              <div class="flex flex-wrap gap-2">
+                ${sorted.map(([name, score]) => `
+                  <span class="chip">${name} · ${score}</span>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+
+        <!-- CTA -->
+        <div class="mt-10 flex flex-col items-center gap-4 pop-in" style="animation-delay:0.9s">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">
+            <button id="retake-btn" class="btn-paw-secondary">
+              <span>🔁</span>
+              <span>再测一次</span>
+            </button>
+            <button id="waitlist-btn" class="btn-paw">
+              <span>🐾</span>
+              <span>加入等候名单</span>
+            </button>
+          </div>
+          <p class="text-xs text-paw-bark text-center max-w-lg">
+            PAWTI 即将上线 — 也许我们会为你这种最难被归类的旅人，专门做一只。
+          </p>
+        </div>
+
+      </div>
+    </div>
+  `;
+
+  container.querySelector('#retake-btn').addEventListener('click', () => {
+    location.reload();
+  });
+  container.querySelector('#waitlist-btn').addEventListener('click', () => {
+    showToast('感谢期待 🌿 我们会为最难归类的旅人，准备一只专属的。');
+  });
 }
 
 // ============ Step 1：宠物人格结果 ============
@@ -196,7 +297,15 @@ function renderStep2(container, persona, pet) {
           </div>
 
           <!-- 信件卡片：左图（自拍 + 配文叠加） 右文（手写信） · 窄屏自动变上下 -->
-          <div class="letter-card grid md:grid-cols-[5fr_6fr] rounded-3xl overflow-hidden shadow-2xl bg-paw-cream/95 paper-texture border border-paw-ink/10">
+          <!-- 注：外层 pt-5 给顶部邮戳留出空间，内层 inner-card 才是真正的卡片视觉容器 -->
+          <div class="letter-card relative pt-5">
+
+            <!-- 顶部邮戳（手帐红章戳） · 提到 letter-card 顶层，避免被内层 overflow-hidden 裁切 -->
+            <div class="absolute top-0 right-6 md:right-12 z-20 bg-paw-berry text-paw-cream rounded-md px-3 py-1 text-xs rotate-3 shadow-[0_2px_0_rgba(58,46,34,0.4)] font-mono tracking-wider">
+              🐾 ${pet.city}
+            </div>
+
+            <div class="grid md:grid-cols-[5fr_6fr] rounded-3xl overflow-hidden shadow-2xl bg-paw-cream/95 paper-texture border border-paw-ink/10">
 
             <!-- 左：宠物在城市里的旅行场景照 + 叠加文字（保留原图比例） -->
             <div class="relative w-full bg-paw-ink/5 md:min-h-[520px]">
@@ -230,11 +339,6 @@ function renderStep2(container, persona, pet) {
 
             <!-- 右：手写信 -->
             <div class="relative p-6 md:p-10 flex flex-col">
-              <!-- 邮票装饰（手帐红章戳） -->
-              <div class="absolute -top-4 right-5 md:right-10 bg-paw-berry text-paw-cream rounded-md px-3 py-1 text-xs rotate-3 shadow-[0_2px_0_rgba(58,46,34,0.4)] font-mono tracking-wider">
-                🐾 ${pet.city}
-              </div>
-
               <!-- 信头 -->
               <div class="flex items-center gap-3 mb-5 pb-4 border-b border-dashed border-paw-bark/30">
                 <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border-2 border-paw-bark/45">
@@ -258,6 +362,7 @@ ${letter.content}
               </div>
             </div>
 
+            </div><!-- /inner-grid -->
           </div>
         </div>
 
