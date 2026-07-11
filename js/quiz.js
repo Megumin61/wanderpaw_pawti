@@ -194,7 +194,7 @@ function renderQuestion(container) {
   if (actTitleLabel) actTitleLabel.textContent = q.stationTitle || '';
 
   content.innerHTML = `
-    <div class="quiz-question-shell anim-in" key="${currentIdx}">
+    <div class="quiz-question-shell anim-in ${q.sceneImage?.src ? 'has-scene-image' : 'no-scene-image'}" key="${currentIdx}">
 
       ${renderSceneImage(q)}
 
