@@ -162,7 +162,7 @@ export const QUESTIONS = [
     scene: '到成都了。\n\n空气潮乎乎的，旁边有人举着刚买的蛋烘糕路过，四周弥漫着一股火锅底料的香味。街边还有只橘猫在台阶上睡觉，睡得很死。',
     sceneImage: {
       placement: 'scene-before-question',
-      src: './generated/quiz/scene-01-chengdu-arrival-v2.png',
+      src: './generated/quiz/scene-01-chengdu-arrival-v3.png',
       alt: '成都刚落地的潮湿街边，蛋烘糕、火锅香气和睡着的橘猫',
       description: '刚落地的成都像一口潮热的锅。画面左侧是一只手举着刚买的蛋烘糕，奶油快要融开；街边有火锅店的红油雾气从门缝里飘出来，台阶上趴着一只睡到完全不管世界的橘猫。远处行李箱轮子压过湿漉漉的石板路，空气里有刚抵达的疲惫和一点兴奋。',
       directorNote: '镜头低一点，像人刚从车站出来拖着箱子看到的第一眼。左前景给蛋烘糕，中景给橘猫和台阶，远景用火锅热气和街灯制造“成都味道”。不要做成景点照，要像一张刚到城市时随手拍下的生活切片。',
