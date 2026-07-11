@@ -217,7 +217,7 @@ function renderQuestion(container) {
           >
             <div class="option-dot flex-shrink-0 ${userAnswers[currentIdx] === idx ? 'active' : ''}"></div>
             <div class="option-text flex-1 text-base md:text-lg leading-relaxed text-paw-ink font-medium">
-              ${opt.text}
+              ${formatQuizText(opt.text)}
             </div>
           </button>
         `).join('')}
@@ -315,7 +315,7 @@ function renderQuestion(container) {
 }
 
 function formatQuizText(text) {
-  return String(text).replace(/\n/g, '<br>');
+  return String(text).replace(/[“”]/g, '').replace(/\n/g, '<br>');
 }
 
 function renderSceneImage(q) {
