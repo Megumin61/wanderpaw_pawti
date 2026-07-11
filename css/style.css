@@ -908,42 +908,50 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
   position: relative;
   z-index: 2;
   font-family: 'Noto Serif SC', serif;
-  font-size: 16px;
-  line-height: 1.9;
+  width: min(680px, calc(100% - 48px));
+  font-size: 14px;
+  line-height: 1.75;
   color: #FFFAF0;
-  margin: 0 0 26px;
-  padding: 20px 24px 22px;
-  background: #687949;
-  border: 0;
-  border-radius: 0 0 24px 24px;
+  margin: -50px auto 30px;
+  padding: 16px 20px 18px;
+  background: rgba(104, 121, 73, 0.92);
+  border: 1px solid rgba(255, 250, 240, 0.3);
+  border-radius: 22px;
   box-shadow:
-    0 6px 0 #E3CE99,
-    0 18px 34px -28px rgba(61, 74, 42, 0.5);
+    0 5px 0 rgba(227, 206, 153, 0.9),
+    0 22px 42px -26px rgba(61, 74, 42, 0.55);
+  backdrop-filter: blur(12px);
   letter-spacing: 0.01em;
-  font-weight: 600;
+  font-weight: 500;
   text-shadow: 0 1px 0 rgba(61, 74, 42, 0.28);
 }
 @media (min-width: 768px) {
   .quiz-scene {
-    font-size: 18px;
-    margin-bottom: 28px;
-    padding: 22px 28px 24px;
+    font-size: 15px;
+    padding: 18px 24px 20px;
   }
 }
 
 .quiz-scene-image {
   position: relative;
   z-index: 0;
-  width: 100%;
-  aspect-ratio: 21 / 8;
-  min-height: 190px;
-  max-height: 280px;
+  left: 50%;
+  width: 100vw;
+  height: clamp(260px, 31vw, 380px);
   margin: 0;
   overflow: hidden;
-  border-radius: 24px 24px 0 0;
-  border: 1px solid rgba(61, 74, 42, 0.18);
+  transform: translateX(-50%);
+  border-radius: 0;
+  border: 0;
   background: #E9E4D5;
   box-shadow: none;
+  pointer-events: none;
+}
+.quiz-scene-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 250, 240, 0.16);
   pointer-events: none;
 }
 .quiz-scene-image img {
@@ -951,20 +959,21 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
   height: 100%;
   object-fit: cover;
   display: block;
-  opacity: 0.84;
-  filter: saturate(0.72) contrast(0.88) brightness(1.06);
+  opacity: 0.82;
+  filter: blur(1.5px) saturate(0.7) contrast(0.86) brightness(1.1);
+  transform: scale(1.025);
 }
 @media (max-width: 640px) {
   .quiz-scene {
-    font-size: 15px;
-    line-height: 1.75;
-    margin: 0 0 22px;
-    padding: 17px 18px 19px;
-    border-radius: 0 0 20px 20px;
+    width: calc(100% - 28px);
+    font-size: 13px;
+    line-height: 1.7;
+    margin: -34px auto 24px;
+    padding: 14px 16px 16px;
+    border-radius: 18px;
   }
   .quiz-scene-image {
-    min-height: 150px;
-    border-radius: 20px 20px 0 0;
+    height: 220px;
   }
 }
 
