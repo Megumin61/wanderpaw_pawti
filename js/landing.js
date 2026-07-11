@@ -39,21 +39,21 @@ export function renderLanding(container) {
           <div class="flex justify-center mb-3 anim-in" style="animation-delay:0.05s">
             <span class="chip accent">
               <span class="dot-amber"></span>
-              PAWTI · 旅行人格测试
+              PAWTI · 小宠物试旅行
             </span>
           </div>
 
           <!-- 主标题 -->
           <h1 class="hero-title text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black anim-in text-paw-ink" style="animation-delay:0.15s">
-            <span class="block">测测你是哪只</span>
+            <span class="block">训练一只会代你</span>
             <span class="block mt-1 md:mt-2">
-              <span class="text-paw-fern hand-underline">毛孩子</span>旅行人格
+              <span class="text-paw-fern hand-underline">旅行写信</span>的小宠物
             </span>
           </h1>
 
           <!-- 副标题 -->
           <p class="mt-3 md:mt-4 text-sm sm:text-base md:text-lg text-paw-bark max-w-2xl mx-auto anim-in" style="animation-delay:0.3s">
-            🐾 每只毛孩子都是一种旅行人格。翻到它们的背面，看看它们真实旅途里的样子。
+            🐾 它会学你如何出发与抵达，然后去你没来得及去的地方拍照打卡、写信给你。
           </p>
         </div>
       </div>
@@ -85,13 +85,13 @@ export function renderLanding(container) {
           <button id="start-quiz-btn"
             class="btn-paw pulse-ring text-base md:text-lg px-9 md:px-11 py-4">
             <span class="text-xl">🐾</span>
-            <span>开始 PAWTI 测试</span>
+            <span>带它出发</span>
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8">
               <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
           <p class="text-xs md:text-sm text-paw-bark mt-1">
-            鼠标悬停或点击卡片，看它在森林那边的真实模样
+            悬停或点击卡片，先认识这些可能替你出门的小动物
           </p>
         </div>
       </div>

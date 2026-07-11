@@ -6,7 +6,7 @@
 import { FEATURED_PETS, CITY_IMAGES, PET_LETTERS } from './data/pets.js';
 
 export function renderResult(container, result) {
-  const { persona, topTags, matchPercent, isMystery } = result;
+  const { persona, topTags, matchPercent, isMystery, insight } = result;
 
   // 迷路宠格：彩蛋款单页结果
   if (isMystery || persona.isMystery) {
@@ -15,7 +15,7 @@ export function renderResult(container, result) {
   }
 
   const pet = FEATURED_PETS.find(p => p.id === persona.petId) || FEATURED_PETS[0];
-  renderStep1(container, persona, pet, topTags, matchPercent);
+  renderStep1(container, persona, pet, topTags, matchPercent, insight);
 }
 
 // ============ 彩蛋款：迷路宠格 ????? ============
@@ -113,7 +113,7 @@ function renderMystery(container, persona, topTags, result) {
 }
 
 // ============ Step 1：宠物人格结果 ============
-function renderStep1(container, persona, pet, topTags, matchPercent) {
+function renderStep1(container, persona, pet, topTags, matchPercent, insight) {
   container.innerHTML = `
     <div class="min-h-screen py-24 md:py-28 px-6 md:px-10 relative overflow-hidden">
 
@@ -163,6 +163,17 @@ function renderStep1(container, persona, pet, topTags, matchPercent) {
               <div class="text-xs tracking-wider text-paw-bark mb-2 uppercase font-semibold">你是这样的旅人</div>
               <p class="font-serif text-xl md:text-2xl leading-relaxed text-paw-ink">${persona.description}</p>
             </div>
+
+            ${insight ? `
+              <div class="paper-card p-4 md:p-5">
+                <div class="text-xs tracking-wider text-paw-bark mb-2 font-semibold">它会怎样替你旅行</div>
+                <p class="text-sm md:text-base leading-relaxed text-paw-ink/85">${insight.captureLine}</p>
+                <div class="mt-3 space-y-1.5 text-xs md:text-sm leading-relaxed text-paw-bark">
+                  <p>${insight.proxyLine}</p>
+                  <p>${insight.letterLine}</p>
+                </div>
+              </div>
+            ` : ''}
 
             <div class="dashed-divider"></div>
 

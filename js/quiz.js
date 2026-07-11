@@ -1,7 +1,7 @@
 // ============ 答题页模块 ============
-// 12 道题，每题一屏，用户选择后自动进入下一题
+// 9 道题，每题一屏，用户选择后自动进入下一题
 // 答完后调用评分函数并跳转到结果页
-// 新增：幕间章节卡 + 答后彩蛋浮层 + 4 段进度条 + 题干两段式
+// v11：序章 + 四站式代理旅行进度 + 答后学习反馈
 
 import { QUESTIONS, ACT_BREAKS, calculatePersona } from './data/quiz.js';
 
@@ -13,18 +13,15 @@ let isShowingActBreak = false;
 let pendingAdvanceTimer = null;
 let pendingAdvanceFn = null;
 
-// 彩蛋文案池（随机抽取，不用每题的 feedbacks）—— 森系语境
+// 彩蛋文案池（随机抽取，不用每题的 feedbacks）—— 小宠物学习语境
 const EASTER_EGGS = [
-  { type: 'stat',   text: '和你做了同样选择的人，比你想象的多。' },
-  { type: 'stat',   text: '只有 12% 的人会这样选。' },
-  { type: 'trait',  text: '检测到特质：林间感 +1' },
-  { type: 'trait',  text: '检测到特质：松弛度 +1' },
-  { type: 'trait',  text: '检测到特质：草木气 +1' },
-  { type: 'trait',  text: '检测到特质：独处力 +1' },
-  { type: 'trait',  text: '检测到特质：晨雾度 +1' },
-  { type: 'letter', text: '你的毛孩子正穿过林子，朝你走来…' },
-  { type: 'letter', text: '它已经把背包放在树下了。' },
-  { type: 'letter', text: '它说：这个答案，我猜到了。' },
+  { type: 'trait',  text: '它悄悄在本子上记了一笔。' },
+  { type: 'trait',  text: '它好像更懂你的旅行节奏了。' },
+  { type: 'trait',  text: '它的脚步正在慢慢成形。' },
+  { type: 'trait',  text: '它把这个偏好收进了小背包。' },
+  { type: 'letter', text: '它正在练习替你看世界。' },
+  { type: 'letter', text: '它的第一封信，已经有一点语气了。' },
+  { type: 'letter', text: '它轻轻晃了晃尾巴：收到。' },
 ];
 
 export function renderQuiz(container, onComplete) {
@@ -37,7 +34,7 @@ export function renderQuiz(container, onComplete) {
   pendingAdvanceFn = null;
 
   container.innerHTML = `
-    <div class="min-h-screen flex items-center justify-center px-6 py-24 md:py-28 relative">
+    <div class="min-h-screen flex items-start md:items-center justify-center px-6 pt-24 pb-16 md:py-28 relative">
 
       <div class="w-full max-w-3xl relative z-10">
 
@@ -53,9 +50,9 @@ export function renderQuiz(container, onComplete) {
                 <span class="opacity-60"> / ${String(QUESTIONS.length).padStart(2, '0')}</span>
               </span>
             </div>
-            <div id="act-title-label" class="text-xs text-paw-bark tracking-widest font-medium">行李箱被拉出来了</div>
+            <div id="act-title-label" class="text-xs text-paw-bark tracking-widest font-medium">成都 · 刚落地</div>
           </div>
-          <!-- 3 段进度条 -->
+          <!-- 四站进度条 -->
           <div id="progress-segments" class="flex gap-1.5">
             ${renderProgressSegments(0)}
           </div>
@@ -75,7 +72,7 @@ export function renderQuiz(container, onComplete) {
             上一题
           </button>
           <span id="skip-hint" class="font-mono text-xs text-paw-bark/70">
-            🐾 选择后自动跳转 · 再点一次立即下一题
+            🐾 它会记住这次选择 · 再点一次立即继续
           </span>
         </div>
 
@@ -105,20 +102,23 @@ export function renderQuiz(container, onComplete) {
   });
 }
 
-// ============ 3 段进度条渲染 ============
+// ============ 四站进度条渲染 ============
 function renderProgressSegments(currentQ) {
-  // 3 幕的题目范围（13 题 = 幕一×3 + 幕二×7 + 幕三×3）
-  const acts = [
-    { label: '幕一', start: 0,  end: 2  },
-    { label: '幕二', start: 3,  end: 9  },
-    { label: '幕三', start: 10, end: 12 },
-  ];
+  const acts = ACT_BREAKS
+    .map((act, idx) => {
+      const next = ACT_BREAKS[idx + 1];
+      return {
+        label: act.segmentLabel || act.label,
+        start: act.beforeQ,
+        end: next ? next.beforeQ - 1 : QUESTIONS.length - 1,
+      };
+    })
+    .filter(act => act.start < QUESTIONS.length);
 
   return acts.map(act => {
     const total = act.end - act.start + 1;
-    const done = Math.max(0, Math.min(total, currentQ - act.start));
+    const done = Math.max(0, Math.min(total, currentQ - act.start + 1));
     const pct = (done / total) * 100;
-    const isActive = currentQ >= act.start && currentQ <= act.end;
     const isPast = currentQ > act.end;
 
     return `
@@ -151,7 +151,7 @@ function renderActBreak(container, actBreak, onContinue) {
       </div>
       <p class="act-break-quote">${actBreak.quote.replace(/\n/g, '<br>')}</p>
       <button class="act-break-btn" id="act-continue-btn">
-        继续旅程
+        ${actBreak.cta || '继续旅程'}
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -164,6 +164,9 @@ function renderActBreak(container, actBreak, onContinue) {
     if (prevBtn) prevBtn.style.opacity = '';
     if (skipHint) skipHint.style.opacity = '';
     onContinue();
+    requestAnimationFrame(() => {
+      document.getElementById('section-quiz')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   });
 }
 
@@ -185,25 +188,24 @@ function renderQuestion(container) {
   if (segContainer) segContainer.innerHTML = renderProgressSegments(currentIdx);
 
   // 更新幕标签
-  const actBreak = [...ACT_BREAKS].reverse().find(b => b.beforeQ <= currentIdx);
-  if (actBreak) {
-    const actLabel = container.querySelector('#act-label');
-    const actTitleLabel = container.querySelector('#act-title-label');
-    if (actLabel) actLabel.textContent = actBreak.label;
-    if (actTitleLabel) actTitleLabel.textContent = actBreak.title;
-  }
+  const actLabel = container.querySelector('#act-label');
+  const actTitleLabel = container.querySelector('#act-title-label');
+  if (actLabel) actLabel.textContent = q.stationLabel || '';
+  if (actTitleLabel) actTitleLabel.textContent = q.stationTitle || '';
 
   content.innerHTML = `
-    <div class="anim-in" key="${currentIdx}">
+    <div class="quiz-question-shell anim-in" key="${currentIdx}">
+
+      ${renderSceneImage(q)}
 
       <!-- 场景前情（灰色小字，营造画面感） -->
       ${q.scene ? `
-        <p class="quiz-scene">${q.scene}</p>
+        <p class="quiz-scene">${formatQuizText(q.scene)}</p>
       ` : ''}
 
       <!-- 核心问句（加粗） -->
       <h2 class="quiz-question">
-        ${q.q}
+        ${formatQuizText(q.q)}
       </h2>
 
       <!-- 选项（参考图2：未选中=米杏卡片+空心圆+厚硬阴影；选中=橄榄绿底+白字+右上角🐾） -->
@@ -298,7 +300,7 @@ function renderQuestion(container) {
         }
       };
 
-      // 延时自动进入下一题（按比例从 1400ms 减至 1050ms，约 0.75x）
+      // 延时自动进入下一题：中心提示更大，停留稍久一点方便读完
       pendingAdvanceFn = advance;
       pendingAdvanceTimer = setTimeout(() => {
         pendingAdvanceTimer = null;
@@ -307,9 +309,24 @@ function renderQuestion(container) {
           pendingAdvanceFn = null;
           advance();
         }
-      }, 1050);
+      }, 1800);
     });
   });
+}
+
+function formatQuizText(text) {
+  return String(text).replace(/\n/g, '<br>');
+}
+
+function renderSceneImage(q) {
+  const image = q.sceneImage;
+  if (!image?.src) return '';
+
+  return `
+    <figure class="quiz-scene-image" data-placement="${image.placement || 'scene-before-question'}">
+      <img src="${image.src}" alt="${image.alt || q.stationTitle || 'PAWTI 场景图'}" loading="lazy" decoding="async" draggable="false" />
+    </figure>
+  `;
 }
 
 // ============ 彩蛋浮层 ============

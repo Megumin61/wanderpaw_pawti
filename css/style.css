@@ -899,22 +899,113 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
 }
 
 /* ============ 答题页：题干两段式 ============ */
+.quiz-question-shell {
+  position: relative;
+  isolation: isolate;
+}
+
 .quiz-scene {
+  position: relative;
+  z-index: 2;
   font-family: 'Noto Serif SC', serif;
-  font-size: 15px;
-  line-height: 1.8;
-  color: rgba(61, 74, 42, 0.55);
-  margin-bottom: 14px;
+  font-size: 16px;
+  line-height: 1.9;
+  color: #FFFAF0;
+  margin: 0 0 22px;
+  padding: 18px 20px 19px;
+  background: #687949;
+  border: 0;
+  border-radius: 20px;
+  box-shadow:
+    5px 5px 0 #E3CE99,
+    0 16px 36px -26px rgba(61, 74, 42, 0.55);
   letter-spacing: 0.01em;
+  font-weight: 600;
+  text-shadow: 0 1px 0 rgba(61, 74, 42, 0.28);
 }
 @media (min-width: 768px) {
   .quiz-scene {
-    font-size: 16px;
-    margin-bottom: 16px;
+    font-size: 18px;
+    margin-bottom: 28px;
+    padding: 22px 28px 24px;
+  }
+}
+
+.quiz-scene-image {
+  position: relative;
+  z-index: 0;
+  left: 50%;
+  width: 100vw;
+  height: clamp(210px, 24vw, 300px);
+  margin: 0 0 -138px;
+  transform: translateX(-50%);
+  overflow: visible;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  pointer-events: none;
+}
+.quiz-scene-image::before,
+.quiz-scene-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.quiz-scene-image::before {
+  inset: -28px 0;
+  background:
+    linear-gradient(to right, #FFFAF0 0%, rgba(255, 250, 240, 0.84) 10%, rgba(255, 250, 240, 0.18) 30%, rgba(255, 250, 240, 0.14) 68%, rgba(255, 250, 240, 0.84) 91%, #FFFAF0 100%),
+    linear-gradient(to bottom, #FFFAF0 0%, rgba(255, 250, 240, 0.10) 30%, rgba(255, 250, 240, 0.38) 70%, #FFFAF0 100%);
+}
+.quiz-scene-image::after {
+  inset: -28px 0;
+  background:
+    linear-gradient(to bottom, rgba(255, 250, 240, 0.18), rgba(255, 250, 240, 0.54)),
+    radial-gradient(ellipse at 54% 42%, rgba(255, 250, 240, 0) 0%, rgba(255, 250, 240, 0.16) 42%, rgba(255, 250, 240, 0.74) 100%);
+  mix-blend-mode: screen;
+}
+.quiz-scene-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0.72;
+  filter: blur(2px) saturate(0.74) contrast(0.82) brightness(1.14);
+  transform: scale(1.06);
+  -webkit-mask-image:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #000 18%, #000 62%, rgba(0, 0, 0, 0) 100%),
+    linear-gradient(to right, rgba(0, 0, 0, 0) 0%, #000 12%, #000 88%, rgba(0, 0, 0, 0) 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #000 18%, #000 62%, rgba(0, 0, 0, 0) 100%),
+    linear-gradient(to right, rgba(0, 0, 0, 0) 0%, #000 12%, #000 88%, rgba(0, 0, 0, 0) 100%);
+  mask-composite: intersect;
+}
+@media (min-width: 768px) {
+  .quiz-scene-image {
+    margin-bottom: -142px;
+  }
+}
+@media (max-width: 640px) {
+  .quiz-scene {
+    font-size: 15px;
+    line-height: 1.75;
+    margin-bottom: 18px;
+    padding: 16px 18px 17px;
+  }
+  .quiz-scene-image {
+    height: clamp(150px, 40vw, 210px);
+    margin-top: -6px;
+    margin-bottom: -118px;
   }
 }
 
 .quiz-question {
+  position: relative;
+  z-index: 2;
   font-family: 'Noto Serif SC', serif;
   font-size: 22px;
   font-weight: 700;
@@ -1095,20 +1186,20 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
 
 .easter-egg-overlay {
   position: fixed;
-  bottom: 32px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  z-index: 200;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 320;
   opacity: 0;
   pointer-events: none;
-  transition:
-    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-  white-space: nowrap;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 250, 240, 0.42), rgba(255, 250, 240, 0.16) 46%, rgba(61, 74, 42, 0.10) 100%);
+  transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .easter-egg-overlay.is-visible {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
 }
 /* 兜底：当 quiz section 被隐藏（display:none）时，彩蛋浮层（fixed 定位）也强制隐藏，
    避免它因 fixed 脱离文档流而在结果页底部残留 */
@@ -1123,15 +1214,28 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
 .easter-egg-inner {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
-  border-radius: 999px;
-  font-size: 13px;
+  gap: 22px;
+  width: min(900px, calc(100vw - 48px));
+  min-height: 166px;
+  padding: 36px 44px;
+  border-radius: 34px;
+  font-size: 20px;
   font-family: 'Noto Serif SC', serif;
   box-shadow:
-    0 4px 20px -4px rgba(42, 46, 38, 0.28),
-    0 0 0 1px rgba(255, 255, 255, 0.14) inset;
+    10px 10px 0 rgba(227, 206, 153, 0.95),
+    0 34px 78px -30px rgba(42, 46, 38, 0.62),
+    0 0 0 1px rgba(255, 255, 255, 0.22) inset;
   backdrop-filter: blur(12px);
+  text-align: left;
+  transform: translateY(26px) scale(0.92);
+  opacity: 0;
+  transition:
+    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.easter-egg-overlay.is-visible .easter-egg-inner {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 /* stat 类型：深墨绿（手帐章戳） */
@@ -1148,29 +1252,47 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
 .easter-egg-letter {
   background: #FFFAF0;
   color: #3D4A2A;
-  border: 1.5px solid #687949;
+  border: 2px solid #687949;
 }
 
 .easter-egg-icon {
-  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(104, 121, 73, 0.12);
+  font-size: 32px;
   flex-shrink: 0;
 }
 .easter-egg-text {
-  font-size: 13px;
-  line-height: 1.4;
+  font-size: 24px;
+  line-height: 1.55;
   letter-spacing: 0.01em;
+  font-weight: 800;
 }
 
 @media (max-width: 480px) {
   .easter-egg-overlay {
-    bottom: 20px;
-    max-width: calc(100vw - 32px);
-    white-space: normal;
+    padding: 14px;
     text-align: center;
   }
   .easter-egg-inner {
-    padding: 9px 14px;
-    font-size: 12px;
+    width: calc(100vw - 28px);
+    min-height: 136px;
+    padding: 24px 20px;
+    border-radius: 24px;
+    font-size: 17px;
+    gap: 14px;
+  }
+  .easter-egg-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+  }
+  .easter-egg-text {
+    font-size: 19px;
   }
 }
 
