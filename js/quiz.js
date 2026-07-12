@@ -46,7 +46,10 @@ export function renderQuiz(container, onComplete) {
               <span class="opacity-60"> / ${String(QUESTIONS.length).padStart(2, '0')}</span>
             </span>
           </div>
-          <div id="act-title-label" class="text-xs text-paw-bark tracking-widest font-medium">成都 · 刚落地</div>
+          <div class="flex items-center gap-3">
+            <span id="progress-feedback" class="progress-feedback" aria-live="polite">🐾 已记住</span>
+            <div id="act-title-label" class="text-xs text-paw-bark tracking-widest font-medium">成都 · 刚落地</div>
+          </div>
         </div>
         <div id="progress-segments" class="flex gap-1.5">${renderProgressSegments(0)}</div>
       </div>
@@ -80,8 +83,11 @@ export function renderQuiz(container, onComplete) {
 
     </div>
 
-    <!-- 答后彩蛋浮层（单例，挂在 quiz 容器内） -->
-    <div id="quiz-easter-egg" class="easter-egg-overlay" aria-hidden="true"></div>
+    <!-- 实验：桌边旅行便签（移动端会转为底部便签） -->
+    <aside id="quiz-side-note" class="quiz-side-note" aria-live="polite" aria-hidden="true">
+      <span class="quiz-side-note-kicker">旅行手帐</span>
+      <span class="quiz-side-note-text"></span>
+    </aside>
   `;
 
   // 检查第 0 题前是否有幕间卡
@@ -135,6 +141,7 @@ function renderProgressSegments(currentQ) {
 // ============ 幕间章节卡 ============
 function renderActBreak(container, actBreak, onContinue) {
   isShowingActBreak = true;
+  hideEasterEgg(container);
   const content = container.querySelector('#question-content');
   const prevBtn = container.querySelector('#prev-btn');
   const skipHint = container.querySelector('#skip-hint');
@@ -143,19 +150,24 @@ function renderActBreak(container, actBreak, onContinue) {
 
   content.innerHTML = `
     <div class="act-break-card anim-in">
-      <div class="act-break-icon">${actBreak.icon}</div>
-      <div class="act-break-meta">
-        <span class="act-break-label">${actBreak.label}</span>
-        <span class="act-break-dot">·</span>
-        <span class="act-break-title">${actBreak.title}</span>
+      <img class="act-break-image" src="${actBreak.image || ''}" alt="${actBreak.imageAlt || actBreak.title}" draggable="false" />
+      <div class="act-break-scrim"></div>
+      <div class="act-break-content">
+        <div class="act-break-icon">${actBreak.icon}</div>
+        <div class="act-break-meta">
+          <span class="act-break-label">${actBreak.label}</span>
+          <span class="act-break-dot">·</span>
+          <span class="act-break-title">${actBreak.title}</span>
+        </div>
+        <p class="act-break-quote">${actBreak.quote.replace(/\n+/g, '<br>')}</p>
+        ${renderChapterLearning(actBreak)}
+        <button class="act-break-btn" id="act-continue-btn">
+          ${actBreak.cta || '继续旅程'}
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
       </div>
-      <p class="act-break-quote">${actBreak.quote.replace(/\n/g, '<br>')}</p>
-      <button class="act-break-btn" id="act-continue-btn">
-        ${actBreak.cta || '继续旅程'}
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
     </div>
   `;
 
@@ -168,6 +180,37 @@ function renderActBreak(container, actBreak, onContinue) {
       document.getElementById('section-quiz')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
+}
+
+function renderChapterLearning(actBreak) {
+  const breakIdx = ACT_BREAKS.indexOf(actBreak);
+  if (breakIdx <= 0) {
+    return `
+      <div class="chapter-learning chapter-learning-empty">
+        <span class="chapter-learning-label">这一程，它会学着</span>
+        <span class="chapter-learning-summary">替你选择，也替你记住。</span>
+      </div>
+    `;
+  }
+
+  const start = ACT_BREAKS[breakIdx - 1].beforeQ;
+  const end = actBreak.beforeQ - 1;
+  const notes = [];
+  for (let qIdx = start; qIdx <= end; qIdx++) {
+    const answerIdx = userAnswers[qIdx];
+    const optionText = QUESTIONS[qIdx]?.options?.[answerIdx]?.text;
+    if (optionText) notes.push(String(optionText).replace(/[“”]/g, ''));
+  }
+
+  if (!notes.length) return '';
+  return `
+    <div class="chapter-learning">
+      <span class="chapter-learning-label">上一站，它记住了</span>
+      <div class="chapter-learning-tags">
+        ${notes.map(note => `<span>${note}</span>`).join('')}
+      </div>
+    </div>
+  `;
 }
 
 // ============ 题目渲染 ============
@@ -193,6 +236,8 @@ function renderQuestion(container) {
   const actTitleLabel = progressSlot.querySelector('#act-title-label');
   if (actLabel) actLabel.textContent = q.stationLabel || '';
   if (actTitleLabel) actTitleLabel.textContent = q.stationTitle || '';
+  const progressFeedback = progressSlot.querySelector('#progress-feedback');
+  if (progressFeedback) progressFeedback.classList.remove('is-visible');
 
   content.innerHTML = `
     <div class="quiz-question-shell anim-in ${q.sceneImage?.src ? 'has-scene-image' : 'no-scene-image'}" key="${currentIdx}">
@@ -200,6 +245,10 @@ function renderQuestion(container) {
       <div class="quiz-scene-card">
         ${renderSceneImage(q)}
         ${q.scene ? `<p class="quiz-scene">${formatQuizText(q.scene)}</p>` : ''}
+        <div id="scene-feedback-bubble" class="scene-feedback-bubble" aria-live="polite">
+          <span class="scene-feedback-paw">🐾</span>
+          <span>收到，这一笔我记下了。</span>
+        </div>
       </div>
 
       <!-- 核心问句（加粗） -->
@@ -215,8 +264,14 @@ function renderQuestion(container) {
             data-option-idx="${idx}"
           >
             <div class="option-dot flex-shrink-0 ${userAnswers[currentIdx] === idx ? 'active' : ''}"></div>
-            <div class="option-text flex-1 text-base md:text-lg leading-relaxed text-paw-ink font-medium">
-              ${formatQuizText(opt.text)}
+            <div class="option-content flex-1">
+              <div class="option-text text-base md:text-lg leading-relaxed text-paw-ink font-medium">
+                ${formatQuizText(opt.text)}
+              </div>
+              <div class="option-inline-feedback" aria-live="polite">
+                <span>🐾</span>
+                <span class="option-inline-feedback-text"></span>
+              </div>
             </div>
           </button>
         `).join('')}
@@ -267,7 +322,7 @@ function renderQuestion(container) {
       btn.classList.add('selected');
       btn.querySelector('.option-dot')?.classList.add('active');
 
-      // 显示彩蛋
+      // 同时显示五种实验反馈，便于比较筛选
       showEasterEgg(container, currentIdx, optIdx);
 
       // 真正的"跳转下一题/出结果"逻辑，封装为函数（再次点击可提前调用）
@@ -296,12 +351,7 @@ function renderQuestion(container) {
           }
         } else {
           // 最后一题 → 计算结果
-          // 关键：先彻底清空彩蛋浮层（避免其 fixed 定位残影泄漏到结果页底部）
-          const overlay = container.querySelector('#quiz-easter-egg');
-          if (overlay) {
-            overlay.classList.remove('is-visible');
-            overlay.innerHTML = '';
-          }
+          hideEasterEgg(container);
           const result = calculatePersona(userAnswers);
           if (onCompleteCallback) onCompleteCallback(result);
         }
@@ -346,33 +396,49 @@ function preloadNextScene(qIdx) {
 
 // ============ 彩蛋浮层 ============
 function showEasterEgg(container, qIdx, optIdx) {
-  const overlay = container.querySelector('#quiz-easter-egg');
-  if (!overlay) return;
-
-  // 优先用题目自带的 feedback，否则随机抽彩蛋
   const q = QUESTIONS[qIdx];
   let text = '';
-  let type = 'letter';
 
   if (q.feedbacks && q.feedbacks[optIdx]) {
     text = q.feedbacks[optIdx];
-    type = 'letter';
   } else {
     const egg = EASTER_EGGS[Math.floor(Math.random() * EASTER_EGGS.length)];
     text = egg.text;
-    type = egg.type;
   }
 
-  overlay.innerHTML = `
-    <div class="easter-egg-inner easter-egg-${type}">
-      <span class="easter-egg-icon">${type === 'stat' ? '📊' : type === 'trait' ? '🌿' : '🍃'}</span>
-      <span class="easter-egg-text">${text}</span>
-    </div>
-  `;
-  overlay.classList.add('is-visible');
+  const selected = container.querySelector(`.option-card[data-option-idx="${optIdx}"]`);
+  container.querySelectorAll('.option-card').forEach(card => card.classList.remove('has-feedback'));
+  if (selected) {
+    const inlineText = selected.querySelector('.option-inline-feedback-text');
+    if (inlineText) inlineText.textContent = text;
+    selected.classList.add('has-feedback');
+  }
+
+  const bubble = container.querySelector('#scene-feedback-bubble');
+  if (bubble) bubble.classList.add('is-visible');
+
+  const progressFeedback = document.querySelector('#progress-feedback');
+  if (progressFeedback) {
+    progressFeedback.textContent = `🐾 已记住 ${String(qIdx + 1).padStart(2, '0')}`;
+    progressFeedback.classList.add('is-visible');
+  }
+
+  const sideNote = container.querySelector('#quiz-side-note');
+  if (sideNote) {
+    const noteText = sideNote.querySelector('.quiz-side-note-text');
+    if (noteText) noteText.textContent = text;
+    sideNote.classList.add('is-visible');
+    sideNote.setAttribute('aria-hidden', 'false');
+  }
 }
 
 function hideEasterEgg(container) {
-  const overlay = container.querySelector('#quiz-easter-egg');
-  if (overlay) overlay.classList.remove('is-visible');
+  container.querySelectorAll('.option-card.has-feedback').forEach(card => card.classList.remove('has-feedback'));
+  container.querySelector('#scene-feedback-bubble')?.classList.remove('is-visible');
+  document.querySelector('#progress-feedback')?.classList.remove('is-visible');
+  const sideNote = container.querySelector('#quiz-side-note');
+  if (sideNote) {
+    sideNote.classList.remove('is-visible');
+    sideNote.setAttribute('aria-hidden', 'true');
+  }
 }
