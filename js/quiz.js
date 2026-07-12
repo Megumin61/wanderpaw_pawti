@@ -80,11 +80,6 @@ export function renderQuiz(container, onComplete) {
 
     </div>
 
-    <!-- 实验：桌边旅行便签（移动端会转为底部便签） -->
-    <aside id="quiz-side-note" class="quiz-side-note" aria-live="polite" aria-hidden="true">
-      <span class="quiz-side-note-kicker">旅行手帐</span>
-      <span class="quiz-side-note-text"></span>
-    </aside>
   `;
 
   // 检查第 0 题前是否有幕间卡
@@ -242,10 +237,10 @@ function renderQuestion(container) {
       <div class="quiz-scene-card">
         ${renderSceneImage(q)}
         ${q.scene ? `<p class="quiz-scene">${formatQuizText(q.scene)}</p>` : ''}
-        <div id="scene-feedback-bubble" class="scene-feedback-bubble" aria-live="polite">
-          <span class="scene-feedback-paw">🐾</span>
-          <span>收到，这一笔我记下了。</span>
-        </div>
+        <aside id="quiz-side-note" class="quiz-side-note" aria-live="polite" aria-hidden="true">
+          <span class="quiz-side-note-kicker">旅行手帐</span>
+          <span class="quiz-side-note-text"></span>
+        </aside>
       </div>
 
       <!-- 核心问句（加粗） -->
@@ -363,7 +358,7 @@ function renderQuestion(container) {
           pendingAdvanceFn = null;
           advance();
         }
-      }, 1800);
+      }, 2300);
     });
   });
 }
@@ -411,9 +406,6 @@ function showEasterEgg(container, qIdx, optIdx) {
     selected.classList.add('has-feedback');
   }
 
-  const bubble = container.querySelector('#scene-feedback-bubble');
-  if (bubble) bubble.classList.add('is-visible');
-
   const sideNote = container.querySelector('#quiz-side-note');
   if (sideNote) {
     const noteText = sideNote.querySelector('.quiz-side-note-text');
@@ -425,7 +417,6 @@ function showEasterEgg(container, qIdx, optIdx) {
 
 function hideEasterEgg(container) {
   container.querySelectorAll('.option-card.has-feedback').forEach(card => card.classList.remove('has-feedback'));
-  container.querySelector('#scene-feedback-bubble')?.classList.remove('is-visible');
   const sideNote = container.querySelector('#quiz-side-note');
   if (sideNote) {
     sideNote.classList.remove('is-visible');
