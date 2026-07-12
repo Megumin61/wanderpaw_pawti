@@ -45,15 +45,15 @@ export function renderLanding(container) {
 
           <!-- 主标题 -->
           <h1 class="hero-title text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black anim-in text-paw-ink" style="animation-delay:0.15s">
-            <span class="block">训练一只会代你</span>
+            <span class="block">测测你是哪只</span>
             <span class="block mt-1 md:mt-2">
-              <span class="text-paw-fern hand-underline">旅行写信</span>的小宠物
+              <span class="text-paw-fern hand-underline">毛孩子</span>旅行人格
             </span>
           </h1>
 
           <!-- 副标题 -->
           <p class="mt-3 md:mt-4 text-sm sm:text-base md:text-lg text-paw-bark max-w-2xl mx-auto anim-in" style="animation-delay:0.3s">
-            🐾 它会学你如何出发与抵达，然后去你没来得及去的地方拍照打卡、写信给你。
+            🐾 每只毛孩子都是一种旅行人格。翻到它们的背面，看看它们真实旅途里的样子。
           </p>
         </div>
       </div>

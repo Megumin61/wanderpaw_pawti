@@ -37,8 +37,8 @@ export function renderQuiz(container, onComplete) {
   if (progressSlot) {
     progressSlot.innerHTML = `
       <div id="quiz-progress">
-        <div class="flex items-center justify-between mb-2">
-          <div class="flex items-center gap-2">
+        <div class="quiz-progress-meta mb-2">
+          <div class="quiz-progress-count flex items-center gap-2">
             <span id="act-label" class="text-xs tracking-widest text-paw-ink font-mono uppercase font-bold">第一站</span>
             <span class="text-paw-bark/50 text-xs">·</span>
             <span class="font-mono text-sm text-paw-bark">
@@ -46,10 +46,7 @@ export function renderQuiz(container, onComplete) {
               <span class="opacity-60"> / ${String(QUESTIONS.length).padStart(2, '0')}</span>
             </span>
           </div>
-          <div class="flex items-center gap-3">
-            <span id="progress-feedback" class="progress-feedback" aria-live="polite">🐾 已记住</span>
-            <div id="act-title-label" class="text-xs text-paw-bark tracking-widest font-medium">成都 · 刚落地</div>
-          </div>
+          <div id="act-title-label" class="text-xs text-paw-bark tracking-widest font-medium">成都 · 刚落地</div>
         </div>
         <div id="progress-segments" class="flex gap-1.5">${renderProgressSegments(0)}</div>
       </div>
@@ -57,7 +54,7 @@ export function renderQuiz(container, onComplete) {
   }
 
   container.innerHTML = `
-    <div class="min-h-screen flex items-start justify-center px-4 md:px-6 pt-40 md:pt-20 pb-10 relative">
+    <div class="quiz-stage min-h-screen flex items-start justify-center px-4 md:px-6 relative">
 
       <div class="w-full max-w-5xl relative z-10">
 
@@ -65,7 +62,7 @@ export function renderQuiz(container, onComplete) {
         <div id="question-content"></div>
 
         <!-- 底部控制 -->
-        <div class="mt-7 flex items-center justify-between">
+        <div id="quiz-bottom-controls" class="quiz-bottom-controls mt-7 flex items-center justify-between">
           <button id="prev-btn"
             class="group flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-mono text-paw-bark hover:text-paw-ink transition-all disabled:opacity-0 disabled:pointer-events-none"
             disabled>
@@ -145,15 +142,16 @@ function renderActBreak(container, actBreak, onContinue) {
   const content = container.querySelector('#question-content');
   const prevBtn = container.querySelector('#prev-btn');
   const skipHint = container.querySelector('#skip-hint');
+  const bottomControls = container.querySelector('#quiz-bottom-controls');
   if (prevBtn) prevBtn.style.opacity = '0';
   if (skipHint) skipHint.style.opacity = '0';
+  if (bottomControls) bottomControls.classList.add('is-hidden');
 
   content.innerHTML = `
     <div class="act-break-card anim-in">
       <img class="act-break-image" src="${actBreak.image || ''}" alt="${actBreak.imageAlt || actBreak.title}" draggable="false" />
       <div class="act-break-scrim"></div>
       <div class="act-break-content">
-        <div class="act-break-icon">${actBreak.icon}</div>
         <div class="act-break-meta">
           <span class="act-break-label">${actBreak.label}</span>
           <span class="act-break-dot">·</span>
@@ -175,6 +173,7 @@ function renderActBreak(container, actBreak, onContinue) {
     isShowingActBreak = false;
     if (prevBtn) prevBtn.style.opacity = '';
     if (skipHint) skipHint.style.opacity = '';
+    if (bottomControls) bottomControls.classList.remove('is-hidden');
     onContinue();
     requestAnimationFrame(() => {
       document.getElementById('section-quiz')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -236,8 +235,6 @@ function renderQuestion(container) {
   const actTitleLabel = progressSlot.querySelector('#act-title-label');
   if (actLabel) actLabel.textContent = q.stationLabel || '';
   if (actTitleLabel) actTitleLabel.textContent = q.stationTitle || '';
-  const progressFeedback = progressSlot.querySelector('#progress-feedback');
-  if (progressFeedback) progressFeedback.classList.remove('is-visible');
 
   content.innerHTML = `
     <div class="quiz-question-shell anim-in ${q.sceneImage?.src ? 'has-scene-image' : 'no-scene-image'}" key="${currentIdx}">
@@ -417,12 +414,6 @@ function showEasterEgg(container, qIdx, optIdx) {
   const bubble = container.querySelector('#scene-feedback-bubble');
   if (bubble) bubble.classList.add('is-visible');
 
-  const progressFeedback = document.querySelector('#progress-feedback');
-  if (progressFeedback) {
-    progressFeedback.textContent = `🐾 已记住 ${String(qIdx + 1).padStart(2, '0')}`;
-    progressFeedback.classList.add('is-visible');
-  }
-
   const sideNote = container.querySelector('#quiz-side-note');
   if (sideNote) {
     const noteText = sideNote.querySelector('.quiz-side-note-text');
@@ -435,7 +426,6 @@ function showEasterEgg(container, qIdx, optIdx) {
 function hideEasterEgg(container) {
   container.querySelectorAll('.option-card.has-feedback').forEach(card => card.classList.remove('has-feedback'));
   container.querySelector('#scene-feedback-bubble')?.classList.remove('is-visible');
-  document.querySelector('#progress-feedback')?.classList.remove('is-visible');
   const sideNote = container.querySelector('#quiz-side-note');
   if (sideNote) {
     sideNote.classList.remove('is-visible');

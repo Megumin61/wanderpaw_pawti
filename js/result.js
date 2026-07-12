@@ -165,12 +165,23 @@ function renderStep1(container, persona, pet, topTags, matchPercent, insight) {
             </div>
 
             ${insight ? `
-              <div class="paper-card p-4 md:p-5">
-                <div class="text-xs tracking-wider text-paw-bark mb-2 font-semibold">它会怎样替你旅行</div>
-                <p class="text-sm md:text-base leading-relaxed text-paw-ink/85">${insight.captureLine}</p>
-                <div class="mt-3 space-y-1.5 text-xs md:text-sm leading-relaxed text-paw-bark">
-                  <p>${insight.proxyLine}</p>
-                  <p>${insight.letterLine}</p>
+              <div class="proxy-insight-card">
+                <div class="proxy-insight-head">
+                  <span class="proxy-insight-code">PAWTI / PROXY</span>
+                  <span class="proxy-insight-kicker">代理旅行画像</span>
+                </div>
+                <h3 class="proxy-insight-title">它会怎样替你旅行</h3>
+                <p class="proxy-insight-lead">${insight.captureLine}</p>
+                <div class="proxy-insight-divider"></div>
+                <div class="proxy-insight-details">
+                  <div>
+                    <span>沿途</span>
+                    <p>${insight.proxyLine}</p>
+                  </div>
+                  <div>
+                    <span>来信</span>
+                    <p>${insight.letterLine}</p>
+                  </div>
                 </div>
               </div>
             ` : ''}

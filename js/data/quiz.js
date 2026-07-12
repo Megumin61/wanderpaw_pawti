@@ -124,7 +124,7 @@ export const ACT_BREAKS = [
     quote: '远行前，它还不太懂怎样替你看世界。\n接下来的每次选择，都会教会它如何出发、如何铭记，又如何把远方写进一封信。',
     icon: '🐾',
     cta: '带它出发',
-    image: './generated/chapters/chapter-01-prologue.webp',
+    image: './generated/chapters/chapter-01-capybara-v2.webp',
     imageAlt: '清晨站台上，背着小包的毛茸茸旅伴准备出发',
   },
   {
@@ -135,7 +135,7 @@ export const ACT_BREAKS = [
     quote: '成都让它学会怎样慢慢落地。\n来到大理，它要在风和岔路之间，替你判断该往哪里走。',
     icon: '🍃',
     cta: '继续出发',
-    image: './generated/chapters/chapter-02-dali.webp',
+    image: './generated/chapters/chapter-02-capybara-v2.webp',
     imageAlt: '洱海边的岔路上，小旅伴停下来判断方向',
   },
   {
@@ -146,7 +146,7 @@ export const ACT_BREAKS = [
     quote: '它已经学会绕路，也学会替你留住一片风景。\n下一站更明亮、更复杂——它要试着在陌生世界里行动。',
     icon: '🚇',
     cta: '进入东京',
-    image: './generated/quiz/scene-06-tokyo-shinjuku.webp',
+    image: './generated/chapters/chapter-03-capybara-v2.webp',
     imageAlt: '东京车站的人流里，小旅伴拿着地图寻找方向',
   },
   {
@@ -157,7 +157,7 @@ export const ACT_BREAKS = [
     quote: '它开始懂得如何照顾自己，也照顾同行的人。\n旅程最后，它要把一路看见的世界，轻轻写进给你的第一封信。',
     icon: '🌙',
     cta: '去看海风',
-    image: './generated/chapters/chapter-04-sanya.webp',
+    image: './generated/chapters/chapter-04-capybara-v2.webp',
     imageAlt: '月光下的三亚海滩，小旅伴准备写下第一封信',
   },
 ];
