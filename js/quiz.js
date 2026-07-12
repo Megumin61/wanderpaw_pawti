@@ -33,36 +33,36 @@ export function renderQuiz(container, onComplete) {
   if (pendingAdvanceTimer) { clearTimeout(pendingAdvanceTimer); pendingAdvanceTimer = null; }
   pendingAdvanceFn = null;
 
-  container.innerHTML = `
-    <div class="min-h-screen flex items-start md:items-center justify-center px-6 pt-24 pb-16 md:py-28 relative">
-
-      <div class="w-full max-w-3xl relative z-10">
-
-        <!-- 顶部进度区 -->
-        <div class="mb-10" id="quiz-progress">
-          <!-- 卷标 + 题号 -->
-          <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center gap-2">
-              <span id="act-label" class="text-xs tracking-widest text-paw-ink font-mono uppercase font-bold">幕一</span>
-              <span class="text-paw-bark/50 text-xs">·</span>
-              <span class="font-mono text-sm text-paw-bark">
-                <span id="q-current">01</span>
-                <span class="opacity-60"> / ${String(QUESTIONS.length).padStart(2, '0')}</span>
-              </span>
-            </div>
-            <div id="act-title-label" class="text-xs text-paw-bark tracking-widest font-medium">成都 · 刚落地</div>
+  const progressSlot = document.getElementById('quiz-progress-slot');
+  if (progressSlot) {
+    progressSlot.innerHTML = `
+      <div id="quiz-progress">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <span id="act-label" class="text-xs tracking-widest text-paw-ink font-mono uppercase font-bold">第一站</span>
+            <span class="text-paw-bark/50 text-xs">·</span>
+            <span class="font-mono text-sm text-paw-bark">
+              <span id="q-current">01</span>
+              <span class="opacity-60"> / ${String(QUESTIONS.length).padStart(2, '0')}</span>
+            </span>
           </div>
-          <!-- 四站进度条 -->
-          <div id="progress-segments" class="flex gap-1.5">
-            ${renderProgressSegments(0)}
-          </div>
+          <div id="act-title-label" class="text-xs text-paw-bark tracking-widest font-medium">成都 · 刚落地</div>
         </div>
+        <div id="progress-segments" class="flex gap-1.5">${renderProgressSegments(0)}</div>
+      </div>
+    `;
+  }
+
+  container.innerHTML = `
+    <div class="min-h-screen flex items-start justify-center px-4 md:px-6 pt-40 md:pt-20 pb-10 relative">
+
+      <div class="w-full max-w-5xl relative z-10">
 
         <!-- 题目内容容器 -->
         <div id="question-content"></div>
 
         <!-- 底部控制 -->
-        <div class="mt-12 flex items-center justify-between">
+        <div class="mt-7 flex items-center justify-between">
           <button id="prev-btn"
             class="group flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-mono text-paw-bark hover:text-paw-ink transition-all disabled:opacity-0 disabled:pointer-events-none"
             disabled>
@@ -178,30 +178,33 @@ function renderQuestion(container) {
 
   const q = QUESTIONS[currentIdx];
   const content = container.querySelector('#question-content');
+  const progressSlot = document.getElementById('quiz-progress-slot');
 
   // 更新进度
-  container.querySelector('#q-current').textContent = String(currentIdx + 1).padStart(2, '0');
+  progressSlot.querySelector('#q-current').textContent = String(currentIdx + 1).padStart(2, '0');
   container.querySelector('#prev-btn').disabled = currentIdx === 0;
 
   // 更新 3 段进度条
-  const segContainer = container.querySelector('#progress-segments');
+  const segContainer = progressSlot.querySelector('#progress-segments');
   if (segContainer) segContainer.innerHTML = renderProgressSegments(currentIdx);
 
   // 更新幕标签
-  const actLabel = container.querySelector('#act-label');
-  const actTitleLabel = container.querySelector('#act-title-label');
+  const actLabel = progressSlot.querySelector('#act-label');
+  const actTitleLabel = progressSlot.querySelector('#act-title-label');
   if (actLabel) actLabel.textContent = q.stationLabel || '';
   if (actTitleLabel) actTitleLabel.textContent = q.stationTitle || '';
 
   content.innerHTML = `
     <div class="quiz-question-shell anim-in ${q.sceneImage?.src ? 'has-scene-image' : 'no-scene-image'}" key="${currentIdx}">
 
-      ${renderSceneImage(q)}
-
-      <!-- 场景前情（灰色小字，营造画面感） -->
-      ${q.scene ? `
-        <p class="quiz-scene">${formatQuizText(q.scene)}</p>
-      ` : ''}
+      <div class="quiz-scene-card">
+        <div class="quiz-scene-card-meta">
+          <span>梦境</span>
+          <small>Dream · ${q.stationTitle || ''}</small>
+        </div>
+        ${renderSceneImage(q)}
+        ${q.scene ? `<p class="quiz-scene">${formatQuizText(q.scene)}</p>` : ''}
+      </div>
 
       <!-- 核心问句（加粗） -->
       <h2 class="quiz-question">
@@ -209,7 +212,7 @@ function renderQuestion(container) {
       </h2>
 
       <!-- 选项（参考图2：未选中=米杏卡片+空心圆+厚硬阴影；选中=橄榄绿底+白字+右上角🐾） -->
-      <div class="space-y-4 md:space-y-5">
+      <div class="quiz-options-grid">
         ${q.options.map((opt, idx) => `
           <button
             class="option-card w-full text-left px-5 md:px-6 py-4 md:py-5 rounded-2xl flex items-center gap-4 group ${userAnswers[currentIdx] === idx ? 'selected' : ''}"

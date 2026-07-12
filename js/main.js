@@ -15,6 +15,7 @@ const sections = {
 // 顶部导航的可控元素
 const navSlogan   = document.getElementById('nav-slogan');
 const navStartWrap = document.getElementById('nav-start-wrap');
+const quizProgressSlot = document.getElementById('quiz-progress-slot');
 
 function showSection(name) {
   Object.entries(sections).forEach(([key, el]) => {
@@ -30,9 +31,11 @@ function showSection(name) {
   if (name === 'landing') {
     if (navSlogan)    navSlogan.style.display = '';
     if (navStartWrap) navStartWrap.style.display = '';
+    if (quizProgressSlot) quizProgressSlot.style.display = 'none';
   } else {
     if (navSlogan)    navSlogan.style.display = 'none';
     if (navStartWrap) navStartWrap.style.display = 'none';
+    if (quizProgressSlot) quizProgressSlot.style.display = name === 'quiz' ? 'block' : 'none';
   }
 
   // 滚动到顶部
