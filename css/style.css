@@ -907,7 +907,7 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
 .quiz-scene {
   position: relative;
   z-index: 2;
-  font-family: 'Noto Serif SC', serif;
+  font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
   width: min(680px, calc(100% - 48px));
   font-size: 14px;
   line-height: 1.75;
@@ -991,8 +991,15 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
   object-fit: cover;
   display: block;
   border-radius: 23px;
-  opacity: 0.88;
+  opacity: 0;
   filter: saturate(0.74) contrast(0.9) brightness(1.08);
+  transform: scale(1.045);
+  transition:
+    opacity 0.58s ease,
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.quiz-scene-image img.is-loaded {
+  opacity: 0.88;
   transform: scale(1.01);
 }
 @media (max-width: 640px) {
@@ -1025,9 +1032,9 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
 .quiz-question {
   position: relative;
   z-index: 2;
-  font-family: 'Noto Serif SC', serif;
+  font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.5;
   color: #3D4A2A;
   margin-bottom: 28px;
@@ -1216,6 +1223,16 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
   background: rgba(61, 74, 42, 0.24);
   backdrop-filter: blur(3px);
   transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.option-text {
+  font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quiz-scene-image img {
+    transition: none;
+  }
 }
 .easter-egg-overlay.is-visible {
   opacity: 1;

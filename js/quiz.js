@@ -225,6 +225,14 @@ function renderQuestion(container) {
     </div>
   `;
 
+  const sceneImage = content.querySelector('.quiz-scene-image img');
+  if (sceneImage) {
+    const revealScene = () => sceneImage.classList.add('is-loaded');
+    if (sceneImage.complete) revealScene();
+    else sceneImage.addEventListener('load', revealScene, { once: true });
+  }
+  preloadNextScene(currentIdx);
+
   // 选项点击
   content.querySelectorAll('.option-card').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -324,9 +332,17 @@ function renderSceneImage(q) {
 
   return `
     <figure class="quiz-scene-image" data-placement="${image.placement || 'scene-before-question'}">
-      <img src="${image.src}" alt="${image.alt || q.stationTitle || 'PAWTI 场景图'}" loading="lazy" decoding="async" draggable="false" />
+      <img src="${image.src}" alt="${image.alt || q.stationTitle || 'PAWTI 场景图'}" loading="eager" fetchpriority="high" decoding="async" draggable="false" />
     </figure>
   `;
+}
+
+function preloadNextScene(qIdx) {
+  const nextSrc = QUESTIONS[qIdx + 1]?.sceneImage?.src;
+  if (!nextSrc) return;
+  const preload = new Image();
+  preload.decoding = 'async';
+  preload.src = nextSrc;
 }
 
 // ============ 彩蛋浮层 ============
