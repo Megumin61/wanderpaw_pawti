@@ -198,10 +198,6 @@ function renderQuestion(container) {
     <div class="quiz-question-shell anim-in ${q.sceneImage?.src ? 'has-scene-image' : 'no-scene-image'}" key="${currentIdx}">
 
       <div class="quiz-scene-card">
-        <div class="quiz-scene-card-meta">
-          <span>梦境</span>
-          <small>Dream · ${q.stationTitle || ''}</small>
-        </div>
         ${renderSceneImage(q)}
         ${q.scene ? `<p class="quiz-scene">${formatQuizText(q.scene)}</p>` : ''}
       </div>
