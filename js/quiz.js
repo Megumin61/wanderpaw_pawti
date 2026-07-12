@@ -322,7 +322,7 @@ function renderQuestion(container) {
 }
 
 function formatQuizText(text) {
-  return String(text).replace(/[“”]/g, '').replace(/\n/g, '<br>');
+  return String(text).replace(/[“”]/g, '').replace(/\n+/g, '<br>');
 }
 
 function renderSceneImage(q) {
