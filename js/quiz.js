@@ -72,7 +72,7 @@ export function renderQuiz(container, onComplete) {
             上一题
           </button>
           <span id="skip-hint" class="font-mono text-xs text-paw-bark/70">
-            🐾 它会记住这次选择 · 再点一次立即继续
+            🐾 它会记住这次选择
           </span>
         </div>
 
@@ -144,7 +144,10 @@ function renderActBreak(container, actBreak, onContinue) {
 
   content.innerHTML = `
     <div class="act-break-card anim-in">
-      <img class="act-break-image" src="${actBreak.image || ''}" alt="${actBreak.imageAlt || actBreak.title}" draggable="false" />
+      <picture>
+        <source media="(max-width: 640px)" srcset="${toMobileImage(actBreak.image || '')}" />
+        <img class="act-break-image" src="${actBreak.image || ''}" alt="${actBreak.imageAlt || actBreak.title}" draggable="false" />
+      </picture>
       <div class="act-break-scrim"></div>
       <div class="act-break-content">
         <div class="act-break-meta">
@@ -171,7 +174,7 @@ function renderActBreak(container, actBreak, onContinue) {
     if (bottomControls) bottomControls.classList.remove('is-hidden');
     onContinue();
     requestAnimationFrame(() => {
-      document.getElementById('section-quiz')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.scrollTo({ top: 0, behavior: 'auto' });
     });
   });
 }
@@ -373,17 +376,27 @@ function renderSceneImage(q) {
 
   return `
     <figure class="quiz-scene-image" data-placement="${image.placement || 'scene-before-question'}">
-      <img src="${image.src}" alt="${image.alt || q.stationTitle || 'PAWTI 场景图'}" loading="eager" fetchpriority="high" decoding="async" draggable="false" />
+      <picture>
+        <source media="(max-width: 640px)" srcset="${toMobileImage(image.src)}" />
+        <img src="${image.src}" alt="${image.alt || q.stationTitle || 'PAWTI 场景图'}" loading="eager" fetchpriority="high" decoding="async" draggable="false" />
+      </picture>
     </figure>
   `;
 }
 
 function preloadNextScene(qIdx) {
-  const nextSrc = QUESTIONS[qIdx + 1]?.sceneImage?.src;
+  const source = QUESTIONS[qIdx + 1]?.sceneImage?.src;
+  const nextSrc = source && window.matchMedia('(max-width: 640px)').matches
+    ? toMobileImage(source)
+    : source;
   if (!nextSrc) return;
   const preload = new Image();
   preload.decoding = 'async';
   preload.src = nextSrc;
+}
+
+function toMobileImage(src) {
+  return String(src).replace(/\.webp$/i, '-mobile.webp');
 }
 
 // ============ 彩蛋浮层 ============

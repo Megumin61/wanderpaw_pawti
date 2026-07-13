@@ -88,10 +88,11 @@ if (document.readyState === 'loading') {
 }
 
 function warmQuizImages() {
+  const useMobileImages = window.matchMedia('(max-width: 640px)').matches;
   const sources = [
     ...ACT_BREAKS.map(item => item.image),
     ...QUESTIONS.map(item => item.sceneImage?.src),
-  ].filter(Boolean);
+  ].filter(Boolean).map(src => useMobileImages ? toMobileImage(src) : src);
 
   const preload = () => sources.forEach((src, index) => {
     const image = new Image();
@@ -105,4 +106,8 @@ function warmQuizImages() {
   } else {
     window.setTimeout(preload, 250);
   }
+}
+
+function toMobileImage(src) {
+  return String(src).replace(/\.webp$/i, '-mobile.webp');
 }
