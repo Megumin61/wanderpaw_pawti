@@ -277,8 +277,17 @@ function renderQuestion(container) {
   const sceneImage = content.querySelector('.quiz-scene-image img');
   if (sceneImage) {
     const revealScene = () => sceneImage.classList.add('is-loaded');
-    if (sceneImage.complete) revealScene();
+    if (sceneImage.complete && sceneImage.naturalWidth > 0) revealScene();
     else sceneImage.addEventListener('load', revealScene, { once: true });
+    sceneImage.addEventListener('error', () => {
+      if (!sceneImage.dataset.fallbackTried && q.sceneImage?.src && sceneImage.currentSrc !== q.sceneImage.src) {
+        sceneImage.dataset.fallbackTried = 'true';
+        sceneImage.closest('picture')?.querySelectorAll('source').forEach(source => source.remove());
+        sceneImage.src = q.sceneImage.src;
+        return;
+      }
+      sceneImage.classList.add('is-error');
+    });
   }
   preloadNextScene(currentIdx);
 
@@ -377,8 +386,8 @@ function renderSceneImage(q) {
   return `
     <figure class="quiz-scene-image" data-placement="${image.placement || 'scene-before-question'}">
       <picture>
-        <source media="(max-width: 640px)" srcset="${toMobileImage(image.src)}" />
-        <img src="${image.src}" alt="${image.alt || q.stationTitle || 'PAWTI 场景图'}" loading="eager" fetchpriority="high" decoding="async" draggable="false" />
+        <source media="(max-width: 640px)" srcset="${toMobileImage(image.src)}" type="image/webp" />
+        <img src="${image.src}" alt="${image.alt || q.stationTitle || 'PAWTI 场景图'}" width="1200" height="420" loading="eager" fetchpriority="high" decoding="async" draggable="false" />
       </picture>
     </figure>
   `;

@@ -100,14 +100,14 @@ function registerOfflineCache() {
 function warmQuizImages() {
   const useMobileImages = window.matchMedia('(max-width: 640px)').matches;
   const sources = [
-    ...ACT_BREAKS.map(item => item.image),
-    ...QUESTIONS.map(item => item.sceneImage?.src),
+    ACT_BREAKS[0]?.image,
+    QUESTIONS[0]?.sceneImage?.src,
   ].filter(Boolean).map(src => useMobileImages ? toMobileImage(src) : src);
 
-  const preload = () => sources.forEach((src, index) => {
+  const preload = () => sources.forEach(src => {
     const image = new Image();
     image.decoding = 'async';
-    if (index < 2) image.fetchPriority = 'high';
+    image.fetchPriority = 'high';
     image.src = src;
   });
 

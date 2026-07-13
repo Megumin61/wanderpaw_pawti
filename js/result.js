@@ -446,6 +446,7 @@ function openWaitlistDialog() {
 
 async function openShareDialog(data) {
   closeResultDialog();
+  const poster = getStaticPoster(data);
   const dialog = document.createElement('div');
   dialog.id = 'result-dialog';
   dialog.className = 'result-dialog share-dialog';
@@ -461,44 +462,103 @@ async function openShareDialog(data) {
           <div class="result-dialog-kicker">MY WANDERPAW DIARY</div>
           <h2>分享我的旅行档案</h2>
         </div>
-        <p>长图包含宠物匹配、旅行城市、来信和网站二维码。</p>
+        <p>向下滑动预览完整长图：旅行人格、匹配宠物、目的地、来信和网站二维码都已装订好。</p>
       </header>
       <div class="share-dialog-body">
         <div class="share-poster-frame">
-          <canvas id="share-poster" width="1080" height="1920" aria-label="PAWTI 旅行结果长图"></canvas>
-          <div class="share-poster-loading">正在装订旅行档案…</div>
+          <img
+            id="share-poster"
+            src="${poster.previewUrl}"
+            width="720"
+            height="2000"
+            alt="${data.pet.chinese}的 WanderPaw 旅行人格长图"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+          <div class="share-poster-loading">正在打开旅行档案…</div>
         </div>
-        <aside class="share-actions">
-          <div class="share-actions-title">分享至</div>
-          <button data-share-channel="wechat" disabled><span>微信</span><small>好友 / 群聊</small></button>
-          <button data-share-channel="moments" disabled><span>朋友圈</span><small>保存长图后发布</small></button>
-          <button data-save-poster disabled><span>保存长图</span><small>PNG 高清图片</small></button>
-          <button data-copy-share><span>复制文案</span><small>同时包含测试链接</small></button>
-          <p class="share-action-tip">若浏览器无法直接唤起微信，会自动保存长图并复制分享文案。</p>
+        <aside class="share-actions" aria-label="长图操作">
+          <button class="share-save-button" data-save-poster>
+            <span>保存长图</span><small>下载高清版本</small>
+          </button>
+          <button class="share-wechat-button" data-share-wechat>
+            <span>分享到微信</span><small>唤起系统分享</small>
+          </button>
         </aside>
       </div>
     </section>
   `;
   mountResultDialog(dialog);
 
-  const canvas = dialog.querySelector('#share-poster');
+  const image = dialog.querySelector('#share-poster');
   const loading = dialog.querySelector('.share-poster-loading');
-  try {
-    await drawSharePoster(canvas, data);
-    loading.remove();
-    dialog.querySelectorAll('[data-share-channel], [data-save-poster]').forEach(button => {
-      button.disabled = false;
-    });
-  } catch (error) {
-    loading.textContent = '长图生成失败，请稍后再试';
-    console.error('PAWTI share poster:', error);
-  }
+  const revealPoster = () => loading.remove();
+  if (image.complete && image.naturalWidth > 0) revealPoster();
+  else image.addEventListener('load', revealPoster, { once: true });
+  image.addEventListener('error', () => {
+    loading.textContent = '旅行档案加载失败，请检查网络后重试';
+  }, { once: true });
 
-  dialog.querySelectorAll('[data-share-channel]').forEach(button => {
-    button.addEventListener('click', () => sharePoster(canvas, data));
-  });
-  dialog.querySelector('[data-save-poster]').addEventListener('click', () => savePoster(canvas, data));
-  dialog.querySelector('[data-copy-share]').addEventListener('click', () => copyShareText(data));
+  dialog.querySelector('[data-save-poster]').addEventListener('click', () => saveStaticPoster(poster, data));
+  dialog.querySelector('[data-share-wechat]').addEventListener('click', () => shareStaticPoster(poster, data));
+}
+
+function getStaticPoster(data) {
+  const id = data?.pet?.id || 'capybara';
+  const base = `./generated/share/posters/v1/${id}`;
+  return {
+    previewUrl: `${base}-preview.webp`,
+    downloadUrl: `${base}.jpg`,
+  };
+}
+
+async function getPosterBlob(poster) {
+  const response = await fetch(poster.downloadUrl, { cache: 'force-cache' });
+  if (!response.ok) throw new Error(`Poster request failed: ${response.status}`);
+  return response.blob();
+}
+
+function posterFilename(data) {
+  return `WanderPaw-${data.persona.code || 'PAWTI'}-${data.pet.city || '旅行档案'}.jpg`;
+}
+
+async function saveStaticPoster(poster, data) {
+  try {
+    const blob = await getPosterBlob(poster);
+    downloadBlob(blob, posterFilename(data));
+    showToast('高清旅行档案已保存 ✓');
+  } catch (error) {
+    console.error('PAWTI poster download:', error);
+    window.open(poster.downloadUrl, '_blank', 'noopener');
+    showToast('已打开高清长图，请长按保存');
+  }
+}
+
+async function shareStaticPoster(poster, data) {
+  try {
+    const blob = await getPosterBlob(poster);
+    const file = new File([blob], posterFilename(data), { type: 'image/jpeg' });
+    const shareData = {
+      title: '我的 WanderPaw 旅行档案',
+      text: buildShareText(data),
+      files: [file],
+    };
+    if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+      await navigator.share(shareData);
+      return;
+    }
+    downloadBlob(blob, posterFilename(data));
+    await copyText(buildShareText(data));
+    showToast('长图已保存；打开微信即可发送，文案也已复制');
+    window.setTimeout(() => {
+      window.location.href = 'weixin://';
+    }, 350);
+  } catch (error) {
+    if (error?.name === 'AbortError') return;
+    console.error('PAWTI poster share:', error);
+    showToast('暂时无法唤起微信，请先保存长图');
+  }
 }
 
 function mountResultDialog(dialog) {
@@ -652,13 +712,22 @@ function loadCanvasImage(src, timeoutMs = 4000) {
 function warmResultMedia(result) {
   const persona = result?.persona;
   const pet = FEATURED_PETS.find(item => item.id === persona?.petId) || FEATURED_PETS[0];
-  [pet.illustrationUrl, pet.photoUrl, pet.travelPhotoUrl, WAITLIST_GROUP_QR, PAWTI_SITE_QR]
-    .filter(Boolean)
-    .forEach(src => {
+  const critical = new Image();
+  critical.decoding = 'async';
+  critical.fetchPriority = 'high';
+  critical.src = pet.illustrationUrl;
+
+  const warmDeferred = () => [
+    pet.travelPhotoUrl,
+    WAITLIST_GROUP_QR,
+    getStaticPoster({ pet }).previewUrl,
+  ].filter(Boolean).forEach(src => {
       const image = new Image();
       image.decoding = 'async';
       image.src = src;
     });
+  if ('requestIdleCallback' in window) window.requestIdleCallback(warmDeferred, { timeout: 1000 });
+  else window.setTimeout(warmDeferred, 180);
 }
 
 function drawImageCover(ctx, image, x, y, width, height) {

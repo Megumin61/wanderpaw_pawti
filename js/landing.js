@@ -179,6 +179,12 @@ export function renderLanding(container) {
     if (!card) return;
 
     let hoverTimer = null;
+    const ensureBackImage = () => {
+      const image = card.querySelector('.pet-back-photo[data-src]');
+      if (!image) return;
+      image.src = image.dataset.src;
+      image.removeAttribute('data-src');
+    };
 
     // 触发翻面（附带快门闪白）
     const flipTo = (isFlipped) => {
@@ -203,6 +209,7 @@ export function renderLanding(container) {
 
     // hover-intent：停留 600ms 后自动翻面（除非已经翻面）
     wrapper.addEventListener('mouseenter', () => {
+      ensureBackImage();
       if (hoverTimer) clearTimeout(hoverTimer);
       // 未翻面状态下：显示气泡
       if (!card.classList.contains('flipped') && !card.classList.contains('hover-flip')) {
@@ -237,6 +244,7 @@ export function renderLanding(container) {
 
     // 点击：toggle .flipped；同时附带快门闪白
     card.addEventListener('click', () => {
+      ensureBackImage();
       flipTo(!card.classList.contains('flipped'));
     });
   });
@@ -284,7 +292,7 @@ function renderPetRow(pets) {
           <!-- 背面：真实旅行照 · 色调叠加 · 大号中文名（逐字入场）· 玻璃条 tagline -->
           <div class="flip-card-face flip-card-back">
             <div class="relative w-full h-full overflow-hidden">
-              <img src="${pet.photoUrl}" alt="${pet.chinese}真实照片"
+              <img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" data-src="${pet.photoUrl}" alt="${pet.chinese}真实照片"
                 class="pet-back-photo absolute inset-0 w-full h-full object-cover"
                 loading="lazy" draggable="false"/>
               <!-- 彩色叠加（宠物主题色） -->
