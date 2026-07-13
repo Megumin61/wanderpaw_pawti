@@ -45,6 +45,7 @@ function showSection(name) {
 
 // 初始化渲染
 function init() {
+  registerOfflineCache();
   // 1. Landing
   renderLanding(sections.landing);
 
@@ -85,6 +86,15 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
 } else {
   init();
+}
+
+function registerOfflineCache() {
+  if (!('serviceWorker' in navigator) || location.protocol === 'file:') return;
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(error => {
+      console.info('PAWTI cache unavailable:', error.message);
+    });
+  }, { once: true });
 }
 
 function warmQuizImages() {

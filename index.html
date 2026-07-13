@@ -9,72 +9,9 @@
   <title>PAWTI · 测测你是哪只毛孩子旅行人格</title>
   <meta name="description" content="PAWTI（Paw Traveller Indicator）· 每只毛孩子都是一种旅行人格，看看哪一只最像你的旅行方式。" />
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- 字体：圆润粗体界面用 Noto Sans SC，叙事装饰保留 Noto Serif SC -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500;600;700;800;900&family=Noto+Serif+SC:wght@400;500;700;900&family=Caveat:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
-    rel="stylesheet"
-  />
-
-  <!-- 本地样式 -->
+  <!-- 所有样式均在仓库内生成，避免国内网络等待境外 CDN。 -->
+  <link rel="stylesheet" href="./css/tailwind.generated.css" />
   <link rel="stylesheet" href="./css/style.css" />
-
-  <script>
-    // Tailwind 主题扩展（PAWTI · 森系手帐绘本 · 米黄底 + 橄榄绿主色 + 焦糖橙点缀）
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            paw: {
-              // —— 基础纸本米色系（亮米白 · 暖米杏） ——
-              cream:   '#FFFAF0',  // ★ 主背景顶部：亮米白
-              fog:     '#FFFAF0',  // 信纸亮米
-              peach:   '#FBEFDB',  // ★ 主背景底部 / 卡片底
-              mist:    '#F5E7CD',  // 深米杏
-              blush:   '#F5E2B8',  // 米黄高光
-              tape:    '#FBEFDB',  // 手帐胶带米杏
-              kraft:   '#E3CE99',  // 牛皮纸黄（按钮硬边阴影）
-
-              // —— 主色：橄榄绿（统一只用 #687949） ——
-              ink:     '#3D4A2A',  // 主文字：墨绿
-              forest:  '#687949',  // ★ 唯一强调绿：按钮 / 标题 / 章戳
-              fern:    '#687949',  // 与 forest 同色（保留兼容引用）
-              moss:    '#9AAA7C',  // 浅苔（仅极少装饰用）
-              sage:    '#BCC79E',  // 鼠尾草（仅极少装饰用）
-              sprout:  '#D8DEB8',  // 嫩芽米绿
-              pine:    '#3D4A2A',  // 深绿描边
-
-              // —— 棕咖系（次要文字 · 用得克制） ——
-              bark:    '#7C6B47',  // 棕墨（次文字）
-              choco:   '#4A3A28',  // 深咖（选中态选项卡背景）
-              coffee:  '#9A8560',  // 浅棕咖
-              sand:    '#C4A878',  // 沙棕
-
-              // —— 焦糖橘黄点缀（爪印徽章） ——
-              apricot: '#E5A85A',  // ★ 焦糖橘黄
-              lemon:   '#F0C870',  // 暖柠
-              sun:     '#D89A3D',  // 暖琥珀
-              berry:   '#687949',  // 旧 berry 改为同主绿，避免红色穿插
-              sky:     '#A9C2BC',  // 雾青（不再使用）
-
-              // —— 兼容旧引用 ——
-              rust:    '#7C6B47',  // = bark
-            }
-          },
-          fontFamily: {
-            serif: ['"Noto Serif SC"', 'serif'],
-            sans:  ['"Noto Sans SC"', '"Space Grotesk"', 'sans-serif'],
-            mono:  ['"DM Mono"', 'monospace'],
-            hand:  ['"Caveat"', '"Noto Serif SC"', 'cursive'],
-          }
-        }
-      }
-    };
-  </script>
 </head>
 
 <body class="bg-paw-cream text-paw-ink font-sans antialiased overflow-x-hidden">

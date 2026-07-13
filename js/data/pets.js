@@ -24,62 +24,62 @@
 
 // ============ 宠物旅行自拍照（用于正面、背面、结果页） ============
 export const PET_PHOTOS = {
-  husky:      'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/16ef7663-7c07-4985-a4a3-ac11ed02c6df/45477e1b1dde4326998eab2985161dfe.png',       // 哈士奇 · 卡片背面
-  collie:     'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/6520546c-cbf4-418d-92c3-3921560ec85f/05b2748494c4417b975f8cb9515ac2da.png',       // 边牧 · 卡片背面
-  orange:     './generated/redpanda_back.png',                                                                                                                                  // 小熊猫 · 卡片背面（新生成）
-  ragdoll:    './generated/cowcat_back.png',                                                                                                                                    // 奶牛猫 · 卡片背面（新生成）
-  capybara:   'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/b7d2072f-f904-425c-a5b8-f78a44f3b9a6/54808872f114449b8f65be3044e673b1.png',       // 豚豚君（水豚） · 卡片背面
-  shiba:      'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/f9fd2e12-5de6-4151-98f8-cfc8b343de9c/813f77fb0e4540189ee561fdeaafd823.png',       // 柴犬 · 卡片背面
-  frenchie:   './generated/beagle_back.png',                                                                                                                                    // 比格犬 · 卡片背面（沿用之前）
-  lihua:      './generated/pets/lihua_photo.png',                                                                                                                                // 狸花猫 · 卡片背面（v2 · 重新生成 · 修正了原 URL 指向错误图）
-  calico:     'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/922e1028-eba6-4585-86bc-d4a01dbbdc35/ef9061f1e0274955a563bf7bd567d7d5.png',       // 三花猫 · 卡片背面
-  corgi:      'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/644c4cb8-e6bd-4009-b9c2-dacad498a293/1f751ab123c3479081d858d744bf0bf9.png',       // 柯基酱 · 卡片背面
-  british:    'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/9dfd46f5-8ebe-4408-9561-8e7ec7bf9755/0512190ba0d542a0aa1ffc8fbc43f3c1.png',       // 英短蓝猫 · 卡片背面
-  golden:     'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/317971a4-51bf-4587-8bda-86edbfc48550/30d3ff92986645659e465bd777cb3f1d.png',       // 金毛 · 卡片背面
-  samoyed:    'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/28e88632-b49b-4428-932a-5b5f13e841d6/3ae522e237d84901941cf440846db49b.png',       // 萨摩耶 · 卡片背面
-  lop:        'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/ed729721-ba7a-49d1-9d1c-f103b464bd44/85c6aabc14f143c9a344da34125824a7.png',       // 垂耳兔 · 卡片背面
-  pomeranian: 'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/8e7c94c9-b14a-4f95-9309-26f608da7c16/6cfeb5b44da442a6bc96b573ad9477cd.png',       // 博美 · 卡片背面（兜底）
-  siamese:    './generated/guineapig_back_v2.png',                                                                                                                              // 豚鼠鼠 · 卡片背面（新生成 v2）
+  husky:      './generated/pets/optimized/husky-photo.webp',       // 哈士奇 · 卡片背面
+  collie:     './generated/pets/optimized/collie-photo.webp',       // 边牧 · 卡片背面
+  orange:     './generated/pets/optimized/orange-photo.webp',                                                                                                                                  // 小熊猫 · 卡片背面（新生成）
+  ragdoll:    './generated/pets/optimized/ragdoll-photo.webp',                                                                                                                                    // 奶牛猫 · 卡片背面（新生成）
+  capybara:   './generated/pets/optimized/capybara-photo.webp',       // 豚豚君（水豚） · 卡片背面
+  shiba:      './generated/pets/optimized/shiba-photo.webp',       // 柴犬 · 卡片背面
+  frenchie:   './generated/pets/optimized/frenchie-photo.webp',                                                                                                                                    // 比格犬 · 卡片背面（沿用之前）
+  lihua:      './generated/pets/optimized/lihua-photo.webp',                                                                                                                                // 狸花猫 · 卡片背面（v2 · 重新生成 · 修正了原 URL 指向错误图）
+  calico:     './generated/pets/optimized/calico-photo.webp',       // 三花猫 · 卡片背面
+  corgi:      './generated/pets/optimized/corgi-photo.webp',       // 柯基酱 · 卡片背面
+  british:    './generated/pets/optimized/british-photo.webp',       // 英短蓝猫 · 卡片背面
+  golden:     './generated/pets/optimized/golden-photo.webp',       // 金毛 · 卡片背面
+  samoyed:    './generated/pets/optimized/samoyed-photo.webp',       // 萨摩耶 · 卡片背面
+  lop:        './generated/pets/optimized/lop-photo.webp',       // 垂耳兔 · 卡片背面
+  pomeranian: './generated/pets/optimized/pomeranian-photo.webp',       // 博美 · 卡片背面（兜底）
+  siamese:    './generated/pets/optimized/siamese-photo.webp',                                                                                                                              // 豚鼠鼠 · 卡片背面（新生成 v2）
 };
 
 // ============ 宠物风格化插画（正面贴纸用） ============
 export const PET_ILLUSTRATIONS = {
-  husky:      'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/a9a4f2e7-8c20-4e8c-adb8-42ed57443d00/d7257b232d134a368323095647d48868.png', // 哈士奇 · 正面
-  collie:     'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/b128a342-085c-4a07-be21-b87fbba6b6ba/cfdd9199d49b4076b2098e7d341fd1d8.png', // 边牧 · 正面
-  orange:     './generated/redpanda_front_v2.png',                                                                                                                       // 小熊猫 · 正面（v2 · 严格风格对齐）
-  ragdoll:    './generated/cowcat_front_v2.png',                                                                                                                         // 奶牛猫 · 正面（v2 · 严格风格对齐）
-  capybara:   'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/cedce72b-36a2-4a7a-8f19-a53d47aac82a/fb86a4cc996f44fb86d60d834be88a53.png', // 豚豚君 · 正面
-  shiba:      'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/78e9b424-3783-40e6-ba6d-22718ace7dc5/a4e4953dc9da413b826cd95e5351d74d.png', // 柴犬 · 正面
-  frenchie:   './generated/beagle_front_v2.png',                                                                                                                         // 比格犬 · 正面（v2 · 严格风格对齐）
-  lihua:      './generated/pets/lihua_sticker.png',                                                                                                                              // 狸花 · 正面（v2 · 重新生成 · 修正了原 URL 指向错误图）
-  calico:     'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/35ea814e-8ae8-47f5-a34e-85799fab7ad8/5d0e35cab83b450d927b8390e7e59456.png', // 三花 · 正面
-  corgi:      'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/ae8a4110-6c27-402e-808a-5015f0c5cf82/59a8a05043d34131a58afcb5b279df71.png', // 柯基酱 · 正面
-  british:    'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/1245add6-5e16-47f0-bc75-33d19d08d7f0/81866f410a464da9932498e39454e4e4.png', // 英短 · 正面
-  golden:     'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/f3e613f7-5302-4ac1-bedb-d58065aa5da3/12254ae1f5ba498b8b1db675bc65604a.png', // 金毛 · 正面
-  samoyed:    'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/8afd5a73-5df3-46b4-93a5-0b11c56a1026/9e0797e650534e57bd626105c3fd67f1.png', // 萨摩耶 · 正面
-  lop:        'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/e5645b0d-0cdf-4195-a224-df76e137d167/6b59ead23f54414a80c554ec030258fe.png', // 垂耳兔 · 正面
-  pomeranian: 'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/b0f9d2eb-113b-4153-8724-469ab605f907/e14425b8ae4d423ebc0fab811d981faa.png', // 博美 · 正面（兜底）
-  siamese:    './generated/guineapig_front_v2.png',                                                                                                                      // 豚鼠鼠 · 正面（v2 · 全新生成）
+  husky:      './generated/pets/optimized/husky-illustration.webp', // 哈士奇 · 正面
+  collie:     './generated/pets/optimized/collie-illustration.webp', // 边牧 · 正面
+  orange:     './generated/pets/optimized/orange-illustration.webp',                                                                                                                       // 小熊猫 · 正面（v2 · 严格风格对齐）
+  ragdoll:    './generated/pets/optimized/ragdoll-illustration.webp',                                                                                                                         // 奶牛猫 · 正面（v2 · 严格风格对齐）
+  capybara:   './generated/pets/optimized/capybara-illustration.webp', // 豚豚君 · 正面
+  shiba:      './generated/pets/optimized/shiba-illustration.webp', // 柴犬 · 正面
+  frenchie:   './generated/pets/optimized/frenchie-illustration.webp',                                                                                                                         // 比格犬 · 正面（v2 · 严格风格对齐）
+  lihua:      './generated/pets/optimized/lihua-illustration.webp',                                                                                                                              // 狸花 · 正面（v2 · 重新生成 · 修正了原 URL 指向错误图）
+  calico:     './generated/pets/optimized/calico-illustration.webp', // 三花 · 正面
+  corgi:      './generated/pets/optimized/corgi-illustration.webp', // 柯基酱 · 正面
+  british:    './generated/pets/optimized/british-illustration.webp', // 英短 · 正面
+  golden:     './generated/pets/optimized/golden-illustration.webp', // 金毛 · 正面
+  samoyed:    './generated/pets/optimized/samoyed-illustration.webp', // 萨摩耶 · 正面
+  lop:        './generated/pets/optimized/lop-illustration.webp', // 垂耳兔 · 正面
+  pomeranian: './generated/pets/optimized/pomeranian-illustration.webp', // 博美 · 正面（兜底）
+  siamese:    './generated/pets/optimized/siamese-illustration.webp',                                                                                                                      // 豚鼠鼠 · 正面（v2 · 全新生成）
 };
 
 // ============ 宠物「旅行场景照」（结果页信件用） ============
 export const PET_TRAVEL_PHOTOS = {
-  husky:      'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/6d87a272-d241-42f4-b0d6-3f2225bedf8e/dd704bd7daeb438e8e5f449952bf9ade.png',       // 哈士奇 @ 西藏 纳木错
-  collie:     'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/2b46c382-558a-44a0-9a89-1131618ca065/d7fc2e4a3c5f490db54d768a1f0b2633.png',       // 边牧 @ 京都 嵐山竹林
-  orange:     './generated/redpanda_emeishan.png',                                                                                                                              // 小熊猫 @ 峨眉山金顶（新生成）
-  ragdoll:    './generated/cowcat_shanghai.png',                                                                                                                                // 奶牛猫 @ 上海武康路（新生成）
-  capybara:   'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/7b956343-34c1-44fb-b1e9-a4b12288c914/e6798fab194441cb917517083fdbc1c7.png',       // 豚豚君 @ 大理 洱海
-  shiba:      'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/c16a7787-a0a2-4de6-b26c-b4ac86ca4c7c/ae876fa3c3ac48d49c5f899a3c0fe863.png',       // 柴犬 @ 曼谷 唐人街
-  frenchie:   './generated/beagle_chongqing.png',                                                                                                                                // 比格犬 @ 重庆 山城步道（新生成）
-  lihua:      './generated/pets/lihua_quanzhou.png',                                                                                                                            // 狸花猫 @ 泉州 红砖巷（v2 · 重新生成 · 修正了原 URL 指向错误图）
-  calico:     'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/dbcb5e1c-5745-4763-bdc5-1b326e189f9a/a0844d9db66b4b9abd8d690048f2da6a.png',       // 三花猫 @ 东京 昭和小巷
-  corgi:      'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/99800f9b-0ddf-4dfb-be36-6930174e966e/5991fc82ee4045f28539fe4d84a451eb.png',       // 柯基酱 @ 首尔 益善洞
-  british:    'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/c726a7a0-813b-49b6-b994-2780fc5530d9/c3c23cddcc23463bb8f2647bb1535c4d.png',       // 英短蓝猫 @ 冰岛 黑沙滩
-  golden:     'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/ef991e24-f747-41f5-89aa-0f1b1d8caa4f/9eba51ec81c64036972310e0dc10876a.png',       // 金毛 @ 成都 苍蝇馆子
-  samoyed:    'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/36b188d3-445e-4f33-a8ac-df7367e05db4/ff589158abba407390568643cbdfc1ea.png',       // 萨摩耶 @ 清迈 步行街
-  lop:        'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/ad09850d-8441-43ac-872a-facc1d6a5629/05b2ce9214764bad8317a6d88d2154a4.png',       // 垂耳兔 @ 巴厘岛 稻田日落
-  pomeranian: 'https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/copilot/d430e41f-d4c4-46c9-8cf9-68124bc1ad63/34b3b4e708be408b99831065421f201a.png',       // 博美 @ 西藏 草原白塔（兜底）
-  siamese:    './generated/guineapig_istanbul_v2.png',                                                                                                                          // 豚鼠鼠 @ 伊斯坦布尔 大巴扎（v2 · 全新生成）
+  husky:      './generated/pets/optimized/husky-travel.webp',       // 哈士奇 @ 西藏 纳木错
+  collie:     './generated/pets/optimized/collie-travel.webp',       // 边牧 @ 京都 嵐山竹林
+  orange:     './generated/pets/optimized/orange-travel.webp',                                                                                                                              // 小熊猫 @ 峨眉山金顶（新生成）
+  ragdoll:    './generated/pets/optimized/ragdoll-travel.webp',                                                                                                                                // 奶牛猫 @ 上海武康路（新生成）
+  capybara:   './generated/pets/optimized/capybara-travel.webp',       // 豚豚君 @ 大理 洱海
+  shiba:      './generated/pets/optimized/shiba-travel.webp',       // 柴犬 @ 曼谷 唐人街
+  frenchie:   './generated/pets/optimized/frenchie-travel.webp',                                                                                                                                // 比格犬 @ 重庆 山城步道（新生成）
+  lihua:      './generated/pets/optimized/lihua-travel.webp',                                                                                                                            // 狸花猫 @ 泉州 红砖巷（v2 · 重新生成 · 修正了原 URL 指向错误图）
+  calico:     './generated/pets/optimized/calico-travel.webp',       // 三花猫 @ 东京 昭和小巷
+  corgi:      './generated/pets/optimized/corgi-travel.webp',       // 柯基酱 @ 首尔 益善洞
+  british:    './generated/pets/optimized/british-travel.webp',       // 英短蓝猫 @ 冰岛 黑沙滩
+  golden:     './generated/pets/optimized/golden-travel.webp',       // 金毛 @ 成都 苍蝇馆子
+  samoyed:    './generated/pets/optimized/samoyed-travel.webp',       // 萨摩耶 @ 清迈 步行街
+  lop:        './generated/pets/optimized/lop-travel.webp',       // 垂耳兔 @ 巴厘岛 稻田日落
+  pomeranian: './generated/pets/optimized/pomeranian-travel.webp',       // 博美 @ 西藏 草原白塔（兜底）
+  siamese:    './generated/pets/optimized/siamese-travel.webp',                                                                                                                          // 豚鼠鼠 @ 伊斯坦布尔 大巴扎（v2 · 全新生成）
 };
 
 // ============ 16 只毛孩子完整资料 ============
@@ -294,48 +294,6 @@ export const FEATURED_PETS = [
     location: '大巴扎',
   },
 ];
-
-// ============ 城市高清真实图 ============
-// 每个城市一张真实风景图，用于结果页"它去了哪里"
-export const CITY_IMAGES = {
-  '西藏':       'https://images.unsplash.com/photo-1589802829985-817e51171b92?auto=format&fit=crop&w=1200&q=85',
-  '京都':       'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1200&q=85',
-  '峨眉山':     'https://images.unsplash.com/photo-1606117331085-5760e3b58520?auto=format&fit=crop&w=1200&q=85',
-  '上海':       'https://images.unsplash.com/photo-1545893835-abaa50cbe628?auto=format&fit=crop&w=1200&q=85',
-  '大理':       'https://images.unsplash.com/photo-1601823984263-b87b59798b70?auto=format&fit=crop&w=1200&q=85',
-  '曼谷':       'https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&w=1200&q=85',
-  '重庆':       'https://images.unsplash.com/photo-1597211833712-5e41faa202ea?auto=format&fit=crop&w=1200&q=85',
-  '泉州':       'https://images.unsplash.com/photo-1599940824399-b87987ceb72a?auto=format&fit=crop&w=1200&q=85',
-  '东京':       'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1200&q=85',
-  '首尔':       'https://images.unsplash.com/photo-1517154421773-0529f29ea451?auto=format&fit=crop&w=1200&q=85',
-  '冰岛':       'https://images.unsplash.com/photo-1504829857797-ddff29c27927?auto=format&fit=crop&w=1200&q=85',
-  '成都':       'https://images.unsplash.com/photo-1546436836-07a91091f160?auto=format&fit=crop&w=1200&q=85',
-  '清迈':       'https://images.unsplash.com/photo-1598935898639-81586f7d2129?auto=format&fit=crop&w=1200&q=85',
-  '巴厘岛':     'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1200&q=85',
-  '伊斯坦布尔': 'https://images.unsplash.com/photo-1527838832700-5059252407fa?auto=format&fit=crop&w=1200&q=85',
-  // 备用城市图（人格里的其他城市）
-  '冰岛雷克雅未克': 'https://images.unsplash.com/photo-1504829857797-ddff29c27927?auto=format&fit=crop&w=1200&q=85',
-  '新疆':       'https://images.unsplash.com/photo-1596495577886-d920f1fb7238?auto=format&fit=crop&w=1200&q=85',
-  '苏州':       'https://images.unsplash.com/photo-1561501878-aabd62634533?auto=format&fit=crop&w=1200&q=85',
-  '瑞士':       'https://images.unsplash.com/photo-1527668752968-14dc70a27c95?auto=format&fit=crop&w=1200&q=85',
-  '潮汕':       'https://images.unsplash.com/photo-1555992336-fb0d29498b13?auto=format&fit=crop&w=1200&q=85',
-  '武汉':       'https://images.unsplash.com/photo-1538334421852-687c439c92f4?auto=format&fit=crop&w=1200&q=85',
-  '婺源':       'https://images.unsplash.com/photo-1542601906-9bbc6fb11d3d?auto=format&fit=crop&w=1200&q=85',
-  '釜山':       'https://images.unsplash.com/photo-1583499871880-de841d1ace2a?auto=format&fit=crop&w=1200&q=85',
-  '台南':       'https://images.unsplash.com/photo-1575556226554-c2fd5211ff51?auto=format&fit=crop&w=1200&q=85',
-  '平遥':       'https://images.unsplash.com/photo-1598100763828-9c6286c12f1f?auto=format&fit=crop&w=1200&q=85',
-  '里斯本':     'https://images.unsplash.com/photo-1580323956656-26bbb1206e34?auto=format&fit=crop&w=1200&q=85',
-  '厦门':       'https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?auto=format&fit=crop&w=1200&q=85',
-  '巴塞罗那':   'https://images.unsplash.com/photo-1583422409516-2895a77efded?auto=format&fit=crop&w=1200&q=85',
-  '新加坡':     'https://images.unsplash.com/photo-1565967511849-76a60a516170?auto=format&fit=crop&w=1200&q=85',
-  '北海道':     'https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=1200&q=85',
-  '苏格兰':     'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1200&q=85',
-  '大阪':       'https://images.unsplash.com/photo-1590559899731-a382839e5549?auto=format&fit=crop&w=1200&q=85',
-  '长沙':       'https://images.unsplash.com/photo-1555921015-5532091f6026?auto=format&fit=crop&w=1200&q=85',
-  '冲绳':       'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?auto=format&fit=crop&w=1200&q=85',
-  '挪威':       'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=85',
-  '巴黎':       'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1200&q=85',
-};
 
 // ============ 宠物来信（左图右文，每只一封） ============
 // 严格按照用户模板：

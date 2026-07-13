@@ -3,14 +3,15 @@
 // Step 2：它去了哪里（城市高清图）+ 寄回的随手拍（左图右文）
 // 特殊：迷路宠格 ?????（isMystery=true）走单页彩蛋分支
 
-import { FEATURED_PETS, CITY_IMAGES, PET_LETTERS } from './data/pets.js';
+import { FEATURED_PETS, PET_LETTERS } from './data/pets.js';
 
 const PAWTI_SITE_URL = 'https://megumin61.github.io/wanderpaw_pawti/';
 const PAWTI_SITE_QR = './generated/share/pawti-site-qr.svg';
-const WAITLIST_GROUP_QR = './generated/waitlist/wanderpaw-group-2.jpg';
+const WAITLIST_GROUP_QR = './generated/waitlist/wanderpaw-group-2.webp';
 
 export function renderResult(container, result) {
   const { persona, topTags, matchPercent, isMystery, insight } = result;
+  warmResultMedia(result);
 
   // 迷路宠格：彩蛋款单页结果
   if (isMystery || persona.isMystery) {
@@ -250,7 +251,7 @@ function renderStep2(container, persona, pet) {
     content: `亲爱的主人：\n\n我在${pet.city}${pet.location}，一切都好。\n\n想你的${pet.chinese}敬上`,
     photoCaption: [`来自 ${pet.city}`, '想让你也看看'],
   };
-  const cityImg = CITY_IMAGES[pet.city] || '';
+  const cityImg = pet.travelPhotoUrl || pet.photoUrl || '';
 
   container.innerHTML = `
     <div class="min-h-screen py-24 md:py-28 px-6 md:px-10 relative overflow-hidden">
@@ -435,7 +436,7 @@ function openWaitlistDialog() {
       <h2>先来群里等它出发</h2>
       <p>扫描二维码加入 WanderPaw 用户群，获取产品进度、内测资格与 iOS 上线通知。</p>
       <div class="waitlist-qr-frame">
-        <img src="${WAITLIST_GROUP_QR}" alt="WanderPaw 用户群二维码" />
+        <img src="${WAITLIST_GROUP_QR}" alt="WanderPaw 用户群二维码" loading="eager" fetchpriority="high" decoding="async" />
       </div>
       <div class="waitlist-dialog-note">二维码更新时，我们也会同步替换这里的入口。</div>
     </section>
@@ -523,7 +524,6 @@ function closeResultDialog() {
 }
 
 async function drawSharePoster(canvas, data) {
-  if (document.fonts?.ready) await document.fonts.ready;
   const { persona, pet, letter, cityImg, isMystery } = data;
   const ctx = canvas.getContext('2d');
   const heroSrc = isMystery
@@ -630,15 +630,35 @@ async function drawSharePoster(canvas, data) {
   ctx.fillText('WANDERPAW · COMING SOON TO THE iOS APP STORE', 78, 1852);
 }
 
-function loadCanvasImage(src) {
-  return new Promise((resolve, reject) => {
+function loadCanvasImage(src, timeoutMs = 4000) {
+  return new Promise(resolve => {
     if (!src) return resolve(null);
     const image = new Image();
     image.decoding = 'async';
-    image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error(`无法载入图片：${src}`));
+    let settled = false;
+    const finish = value => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(value);
+    };
+    const timer = setTimeout(() => finish(null), timeoutMs);
+    image.onload = () => finish(image);
+    image.onerror = () => finish(null);
     image.src = src;
   });
+}
+
+function warmResultMedia(result) {
+  const persona = result?.persona;
+  const pet = FEATURED_PETS.find(item => item.id === persona?.petId) || FEATURED_PETS[0];
+  [pet.illustrationUrl, pet.photoUrl, pet.travelPhotoUrl, WAITLIST_GROUP_QR, PAWTI_SITE_QR]
+    .filter(Boolean)
+    .forEach(src => {
+      const image = new Image();
+      image.decoding = 'async';
+      image.src = src;
+    });
 }
 
 function drawImageCover(ctx, image, x, y, width, height) {
