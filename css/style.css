@@ -1046,49 +1046,97 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
   transform: scale(1.01);
 }
 @media (max-width: 640px) {
+  #site-header {
+    min-height: 54px;
+    padding: 7px 14px;
+  }
+  #site-header > div {
+    min-height: 40px;
+  }
+  #site-header .w-10.h-10 {
+    width: 36px;
+    height: 36px;
+    font-size: 17px;
+  }
+  #site-header .text-lg {
+    font-size: 17px;
+  }
   #quiz-progress-slot {
     position: fixed;
-    top: 66px;
-    width: calc(100vw - 28px);
+    top: 60px;
+    width: calc(100vw - 24px);
   }
   #quiz-progress-slot #quiz-progress {
-    padding: 6px 10px;
-    border-radius: 16px;
-    background: rgba(255, 250, 240, 0.94);
+    padding: 7px 11px 8px;
+    border: 1px solid rgba(124, 107, 71, 0.14);
+    border-radius: 14px;
+    background: rgba(255, 250, 240, 0.9);
+    box-shadow: 0 8px 24px -20px rgba(61, 74, 42, 0.9);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
   }
   .quiz-stage {
-    padding-top: 124px;
-    padding-bottom: 32px;
+    padding-top: 112px;
+    padding-right: 12px;
+    padding-bottom: 24px;
+    padding-left: 12px;
   }
   .quiz-stage:has(.act-break-card) {
-    padding-top: 114px;
+    padding-top: 54px;
   }
-  .quiz-progress-meta { gap: 8px; }
+  .quiz-progress-meta {
+    gap: 8px;
+    margin-bottom: 5px !important;
+  }
+  .quiz-progress-count { gap: 6px !important; }
+  .quiz-progress-count .text-xs,
+  #act-title-label { font-size: 10px; }
+  .quiz-progress-count .text-sm { font-size: 12px; }
+  #progress-segments { gap: 5px; }
+  #progress-segments .h-2 { height: 6px; }
   #act-title-label {
     max-width: 52%;
     letter-spacing: 0.08em;
   }
   .quiz-scene-card {
     width: 100%;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
     padding: 0;
     border-radius: 16px;
   }
   .quiz-scene {
     width: calc(100% - 24px);
     font-size: 13px;
-    line-height: 1.7;
-    margin: -10px auto 0;
-    padding: 13px 15px 15px;
+    line-height: 1.55;
+    margin: -8px auto 0;
+    padding: 11px 14px 12px;
     border-radius: 16px;
   }
   .quiz-scene-image {
     width: 100%;
-    height: 180px;
+    height: clamp(142px, 38vw, 168px);
     border-radius: 14px;
   }
   .quiz-scene-image img {
     border-radius: 14px;
+  }
+  .quiz-question {
+    margin-bottom: 12px;
+    font-size: 19px;
+    line-height: 1.38;
+  }
+  .quiz-options-grid { gap: 10px; }
+  .option-card {
+    min-height: 64px;
+    padding: 12px 14px !important;
+    gap: 12px !important;
+  }
+  .option-text {
+    font-size: 14px !important;
+    line-height: 1.55 !important;
+  }
+  .quiz-bottom-controls {
+    margin-top: 16px !important;
   }
 }
 
@@ -1177,10 +1225,7 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
 }
 @media (max-width: 640px) {
   .quiz-side-note {
-    top: 12px;
-    right: 12px;
-    width: min(210px, calc(100% - 24px));
-    padding: 9px 11px 10px;
+    display: none;
   }
 }
 @media (min-width: 768px) {
@@ -1377,8 +1422,8 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
 
 @media (max-width: 640px) {
   .act-break-card {
-    height: calc(100svh - 114px);
-    min-height: 600px;
+    height: calc(100svh - 54px);
+    min-height: 540px;
   }
   .act-break-image { object-position: 58% center; }
   .act-break-scrim {
@@ -1390,18 +1435,39 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
     width: 100%;
     height: 100%;
     justify-content: flex-end;
-    padding: 34px 22px 38px;
+    padding: 28px 22px max(24px, env(safe-area-inset-bottom));
   }
-  .act-break-meta { margin-bottom: 12px; }
+  .act-break-meta { margin-bottom: 9px; }
+  .act-break-title { font-size: 19px; }
   .act-break-quote {
-    margin-bottom: 17px;
-    font-size: 16px;
-    line-height: 1.65;
+    margin-bottom: 13px;
+    font-size: 15px;
+    line-height: 1.55;
   }
   .chapter-learning {
-    margin-bottom: 18px;
-    padding: 10px 11px 11px;
+    margin-bottom: 14px;
+    padding: 9px 11px 10px;
   }
+  .chapter-learning-label { margin-bottom: 5px; }
+  .act-break-btn { padding: 11px 25px; }
+}
+
+.site-footer {
+  padding-top: 18px !important;
+  padding-bottom: 18px !important;
+}
+.site-footer > div { gap: 5px !important; }
+@media (max-width: 640px) {
+  .site-footer {
+    padding: 11px 14px !important;
+  }
+  .site-footer > div {
+    gap: 2px !important;
+    font-size: 11px;
+    line-height: 1.35;
+    text-align: center;
+  }
+  .site-footer p { font-size: 9px !important; }
 }
 
 /* ============ 答后彩蛋浮层 ============ */

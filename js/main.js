@@ -5,6 +5,7 @@
 import { renderLanding } from './landing.js';
 import { renderQuiz } from './quiz.js';
 import { renderResult } from './result.js';
+import { QUESTIONS, ACT_BREAKS } from './data/quiz.js';
 
 const sections = {
   landing: document.getElementById('section-landing'),
@@ -47,6 +48,10 @@ function init() {
   // 1. Landing
   renderLanding(sections.landing);
 
+  // 用户浏览首页时提前把问卷首屏及后续场景放进浏览器缓存，
+  // 避免移动网络进入答题后才看到大片空白或图片渐次下载。
+  warmQuizImages();
+
   // 2. 隐藏 quiz 和 result
   sections.quiz.classList.add('section-hidden');
   sections.result.classList.add('section-hidden');
@@ -80,4 +85,24 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
 } else {
   init();
+}
+
+function warmQuizImages() {
+  const sources = [
+    ...ACT_BREAKS.map(item => item.image),
+    ...QUESTIONS.map(item => item.sceneImage?.src),
+  ].filter(Boolean);
+
+  const preload = () => sources.forEach((src, index) => {
+    const image = new Image();
+    image.decoding = 'async';
+    if (index < 2) image.fetchPriority = 'high';
+    image.src = src;
+  });
+
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(preload, { timeout: 1200 });
+  } else {
+    window.setTimeout(preload, 250);
+  }
 }
