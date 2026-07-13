@@ -5,6 +5,10 @@
 
 import { FEATURED_PETS, CITY_IMAGES, PET_LETTERS } from './data/pets.js';
 
+const PAWTI_SITE_URL = 'https://megumin61.github.io/wanderpaw_pawti/';
+const PAWTI_SITE_QR = './generated/share/pawti-site-qr.svg';
+const WAITLIST_GROUP_QR = './generated/waitlist/wanderpaw-group-2.jpg';
+
 export function renderResult(container, result) {
   const { persona, topTags, matchPercent, isMystery, insight } = result;
 
@@ -84,19 +88,20 @@ function renderMystery(container, persona, topTags, result) {
         </div>
 
         <!-- CTA -->
-        <div class="mt-10 flex flex-col items-center gap-4 pop-in" style="animation-delay:0.9s">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">
-            <button id="retake-btn" class="btn-paw-secondary">
-              <span>🔁</span>
-              <span>再测一次</span>
-            </button>
+        <div class="result-cta pop-in" style="animation-delay:0.9s">
+          <div class="result-primary-actions">
             <button id="waitlist-btn" class="btn-paw">
               <span>🐾</span>
               <span>加入等候名单</span>
             </button>
+            <button id="share-result-btn" class="btn-paw-secondary">
+              <span>↗</span>
+              <span>分享结果</span>
+            </button>
           </div>
-          <p class="text-xs text-paw-bark text-center max-w-lg">
-            PAWTI 即将上线 — 也许我们会为你这种最难被归类的旅人，专门做一只。
+          <button id="retake-btn" class="result-retake-btn">再测一次</button>
+          <p class="result-launch-note">
+            WanderPaw 即将上线 iOS 商店 — 也许我们会为你这种最难被归类的旅人，专门做一只。
           </p>
         </div>
 
@@ -108,7 +113,19 @@ function renderMystery(container, persona, topTags, result) {
     location.reload();
   });
   container.querySelector('#waitlist-btn').addEventListener('click', () => {
-    showToast('感谢期待 🌿 我们会为最难归类的旅人，准备一只专属的。');
+    openWaitlistDialog();
+  });
+  container.querySelector('#share-result-btn').addEventListener('click', () => {
+    const fallbackPet = FEATURED_PETS[0];
+    openShareDialog({
+      persona,
+      pet: fallbackPet,
+      letter: {
+        content: '世界上最有意思的旅行者，往往最难被归类。\n这一次，只能由你亲自出发。',
+      },
+      cityImg: fallbackPet.travelPhotoUrl || fallbackPet.photoUrl,
+      isMystery: true,
+    });
   });
 }
 
@@ -213,16 +230,6 @@ function renderStep1(container, persona, pet, topTags, matchPercent, insight) {
           <p class="text-xs text-paw-bark">点击查看 ${pet.chinese} 在 ${pet.city} 的旅行足迹和来信</p>
         </div>
 
-        <!-- 分享 -->
-        <div class="mt-10 text-center pop-in" style="animation-delay:1.5s">
-          <div class="text-xs text-paw-bark mb-3">分享你的旅行人格</div>
-          <div class="inline-flex gap-3">
-            <button class="share-btn btn-paw-circle" data-platform="wechat">🌿</button>
-            <button class="share-btn btn-paw-circle" data-platform="weibo">🍃</button>
-            <button class="share-btn btn-paw-circle" data-platform="xhs">📖</button>
-          </div>
-        </div>
-
       </div>
     </div>
   `;
@@ -232,16 +239,6 @@ function renderStep1(container, persona, pet, topTags, matchPercent, insight) {
     renderStep2(container, persona, pet);
   });
 
-  // 分享
-  container.querySelectorAll('.share-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const text = `我是「${persona.chinese}」（${persona.code}），我在动物界是一只${pet.chinese} 🌿 你呢？`;
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(text + ' ' + location.href);
-        showToast('已复制分享文案 ✓');
-      }
-    });
-  });
 }
 
 // ============ Step 2：它去了哪里 + 寄回的随手拍 ============
@@ -388,20 +385,21 @@ ${letter.content}
           </div>
         </div>
 
-        <!-- 底部 CTA（参考图按钮风格） -->
-        <div class="flex flex-col items-center gap-4 pop-in" style="animation-delay:0.5s">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">
-            <button id="retake-btn" class="btn-paw-secondary">
-              <span>🔁</span>
-              <span>再测一次</span>
-            </button>
+        <!-- 底部 CTA -->
+        <div class="result-cta pop-in" style="animation-delay:0.5s">
+          <div class="result-primary-actions">
             <button id="waitlist-btn" class="btn-paw">
               <span>🐾</span>
               <span>加入等候名单</span>
             </button>
+            <button id="share-result-btn" class="btn-paw-secondary">
+              <span>↗</span>
+              <span>分享结果</span>
+            </button>
           </div>
-          <p class="text-xs text-paw-bark text-center max-w-lg">
-            PAWTI 即将上线 — 届时，${pet.chinese} 会真的代你出发，定期寄回照片和来信。
+          <button id="retake-btn" class="result-retake-btn">再测一次</button>
+          <p class="result-launch-note">
+            WanderPaw 即将上线 iOS 商店 — 届时，${pet.chinese} 会真的代你出发，定期寄回照片和来信。
           </p>
         </div>
 
@@ -414,8 +412,375 @@ ${letter.content}
     location.reload();
   });
   container.querySelector('#waitlist-btn').addEventListener('click', () => {
-    showToast(`感谢期待 🌿 ${pet.chinese} 正在为你打包出发…`);
+    openWaitlistDialog();
   });
+  container.querySelector('#share-result-btn').addEventListener('click', () => {
+    openShareDialog({ persona, pet, letter, cityImg });
+  });
+}
+
+function openWaitlistDialog() {
+  closeResultDialog();
+  const dialog = document.createElement('div');
+  dialog.id = 'result-dialog';
+  dialog.className = 'result-dialog';
+  dialog.setAttribute('role', 'dialog');
+  dialog.setAttribute('aria-modal', 'true');
+  dialog.setAttribute('aria-label', '加入 WanderPaw 等候名单');
+  dialog.innerHTML = `
+    <div class="result-dialog-backdrop" data-close-dialog></div>
+    <section class="waitlist-dialog-panel">
+      <button class="result-dialog-close" data-close-dialog aria-label="关闭">×</button>
+      <div class="result-dialog-kicker">WANDERPAW · WAITING LIST</div>
+      <h2>先来群里等它出发</h2>
+      <p>扫描二维码加入 WanderPaw 用户群，获取产品进度、内测资格与 iOS 上线通知。</p>
+      <div class="waitlist-qr-frame">
+        <img src="${WAITLIST_GROUP_QR}" alt="WanderPaw 用户群二维码" />
+      </div>
+      <div class="waitlist-dialog-note">二维码更新时，我们也会同步替换这里的入口。</div>
+    </section>
+  `;
+  mountResultDialog(dialog);
+}
+
+async function openShareDialog(data) {
+  closeResultDialog();
+  const dialog = document.createElement('div');
+  dialog.id = 'result-dialog';
+  dialog.className = 'result-dialog share-dialog';
+  dialog.setAttribute('role', 'dialog');
+  dialog.setAttribute('aria-modal', 'true');
+  dialog.setAttribute('aria-label', '分享我的旅行结果');
+  dialog.innerHTML = `
+    <div class="result-dialog-backdrop" data-close-dialog></div>
+    <section class="share-dialog-panel">
+      <button class="result-dialog-close" data-close-dialog aria-label="关闭">×</button>
+      <header class="share-dialog-header">
+        <div>
+          <div class="result-dialog-kicker">MY WANDERPAW DIARY</div>
+          <h2>分享我的旅行档案</h2>
+        </div>
+        <p>长图包含宠物匹配、旅行城市、来信和网站二维码。</p>
+      </header>
+      <div class="share-dialog-body">
+        <div class="share-poster-frame">
+          <canvas id="share-poster" width="1080" height="1920" aria-label="PAWTI 旅行结果长图"></canvas>
+          <div class="share-poster-loading">正在装订旅行档案…</div>
+        </div>
+        <aside class="share-actions">
+          <div class="share-actions-title">分享至</div>
+          <button data-share-channel="wechat" disabled><span>微信</span><small>好友 / 群聊</small></button>
+          <button data-share-channel="moments" disabled><span>朋友圈</span><small>保存长图后发布</small></button>
+          <button data-save-poster disabled><span>保存长图</span><small>PNG 高清图片</small></button>
+          <button data-copy-share><span>复制文案</span><small>同时包含测试链接</small></button>
+          <p class="share-action-tip">若浏览器无法直接唤起微信，会自动保存长图并复制分享文案。</p>
+        </aside>
+      </div>
+    </section>
+  `;
+  mountResultDialog(dialog);
+
+  const canvas = dialog.querySelector('#share-poster');
+  const loading = dialog.querySelector('.share-poster-loading');
+  try {
+    await drawSharePoster(canvas, data);
+    loading.remove();
+    dialog.querySelectorAll('[data-share-channel], [data-save-poster]').forEach(button => {
+      button.disabled = false;
+    });
+  } catch (error) {
+    loading.textContent = '长图生成失败，请稍后再试';
+    console.error('PAWTI share poster:', error);
+  }
+
+  dialog.querySelectorAll('[data-share-channel]').forEach(button => {
+    button.addEventListener('click', () => sharePoster(canvas, data));
+  });
+  dialog.querySelector('[data-save-poster]').addEventListener('click', () => savePoster(canvas, data));
+  dialog.querySelector('[data-copy-share]').addEventListener('click', () => copyShareText(data));
+}
+
+function mountResultDialog(dialog) {
+  document.body.appendChild(dialog);
+  document.body.classList.add('result-dialog-open');
+  requestAnimationFrame(() => dialog.classList.add('is-visible'));
+  dialog.querySelectorAll('[data-close-dialog]').forEach(button => {
+    button.addEventListener('click', closeResultDialog);
+  });
+  const onKeydown = event => {
+    if (event.key === 'Escape') {
+      closeResultDialog();
+      document.removeEventListener('keydown', onKeydown);
+    }
+  };
+  document.addEventListener('keydown', onKeydown);
+}
+
+function closeResultDialog() {
+  const dialog = document.getElementById('result-dialog');
+  if (dialog) dialog.remove();
+  document.body.classList.remove('result-dialog-open');
+}
+
+async function drawSharePoster(canvas, data) {
+  if (document.fonts?.ready) await document.fonts.ready;
+  const { persona, pet, letter, cityImg, isMystery } = data;
+  const ctx = canvas.getContext('2d');
+  const heroSrc = isMystery
+    ? (cityImg || pet.photoUrl)
+    : (pet.travelPhotoUrl || cityImg || pet.photoUrl || pet.illustrationUrl);
+  const [hero, petPortrait, qrImage] = await Promise.all([
+    loadCanvasImage(heroSrc),
+    loadCanvasImage(pet.illustrationUrl || pet.photoUrl),
+    loadCanvasImage(PAWTI_SITE_QR),
+  ]);
+
+  ctx.fillStyle = '#FFF8EA';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  drawPosterDots(ctx, canvas.width, canvas.height);
+
+  ctx.fillStyle = '#3D4A2A';
+  ctx.font = '700 34px "Noto Sans SC", "Microsoft YaHei", sans-serif';
+  ctx.fillText('WanderPaw', 78, 90);
+  ctx.fillStyle = '#7C6B47';
+  ctx.font = '600 18px "DM Mono", monospace';
+  ctx.fillText('PAWTI · PROXY TRAVEL DIARY', 78, 126);
+
+  ctx.fillStyle = '#687949';
+  roundCanvasRect(ctx, 78, 168, 250, 46, 23);
+  ctx.fill();
+  ctx.fillStyle = '#FFFAF0';
+  ctx.font = '700 20px "Noto Sans SC", sans-serif';
+  ctx.fillText('我的旅行人格', 106, 198);
+
+  ctx.fillStyle = '#3D4A2A';
+  ctx.font = '900 56px "Noto Serif SC", "Songti SC", serif';
+  const personaTitle = isMystery ? '无法被归类的旅行者' : persona.chinese;
+  fitCanvasText(ctx, `「${personaTitle}」`, 78, 272, 920, 56);
+
+  ctx.save();
+  roundCanvasRect(ctx, 78, 326, 924, 566, 38);
+  ctx.clip();
+  drawImageCover(ctx, hero, 78, 326, 924, 566);
+  const gradient = ctx.createLinearGradient(0, 540, 0, 892);
+  gradient.addColorStop(0, 'rgba(30,38,25,0)');
+  gradient.addColorStop(1, 'rgba(30,38,25,0.8)');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(78, 326, 924, 566);
+  ctx.restore();
+
+  ctx.fillStyle = '#FFFAF0';
+  ctx.font = '800 38px "Noto Sans SC", sans-serif';
+  ctx.fillText(isMystery ? '这一次，只能由你亲自出发' : `${pet.chinese} · 前往 ${pet.city}`, 116, 816);
+  ctx.font = '500 24px "Noto Sans SC", sans-serif';
+  ctx.fillText(isMystery ? 'PAWTI 暂时没有抓住你' : `📍 ${pet.location}`, 116, 858);
+
+  ctx.fillStyle = '#FBF1DC';
+  roundCanvasRect(ctx, 78, 930, 924, 244, 30);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(104,121,73,0.28)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  if (petPortrait) {
+    ctx.save();
+    roundCanvasRect(ctx, 112, 970, 164, 164, 26);
+    ctx.clip();
+    drawImageCover(ctx, petPortrait, 112, 970, 164, 164);
+    ctx.restore();
+  }
+  ctx.fillStyle = '#7C6B47';
+  ctx.font = '700 18px "DM Mono", monospace';
+  ctx.fillText('TRAVEL PARTNER', 312, 982);
+  ctx.fillStyle = '#3D4A2A';
+  ctx.font = '900 38px "Noto Serif SC", serif';
+  ctx.fillText(isMystery ? '?????' : pet.chinese, 312, 1036);
+  ctx.font = '600 24px "Noto Sans SC", sans-serif';
+  wrapCanvasText(ctx, persona.tagline || persona.description, 312, 1080, 624, 36, 2);
+
+  ctx.fillStyle = '#687949';
+  roundCanvasRect(ctx, 78, 1212, 924, 386, 32);
+  ctx.fill();
+  ctx.fillStyle = '#FFFAF0';
+  ctx.font = '700 20px "DM Mono", monospace';
+  ctx.fillText(isMystery ? 'A NOTE FOR YOU' : `LETTER FROM ${String(pet.city).toUpperCase()}`, 116, 1262);
+  ctx.font = '900 34px "Noto Serif SC", serif';
+  ctx.fillText(isMystery ? '写给无法被归类的你' : `从 ${pet.city} 寄来的第一封信`, 116, 1312);
+  ctx.fillStyle = 'rgba(255,250,240,0.9)';
+  ctx.font = '500 25px "Noto Serif SC", serif';
+  const letterText = String(letter.content || '').replace(/\n{2,}/g, '\n').trim();
+  wrapCanvasText(ctx, letterText, 116, 1368, 848, 42, 5);
+
+  ctx.fillStyle = '#3D4A2A';
+  ctx.font = '800 26px "Noto Sans SC", sans-serif';
+  ctx.fillText('测测哪只小宠物会替你去旅行', 78, 1680);
+  ctx.fillStyle = '#7C6B47';
+  ctx.font = '500 20px "Noto Sans SC", sans-serif';
+  ctx.fillText('扫描二维码，领取你的 PAWTI', 78, 1720);
+  ctx.font = '500 15px "DM Mono", monospace';
+  ctx.fillText('megumin61.github.io/wanderpaw_pawti', 78, 1754);
+
+  ctx.fillStyle = '#FFFAF0';
+  roundCanvasRect(ctx, 772, 1632, 230, 230, 24);
+  ctx.fill();
+  if (qrImage) ctx.drawImage(qrImage, 789, 1649, 196, 196);
+
+  ctx.fillStyle = '#A68B5B';
+  ctx.font = '600 17px "DM Mono", monospace';
+  ctx.fillText('WANDERPAW · COMING SOON TO THE iOS APP STORE', 78, 1852);
+}
+
+function loadCanvasImage(src) {
+  return new Promise((resolve, reject) => {
+    if (!src) return resolve(null);
+    const image = new Image();
+    image.decoding = 'async';
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error(`无法载入图片：${src}`));
+    image.src = src;
+  });
+}
+
+function drawImageCover(ctx, image, x, y, width, height) {
+  if (!image) return;
+  const scale = Math.max(width / image.naturalWidth, height / image.naturalHeight);
+  const sourceWidth = width / scale;
+  const sourceHeight = height / scale;
+  const sourceX = (image.naturalWidth - sourceWidth) / 2;
+  const sourceY = (image.naturalHeight - sourceHeight) / 2;
+  ctx.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, x, y, width, height);
+}
+
+function roundCanvasRect(ctx, x, y, width, height, radius) {
+  const r = Math.min(radius, width / 2, height / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + width, y, x + width, y + height, r);
+  ctx.arcTo(x + width, y + height, x, y + height, r);
+  ctx.arcTo(x, y + height, x, y, r);
+  ctx.arcTo(x, y, x + width, y, r);
+  ctx.closePath();
+}
+
+function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+  const paragraphs = String(text).split('\n');
+  const lines = [];
+  paragraphs.forEach((paragraph, paragraphIndex) => {
+    let line = '';
+    Array.from(paragraph).forEach(char => {
+      const testLine = line + char;
+      if (ctx.measureText(testLine).width > maxWidth && line) {
+        lines.push(line);
+        line = char;
+      } else {
+        line = testLine;
+      }
+    });
+    if (line) lines.push(line);
+    if (paragraphIndex < paragraphs.length - 1) lines.push('');
+  });
+  const visibleLines = lines.slice(0, maxLines);
+  if (lines.length > maxLines && visibleLines.length) {
+    visibleLines[visibleLines.length - 1] = visibleLines[visibleLines.length - 1].replace(/[，。！？、\s]*$/, '') + '…';
+  }
+  visibleLines.forEach((line, index) => ctx.fillText(line, x, y + index * lineHeight));
+}
+
+function fitCanvasText(ctx, text, x, y, maxWidth, startSize) {
+  let size = startSize;
+  while (size > 30) {
+    ctx.font = `900 ${size}px "Noto Serif SC", "Songti SC", serif`;
+    if (ctx.measureText(text).width <= maxWidth) break;
+    size -= 2;
+  }
+  ctx.fillText(text, x, y);
+}
+
+function drawPosterDots(ctx, width, height) {
+  ctx.save();
+  ctx.fillStyle = 'rgba(166,139,91,0.14)';
+  for (let y = 24; y < height; y += 34) {
+    for (let x = 24; x < width; x += 34) {
+      ctx.beginPath();
+      ctx.arc(x, y, 1.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+function canvasToBlob(canvas) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('无法生成分享图片')), 'image/png', 0.94);
+  });
+}
+
+async function sharePoster(canvas, data) {
+  const blob = await canvasToBlob(canvas);
+  const filename = `WanderPaw-${data.persona.code || 'PAWTI'}-${data.pet.city || '旅行档案'}.png`;
+  const file = new File([blob], filename, { type: 'image/png' });
+  const shareData = {
+    title: '我的 WanderPaw 旅行档案',
+    text: buildShareText(data),
+    files: [file],
+  };
+
+  if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+    try {
+      await navigator.share(shareData);
+      return;
+    } catch (error) {
+      if (error.name === 'AbortError') return;
+    }
+  }
+  downloadBlob(blob, filename);
+  await copyText(buildShareText(data));
+  showToast('长图已保存，分享文案也已复制 ✓');
+}
+
+async function savePoster(canvas, data) {
+  const blob = await canvasToBlob(canvas);
+  const filename = `WanderPaw-${data.persona.code || 'PAWTI'}-${data.pet.city || '旅行档案'}.png`;
+  downloadBlob(blob, filename);
+  showToast('旅行档案长图已生成 ✓');
+}
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+async function copyShareText(data) {
+  await copyText(buildShareText(data));
+  showToast('分享文案已复制 ✓');
+}
+
+function buildShareText(data) {
+  if (data.isMystery) {
+    return `我的 PAWTI 是「无法被归类的旅行者」——这一次，只能由我亲自出发。你也来测测：${PAWTI_SITE_URL}`;
+  }
+  return `我的旅行人格是「${data.persona.chinese}」，匹配到${data.pet.chinese}，它替我去了${data.pet.city}。你的小宠物会去哪里？${PAWTI_SITE_URL}`;
+}
+
+async function copyText(text) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand('copy');
+  textarea.remove();
 }
 
 function showToast(msg) {
