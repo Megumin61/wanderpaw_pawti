@@ -2,7 +2,7 @@
   "outputDirectory": ".",
   "headers": [
     {
-      "source": "/generated/share/posters/v1/*",
+      "source": "/generated/share/posters/v2/*",
       "headers": [
         {
           "key": "Cache-Control",

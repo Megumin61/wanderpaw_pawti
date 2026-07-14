@@ -470,7 +470,6 @@ async function openShareDialog(data) {
             id="share-poster"
             src="${poster.previewUrl}"
             width="720"
-            height="2000"
             alt="${data.pet.chinese}的 WanderPaw 旅行人格长图"
             loading="eager"
             fetchpriority="high"
@@ -506,7 +505,7 @@ async function openShareDialog(data) {
 
 function getStaticPoster(data) {
   const id = data?.pet?.id || 'capybara';
-  const base = `./generated/share/posters/v1/${id}`;
+  const base = `./generated/share/posters/v2/${id}`;
   return {
     previewUrl: `${base}-preview.webp`,
     downloadUrl: `${base}.jpg`,
