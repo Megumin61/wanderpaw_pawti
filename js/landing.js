@@ -182,9 +182,13 @@ export function renderLanding(container) {
     const ensureBackImage = () => {
       const image = card.querySelector('.pet-back-photo[data-src]');
       if (!image) return;
+      image.fetchPriority = 'high';
       image.src = image.dataset.src;
       image.removeAttribute('data-src');
     };
+
+    // 触摸设备会在 click 前先触发 pointerdown，提前几十毫秒发起背面实拍图请求。
+    wrapper.addEventListener('pointerdown', ensureBackImage, { once: true, passive: true });
 
     // 触发翻面（附带快门闪白）
     const flipTo = (isFlipped) => {

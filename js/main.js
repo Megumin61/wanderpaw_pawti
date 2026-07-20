@@ -4,6 +4,7 @@
 
 import { renderLanding } from './landing.js';
 import { QUESTIONS, ACT_BREAKS } from './data/quiz.js';
+import { FEATURED_PETS } from './data/pets.js';
 
 const sections = {
   landing: document.getElementById('section-landing'),
@@ -55,7 +56,7 @@ function init() {
 
   // 用户浏览首页时提前把问卷首屏及后续场景放进浏览器缓存，
   // 避免移动网络进入答题后才看到大片空白或图片渐次下载。
-  warmQuizImages();
+  warmSiteImages();
 
   // 2. 隐藏 quiz 和 result
   sections.quiz.classList.add('section-hidden');
@@ -107,17 +108,21 @@ function registerOfflineCache() {
   }, { once: true });
 }
 
-function warmQuizImages() {
+function warmSiteImages() {
   const useMobileImages = window.matchMedia('(max-width: 640px)').matches;
   const criticalSources = [
     ACT_BREAKS[0]?.image,
     QUESTIONS[0]?.sceneImage?.src,
   ].filter(Boolean).map(src => useMobileImages ? toMobileImage(src) : src);
 
-  const allSources = [...new Set([
+  const quizSources = [
     ...ACT_BREAKS.map(item => item.image),
     ...QUESTIONS.map(item => item.sceneImage?.src),
-  ].filter(Boolean).map(src => useMobileImages ? toMobileImage(src) : src))];
+  ].filter(Boolean).map(src => useMobileImages ? toMobileImage(src) : src);
+  // 横向滚动的宠物墙使用 transform，浏览器原生 lazy-load 有时无法及时预测
+  // 即将滑入视口的卡片，因此在页面加载完成后按顺序低优先级补齐正面插画。
+  const landingSources = FEATURED_PETS.map(item => item.illustrationUrl).filter(Boolean);
+  const allSources = [...new Set([...landingSources, ...quizSources])];
 
   const preloadImage = (src, priority) => new Promise(resolve => {
     const image = new Image();

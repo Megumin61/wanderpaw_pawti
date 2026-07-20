@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'pawti-media-v8';
+const CACHE_VERSION = 'pawti-media-v9';
 const CORE_CACHE = `${CACHE_VERSION}-core`;
 const MEDIA_CACHE = `${CACHE_VERSION}-media`;
 const CORE_ASSETS = [
@@ -8,15 +8,8 @@ const CORE_ASSETS = [
   './css/style.css',
   './js/main.js',
   './js/landing.js',
-  './js/quiz.js',
-  './js/result.js',
   './js/data/quiz.js',
-  './js/data/personas.js',
   './js/data/pets.js',
-  './generated/chapters/chapter-01-capybara-v2-mobile.webp?v=2',
-  './generated/quiz/scene-01-chengdu-arrival-v3-mobile.webp?v=2',
-  './generated/waitlist/wanderpaw-group-2.webp',
-  './generated/share/pawti-site-qr.svg',
 ];
 
 self.addEventListener('install', event => {

@@ -11,7 +11,6 @@ const WAITLIST_GROUP_QR = './generated/waitlist/wanderpaw-group-2.webp';
 
 export function renderResult(container, result) {
   const { persona, topTags, matchPercent, isMystery, insight } = result;
-  warmResultMedia(result);
 
   // 迷路宠格：彩蛋款单页结果
   if (isMystery || persona.isMystery) {
@@ -20,6 +19,7 @@ export function renderResult(container, result) {
   }
 
   const pet = FEATURED_PETS.find(p => p.id === persona.petId) || FEATURED_PETS[0];
+  warmResultMedia(result);
   renderStep1(container, persona, pet, topTags, matchPercent, insight);
 }
 
@@ -113,11 +113,15 @@ function renderMystery(container, persona, topTags, result) {
   container.querySelector('#retake-btn').addEventListener('click', () => {
     location.reload();
   });
-  container.querySelector('#waitlist-btn').addEventListener('click', () => {
+  const waitlistButton = container.querySelector('#waitlist-btn');
+  const shareButton = container.querySelector('#share-result-btn');
+  const fallbackPet = FEATURED_PETS[0];
+  preloadOnIntent(waitlistButton, WAITLIST_GROUP_QR);
+  preloadOnIntent(shareButton, getStaticPoster({ pet: fallbackPet }).previewUrl);
+  waitlistButton.addEventListener('click', () => {
     openWaitlistDialog();
   });
-  container.querySelector('#share-result-btn').addEventListener('click', () => {
-    const fallbackPet = FEATURED_PETS[0];
+  shareButton.addEventListener('click', () => {
     openShareDialog({
       persona,
       pet: fallbackPet,
@@ -168,7 +172,8 @@ function renderStep1(container, persona, pet, topTags, matchPercent, insight) {
           <!-- 左：宠物照片宝丽来 -->
           <div class="pop-in" style="animation-delay:1s">
             <div class="polaroid max-w-xs mx-auto" style="background:${pet.bgColor}">
-              <img src="${pet.illustrationUrl}" alt="${pet.chinese}" class="rounded-lg" />
+              <img src="${pet.illustrationUrl}" alt="${pet.chinese}" class="rounded-lg"
+                loading="eager" fetchpriority="high" decoding="async" width="800" height="800" />
               <div class="text-center mt-3 text-sm text-paw-ink/70 font-medium">
                 🐾 ${pet.chinese} · 正在代你穿过林子
               </div>
@@ -236,7 +241,9 @@ function renderStep1(container, persona, pet, topTags, matchPercent, insight) {
   `;
 
   // 下一步
-  container.querySelector('#next-step-btn').addEventListener('click', () => {
+  const nextStepButton = container.querySelector('#next-step-btn');
+  preloadOnIntent(nextStepButton, pet.travelPhotoUrl || pet.photoUrl);
+  nextStepButton.addEventListener('click', () => {
     renderStep2(container, persona, pet);
   });
 
@@ -273,7 +280,8 @@ function renderStep2(container, persona, pet) {
         <div class="mb-14 anim-in" style="animation-delay:0.15s">
           <div class="relative rounded-3xl overflow-hidden shadow-2xl aspect-[16/9] md:aspect-[21/9]">
             ${cityImg ? `
-              <img src="${cityImg}" alt="${pet.city}" class="absolute inset-0 w-full h-full object-cover" />
+              <img src="${cityImg}" alt="${pet.city}" class="absolute inset-0 w-full h-full object-cover"
+                loading="eager" fetchpriority="high" decoding="async" />
               <div class="absolute inset-0 bg-gradient-to-t from-paw-ink/80 via-paw-ink/10 to-transparent"></div>
             ` : `<div class="absolute inset-0" style="background:${pet.bgColor}"></div>`}
 
@@ -330,7 +338,8 @@ function renderStep2(container, persona, pet) {
             <!-- 左：宠物在城市里的旅行场景照 + 叠加文字（保留原图比例） -->
             <div class="relative w-full bg-paw-ink/5 md:min-h-[520px]">
               <img src="${pet.travelPhotoUrl || pet.photoUrl}" alt="${pet.chinese}在${pet.city}的旅行照"
-                class="block w-full h-auto md:absolute md:inset-0 md:w-full md:h-full md:object-cover"/>
+                class="block w-full h-auto md:absolute md:inset-0 md:w-full md:h-full md:object-cover"
+                loading="lazy" fetchpriority="low" decoding="async"/>
               <!-- 底部渐变 -->
               <div class="absolute inset-0 bg-gradient-to-t from-paw-ink/70 via-transparent to-transparent pointer-events-none"></div>
 
@@ -362,7 +371,8 @@ function renderStep2(container, persona, pet) {
               <!-- 信头 -->
               <div class="flex items-center gap-3 mb-5 pb-4 border-b border-dashed border-paw-bark/30">
                 <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border-2 border-paw-bark/45">
-                  <img src="${pet.travelPhotoUrl || pet.photoUrl}" alt="${pet.chinese}" class="w-full h-full object-cover"/>
+                  <img src="${pet.travelPhotoUrl || pet.photoUrl}" alt="${pet.chinese}" class="w-full h-full object-cover"
+                    loading="lazy" fetchpriority="low" decoding="async" width="40" height="40"/>
                 </div>
                 <div class="flex-1 min-w-0">
                   <div class="font-medium text-sm text-paw-ink">${pet.chinese}</div>
@@ -412,10 +422,14 @@ ${letter.content}
   container.querySelector('#retake-btn').addEventListener('click', () => {
     location.reload();
   });
-  container.querySelector('#waitlist-btn').addEventListener('click', () => {
+  const waitlistButton = container.querySelector('#waitlist-btn');
+  const shareButton = container.querySelector('#share-result-btn');
+  preloadOnIntent(waitlistButton, WAITLIST_GROUP_QR);
+  preloadOnIntent(shareButton, getStaticPoster({ pet }).previewUrl);
+  waitlistButton.addEventListener('click', () => {
     openWaitlistDialog();
   });
-  container.querySelector('#share-result-btn').addEventListener('click', () => {
+  shareButton.addEventListener('click', () => {
     openShareDialog({ persona, pet, letter, cityImg });
   });
 }
@@ -716,17 +730,32 @@ function warmResultMedia(result) {
   critical.fetchPriority = 'high';
   critical.src = pet.illustrationUrl;
 
-  const warmDeferred = () => [
-    pet.travelPhotoUrl,
-    WAITLIST_GROUP_QR,
-    getStaticPoster({ pet }).previewUrl,
-  ].filter(Boolean).forEach(src => {
-      const image = new Image();
-      image.decoding = 'async';
-      image.src = src;
-    });
+  const warmDeferred = () => {
+    const src = pet.travelPhotoUrl || pet.photoUrl;
+    if (!src) return;
+    const image = new Image();
+    image.decoding = 'async';
+    image.fetchPriority = 'low';
+    image.src = src;
+  };
   if ('requestIdleCallback' in window) window.requestIdleCallback(warmDeferred, { timeout: 1000 });
   else window.setTimeout(warmDeferred, 180);
+}
+
+function preloadOnIntent(element, src, priority = 'high') {
+  if (!element || !src) return;
+  let started = false;
+  const preload = () => {
+    if (started) return;
+    started = true;
+    const image = new Image();
+    image.decoding = 'async';
+    image.fetchPriority = priority;
+    image.src = src;
+  };
+  element.addEventListener('pointerenter', preload, { once: true, passive: true });
+  element.addEventListener('focus', preload, { once: true, passive: true });
+  element.addEventListener('touchstart', preload, { once: true, passive: true });
 }
 
 function drawImageCover(ctx, image, x, y, width, height) {
