@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'pawti-media-v7';
+const CACHE_VERSION = 'pawti-media-v8';
 const CORE_CACHE = `${CACHE_VERSION}-core`;
 const MEDIA_CACHE = `${CACHE_VERSION}-media`;
 const CORE_ASSETS = [
@@ -13,8 +13,8 @@ const CORE_ASSETS = [
   './js/data/quiz.js',
   './js/data/personas.js',
   './js/data/pets.js',
-  './generated/chapters/chapter-01-capybara-v2-mobile.webp',
-  './generated/quiz/scene-01-chengdu-arrival-v3-mobile.webp',
+  './generated/chapters/chapter-01-capybara-v2-mobile.webp?v=2',
+  './generated/quiz/scene-01-chengdu-arrival-v3-mobile.webp?v=2',
   './generated/waitlist/wanderpaw-group-2.webp',
   './generated/share/pawti-site-qr.svg',
 ];

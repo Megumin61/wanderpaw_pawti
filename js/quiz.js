@@ -146,7 +146,8 @@ function renderActBreak(container, actBreak, onContinue) {
     <div class="act-break-card anim-in">
       <picture>
         <source media="(max-width: 640px)" srcset="${toMobileImage(actBreak.image || '')}" />
-        <img class="act-break-image" src="${actBreak.image || ''}" alt="${actBreak.imageAlt || actBreak.title}" draggable="false" />
+        <img class="act-break-image" src="${actBreak.image || ''}" alt="${actBreak.imageAlt || actBreak.title}"
+          width="1200" height="800" loading="eager" fetchpriority="high" decoding="async" draggable="false" />
       </picture>
       <div class="act-break-scrim"></div>
       <div class="act-break-content">
@@ -166,6 +167,9 @@ function renderActBreak(container, actBreak, onContinue) {
       </div>
     </div>
   `;
+
+  // 幕间说明停留期间提前解码紧随其后的题图。
+  preloadMedia(QUESTIONS[actBreak.beforeQ]?.sceneImage?.src, 'high');
 
   content.querySelector('#act-continue-btn').addEventListener('click', () => {
     isShowingActBreak = false;
@@ -289,7 +293,7 @@ function renderQuestion(container) {
       sceneImage.classList.add('is-error');
     });
   }
-  preloadNextScene(currentIdx);
+  preloadUpcomingMedia(currentIdx);
 
   // 选项点击
   content.querySelectorAll('.option-card').forEach(btn => {
@@ -393,19 +397,29 @@ function renderSceneImage(q) {
   `;
 }
 
-function preloadNextScene(qIdx) {
-  const source = QUESTIONS[qIdx + 1]?.sceneImage?.src;
-  const nextSrc = source && window.matchMedia('(max-width: 640px)').matches
-    ? toMobileImage(source)
-    : source;
-  if (!nextSrc) return;
+const preloadedMedia = new Set();
+
+function preloadMedia(source, priority = 'low') {
+  if (!source) return;
+  const nextSrc = window.matchMedia('(max-width: 640px)').matches ? toMobileImage(source) : source;
+  if (preloadedMedia.has(nextSrc)) return;
+  preloadedMedia.add(nextSrc);
   const preload = new Image();
   preload.decoding = 'async';
+  preload.fetchPriority = priority;
   preload.src = nextSrc;
 }
 
+function preloadUpcomingMedia(qIdx) {
+  const nextIdx = qIdx + 1;
+  const nextBreak = ACT_BREAKS.find(item => item.beforeQ === nextIdx);
+  preloadMedia(nextBreak?.image, 'low');
+  preloadMedia(QUESTIONS[nextIdx]?.sceneImage?.src, 'low');
+  preloadMedia(QUESTIONS[nextIdx + 1]?.sceneImage?.src, 'low');
+}
+
 function toMobileImage(src) {
-  return String(src).replace(/\.webp$/i, '-mobile.webp');
+  return String(src).replace(/\.webp(?=\?|$)/i, '-mobile.webp');
 }
 
 // ============ 彩蛋浮层 ============

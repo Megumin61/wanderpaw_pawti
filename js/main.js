@@ -15,6 +15,12 @@ const sections = {
 const navSlogan   = document.getElementById('nav-slogan');
 const navStartWrap = document.getElementById('nav-start-wrap');
 const quizProgressSlot = document.getElementById('quiz-progress-slot');
+let quizModulePromise = null;
+
+function loadQuizModule() {
+  if (!quizModulePromise) quizModulePromise = import('./quiz.js');
+  return quizModulePromise;
+}
 
 function showSection(name) {
   Object.entries(sections).forEach(([key, el]) => {
@@ -62,6 +68,10 @@ function init() {
   ];
   startBtns.forEach(btn => {
     if (btn) {
+      // 用户准备点击时就加载模块，避免点击后才开始解析 50KB+ 的问卷逻辑。
+      btn.addEventListener('pointerenter', loadQuizModule, { once: true });
+      btn.addEventListener('focus', loadQuizModule, { once: true });
+      btn.addEventListener('touchstart', loadQuizModule, { once: true, passive: true });
       btn.addEventListener('click', () => {
         startQuiz();
       });
@@ -70,7 +80,7 @@ function init() {
 }
 
 async function startQuiz() {
-  const { renderQuiz } = await import('./quiz.js');
+  const { renderQuiz } = await loadQuizModule();
   renderQuiz(sections.quiz, handleQuizComplete);
   showSection('quiz');
 }
@@ -99,25 +109,51 @@ function registerOfflineCache() {
 
 function warmQuizImages() {
   const useMobileImages = window.matchMedia('(max-width: 640px)').matches;
-  const sources = [
+  const criticalSources = [
     ACT_BREAKS[0]?.image,
     QUESTIONS[0]?.sceneImage?.src,
   ].filter(Boolean).map(src => useMobileImages ? toMobileImage(src) : src);
 
-  const preload = () => sources.forEach(src => {
+  const allSources = [...new Set([
+    ...ACT_BREAKS.map(item => item.image),
+    ...QUESTIONS.map(item => item.sceneImage?.src),
+  ].filter(Boolean).map(src => useMobileImages ? toMobileImage(src) : src))];
+
+  const preloadImage = (src, priority) => new Promise(resolve => {
     const image = new Image();
     image.decoding = 'async';
-    image.fetchPriority = 'high';
+    image.fetchPriority = priority;
+    image.onload = image.onerror = resolve;
     image.src = src;
   });
 
+  const preloadCritical = () => criticalSources.forEach(src => preloadImage(src, 'high'));
+  const preloadDeferred = async () => {
+    if (navigator.connection?.saveData) return;
+    for (const src of allSources) {
+      if (criticalSources.includes(src)) continue;
+      await preloadImage(src, 'low');
+    }
+  };
+
   if ('requestIdleCallback' in window) {
-    window.requestIdleCallback(preload, { timeout: 1200 });
+    window.requestIdleCallback(preloadCritical, { timeout: 900 });
   } else {
-    window.setTimeout(preload, 250);
+    window.setTimeout(preloadCritical, 250);
   }
+
+  const scheduleDeferred = () => {
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(preloadDeferred, { timeout: 2500 });
+    } else {
+      window.setTimeout(preloadDeferred, 1200);
+    }
+  };
+
+  if (document.readyState === 'complete') scheduleDeferred();
+  else window.addEventListener('load', scheduleDeferred, { once: true });
 }
 
 function toMobileImage(src) {
-  return String(src).replace(/\.webp$/i, '-mobile.webp');
+  return String(src).replace(/\.webp(?=\?|$)/i, '-mobile.webp');
 }

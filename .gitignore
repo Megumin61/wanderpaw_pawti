@@ -1,2 +1,5 @@
 .npm-cache/
 .tmp-pet-media/
+node_modules/
+__pycache__/
+*.pyc
