@@ -283,6 +283,9 @@ function renderPetRow(pets) {
               alt="${pet.chinese}"
               class="absolute inset-0 w-full h-full object-contain"
               loading="lazy"
+              decoding="async"
+              width="800"
+              height="800"
               draggable="false"
             />
             <!-- 底部：白色胶囊名字标签 -->
@@ -294,7 +297,7 @@ function renderPetRow(pets) {
             <div class="relative w-full h-full overflow-hidden">
               <img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" data-src="${pet.photoUrl}" alt="${pet.chinese}真实照片"
                 class="pet-back-photo absolute inset-0 w-full h-full object-cover"
-                loading="lazy" draggable="false"/>
+                loading="lazy" decoding="async" width="960" height="960" draggable="false"/>
               <!-- 彩色叠加（宠物主题色） -->
               <div class="pet-back-tint"></div>
               <!-- 底部深色渐变 -->

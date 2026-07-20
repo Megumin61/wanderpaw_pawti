@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <link rel="preload" as="image" href="./generated/chapters/chapter-01-capybara-v2-mobile.webp" type="image/webp" fetchpriority="high" media="(max-width: 640px)">
-  <link rel="preload" as="image" href="./generated/chapters/chapter-01-capybara-v2.webp" type="image/webp" fetchpriority="high" media="(min-width: 641px)">
-  <link rel="preload" as="image" href="./generated/quiz/scene-01-chengdu-arrival-v3-mobile.webp" type="image/webp" media="(max-width: 640px)">
+  <!-- 首屏先展示宠物墙；问卷场景改由页面空闲时预热，避免抢占首屏图片带宽。 -->
+  <link rel="preload" as="image" href="./generated/pets/optimized/husky-illustration.webp" type="image/webp" fetchpriority="high">
+  <link rel="preload" as="image" href="./generated/pets/optimized/collie-illustration.webp" type="image/webp" fetchpriority="high">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PAWTI · 测测你是哪只毛孩子旅行人格</title>

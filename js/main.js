@@ -3,8 +3,6 @@
 // 切换到 quiz / result 时，隐藏顶部导航的 slogan 和"开始测试"按钮
 
 import { renderLanding } from './landing.js';
-import { renderQuiz } from './quiz.js';
-import { renderResult } from './result.js';
 import { QUESTIONS, ACT_BREAKS } from './data/quiz.js';
 
 const sections = {
@@ -71,12 +69,14 @@ function init() {
   });
 }
 
-function startQuiz() {
+async function startQuiz() {
+  const { renderQuiz } = await import('./quiz.js');
   renderQuiz(sections.quiz, handleQuizComplete);
   showSection('quiz');
 }
 
-function handleQuizComplete(result) {
+async function handleQuizComplete(result) {
+  const { renderResult } = await import('./result.js');
   renderResult(sections.result, result);
   showSection('result');
 }

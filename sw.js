@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'pawti-media-v6';
+const CACHE_VERSION = 'pawti-media-v7';
 const CORE_CACHE = `${CACHE_VERSION}-core`;
 const MEDIA_CACHE = `${CACHE_VERSION}-media`;
 const CORE_ASSETS = [
