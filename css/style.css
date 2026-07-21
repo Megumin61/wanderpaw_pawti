@@ -1467,6 +1467,16 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
   padding-bottom: 18px !important;
 }
 .site-footer > div { gap: 5px !important; }
+.site-footer .icp-link {
+  color: inherit;
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+.site-footer .icp-link:hover,
+.site-footer .icp-link:focus-visible {
+  color: #687949;
+  text-decoration: underline;
+}
 @media (max-width: 640px) {
   .site-footer {
     padding: 11px 14px !important;
