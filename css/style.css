@@ -1002,6 +1002,7 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
   pointer-events: none;
 }
 .quiz-scene-image::after {
+  /* 不要在这里使用 backdrop-filter + 多层 mask：部分安卓浏览器会忽略 mask，导致整张题图永久模糊。 */
   content: '';
   position: absolute;
   inset: 0;
@@ -1013,21 +1014,12 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
     radial-gradient(circle at 100% 0, rgba(255, 250, 239, 0.68) 0, rgba(255, 250, 239, 0.26) 54px, transparent 104px),
     radial-gradient(circle at 0 100%, rgba(255, 250, 239, 0.68) 0, rgba(255, 250, 239, 0.26) 54px, transparent 104px),
     radial-gradient(circle at 100% 100%, rgba(255, 250, 239, 0.68) 0, rgba(255, 250, 239, 0.26) 54px, transparent 104px);
-  -webkit-backdrop-filter: blur(10px) saturate(0.82);
-  backdrop-filter: blur(10px) saturate(0.82);
-  -webkit-mask-image:
-    radial-gradient(circle 112px at 0 0, #000 0, transparent 82%),
-    radial-gradient(circle 112px at 100% 0, #000 0, transparent 82%),
-    radial-gradient(circle 112px at 0 100%, #000 0, transparent 82%),
-    radial-gradient(circle 112px at 100% 100%, #000 0, transparent 82%);
-  mask-image:
-    radial-gradient(circle 112px at 0 0, #000 0, transparent 82%),
-    radial-gradient(circle 112px at 100% 0, #000 0, transparent 82%),
-    radial-gradient(circle 112px at 0 100%, #000 0, transparent 82%),
-    radial-gradient(circle 112px at 100% 100%, #000 0, transparent 82%);
+  opacity: 0.32;
+  transition: opacity 0.35s ease;
   box-shadow: inset 0 0 0 1px rgba(255, 252, 244, 0.3);
   pointer-events: none;
 }
+.quiz-scene-image.is-loaded::after { opacity: 0.16; }
 .quiz-scene-image img {
   width: 100%;
   height: 100%;
@@ -1042,9 +1034,10 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
     transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .quiz-scene-image img.is-loaded {
-  opacity: 0.88;
+  opacity: 1;
   transform: scale(1.01);
 }
+.quiz-scene-image.is-error img { opacity: 0; }
 @media (max-width: 640px) {
   #site-header {
     min-height: 54px;

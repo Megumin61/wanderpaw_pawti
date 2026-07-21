@@ -124,7 +124,7 @@ export const ACT_BREAKS = [
     quote: '远行前，它还不太懂怎样替你看世界。\n接下来的每次选择，都会教会它如何出发、如何铭记，又如何把远方写进一封信。',
     icon: '🐾',
     cta: '带它出发',
-    image: './generated/chapters/chapter-01-capybara-v2.webp?v=2',
+    image: './generated/chapters/chapter-01-capybara-v2.webp?v=3',
     imageAlt: '清晨站台上，背着小包的毛茸茸旅伴准备出发',
   },
   {
@@ -135,7 +135,7 @@ export const ACT_BREAKS = [
     quote: '成都让它学会怎样慢慢落地。\n来到大理，它要在风和岔路之间，替你判断该往哪里走。',
     icon: '🍃',
     cta: '继续出发',
-    image: './generated/chapters/chapter-02-capybara-v2.webp?v=2',
+    image: './generated/chapters/chapter-02-capybara-v2.webp?v=3',
     imageAlt: '洱海边的岔路上，小旅伴停下来判断方向',
   },
   {
@@ -146,7 +146,7 @@ export const ACT_BREAKS = [
     quote: '它已经学会绕路，也学会替你留住一片风景。\n下一站更明亮、更复杂——它要试着在陌生世界里行动。',
     icon: '🚇',
     cta: '进入东京',
-    image: './generated/chapters/chapter-03-capybara-v2.webp?v=2',
+    image: './generated/chapters/chapter-03-capybara-v2.webp?v=3',
     imageAlt: '东京车站的人流里，小旅伴拿着地图寻找方向',
   },
   {
@@ -157,7 +157,7 @@ export const ACT_BREAKS = [
     quote: '它开始懂得如何照顾自己，也照顾同行的人。\n旅程最后，它要把一路看见的世界，轻轻写进给你的第一封信。',
     icon: '🌙',
     cta: '去看海风',
-    image: './generated/chapters/chapter-04-capybara-v2.webp?v=2',
+    image: './generated/chapters/chapter-04-capybara-v2.webp?v=3',
     imageAlt: '月光下的三亚海滩，小旅伴准备写下第一封信',
   },
 ];
@@ -170,7 +170,7 @@ export const QUESTIONS = [
     scene: '到成都了。\n\n空气潮乎乎的，旁边有人举着刚买的蛋烘糕路过，四周弥漫着一股火锅底料的香味。街边还有只橘猫在台阶上睡觉，睡得很死。',
     sceneImage: {
       placement: 'scene-before-question',
-      src: './generated/quiz/scene-01-chengdu-arrival-v3.webp?v=2',
+      src: './generated/quiz/scene-01-chengdu-arrival-v3.webp?v=3',
       alt: '成都刚落地的潮湿街边，蛋烘糕、火锅香气和睡着的橘猫',
       description: '刚落地的成都像一口潮热的锅。画面左侧是一只手举着刚买的蛋烘糕，奶油快要融开；街边有火锅店的红油雾气从门缝里飘出来，台阶上趴着一只睡到完全不管世界的橘猫。远处行李箱轮子压过湿漉漉的石板路，空气里有刚抵达的疲惫和一点兴奋。',
       directorNote: '镜头低一点，像人刚从车站出来拖着箱子看到的第一眼。左前景给蛋烘糕，中景给橘猫和台阶，远景用火锅热气和街灯制造“成都味道”。不要做成景点照，要像一张刚到城市时随手拍下的生活切片。',
@@ -197,7 +197,7 @@ export const QUESTIONS = [
     scene: '下午走到玉林里的一条老巷子，雨忽然变大。\n\n路口茶馆的老板坐在屋檐下扇蒲扇，旧书店门口一排的小画书，更远处传来锅里翻炒的声音。你没带伞。',
     sceneImage: {
       placement: 'scene-before-question',
-      src: './generated/quiz/scene-02-chengdu-rain.webp?v=2',
+      src: './generated/quiz/scene-02-chengdu-rain.webp?v=3',
       alt: '成都玉林老巷雨中茶馆、旧书店和锅气',
       description: '雨忽然把玉林的小巷压低了。屋檐下的茶馆老板慢慢扇着蒲扇，旧书店门口的小画书被雨气泡得微微卷边，巷子深处有炒菜的锅气和一盏暖黄灯。画面要有躲雨时那种“先别急”的停顿感，让人闻得到雨水、茶和热锅的味道。',
       directorNote: '构图像站在屋檐下往巷子里看：上方有雨线，左侧是茶馆，右侧是旧书店，巷子深处给一团模糊锅气。重点不是雨有多大，而是突然被迫停下后，城市慢慢靠近人的感觉。',
@@ -224,7 +224,7 @@ export const QUESTIONS = [
     scene: '你在大理洱海边发呆，风微凉，很惬意。\n\n朋友发消息说有条山间小道，爬上去据说能俯瞰整个洱海。',
     sceneImage: {
       placement: 'scene-before-question',
-      src: './generated/quiz/scene-03-dali-erhai-path.webp?v=2',
+      src: './generated/quiz/scene-03-dali-erhai-path.webp?v=3',
       alt: '大理洱海边微风和远处山间小道',
       description: '洱海边的风是凉的，水面很亮，人坐在湖边发呆，像暂时不需要回答任何事情。远处山坡上有一条细细的小道往上绕，隐约能看见更高处的湖面。画面不要热闹，要有“朋友发来一条消息，远方突然多了一种可能”的轻轻心动。',
       directorNote: '画面要留大量空气和水面，人物很小，手机提示只用一小点光暗示即可。山路要在远处但能被看见，像一个邀请。整体情绪是从松弛里冒出一点“要不要去看看”的心动。',
@@ -251,7 +251,7 @@ export const QUESTIONS = [
     scene: '骑着刚租的小电驴环洱海，走错路了。\n\n是一条很窄的村道，两边是密得透不进光的竹林，安静得有点不真实。',
     sceneImage: {
       placement: 'scene-before-question',
-      src: './generated/quiz/scene-04-dali-wrong-turn.webp?v=2',
+      src: './generated/quiz/scene-04-dali-wrong-turn.webp?v=3',
       alt: '大理窄村道、小电驴和密不透光的竹林',
       description: '环洱海的小电驴停在一条窄到不像路的村道旁。竹林密得把光筛成很细的线，路尽头看不清，安静得像误入了另一个世界。画面要有一点点不真实：不是危险，而是“走错了，但也许这里才有东西”的吸引。',
       directorNote: '镜头放在小电驴后方一点，像刚停下来犹豫要不要继续。竹林要形成明显纵深，路尽头有一点亮但不要看清。氛围是安静、神秘、轻微偏航，不要做成恐怖森林。',
@@ -278,7 +278,7 @@ export const QUESTIONS = [
     scene: '傍晚，你决定让小宠物自己去古城里逛一圈。\n\n临走前只能嘱咐一句。',
     sceneImage: {
       placement: 'scene-before-question',
-      src: './generated/quiz/scene-05-dali-pet-alone.webp?v=2',
+      src: './generated/quiz/scene-05-dali-pet-alone.webp?v=3',
       alt: '傍晚大理古城里背着小包独自出发的小宠物轮廓',
       description: '傍晚的大理古城开始亮灯，一只还没有完全成形的小毛球背着小包，独自往巷子里走。街边有旧招牌、小挂件、明信片和半开的木门。它回头看你一眼，像是在等你最后交代一句：要替你看什么、记什么、带什么回来。',
       directorNote: '这是代理旅行感最强的一张：小宠物不要画成具体品种，只是圆圆的毛球轮廓，有耳朵或尾巴的暗示。它在画面下方偏右，背对巷子、回头看用户。巷子要温暖，像“放它自己去逛”但不会让人担心。',
@@ -305,7 +305,7 @@ export const QUESTIONS = [
     scene: '你们在新宿站换乘。人从四面八方涌过来，朋友们看着导航开始沉默——屏幕上的线路图密密麻麻，像一碗打结的面。',
     sceneImage: {
       placement: 'scene-before-question',
-      src: './generated/quiz/scene-06-tokyo-shinjuku.webp?v=2',
+      src: './generated/quiz/scene-06-tokyo-shinjuku.webp?v=3',
       alt: '东京新宿站人流、导航和像打结的线路图',
       description: '新宿站像一团会移动的线。人潮从四面涌来，朋友们围着手机导航沉默，头顶的线路和指示牌像打结的面条。旁边远远有便利店冷白的灯，给混乱里留了一点安全感。画面要有复杂、明亮、轻微迷路的压迫感。',
       directorNote: '画面中心是朋友们围着手机的停顿，周围人流做成拖影，让“他们不动，世界在动”的感觉出来。顶部线路可以抽象成复杂线条，但不能出现可读文字。便利店灯作为远处的安全出口，不要抢主体。',
@@ -332,7 +332,7 @@ export const QUESTIONS = [
     scene: '东京最后一晚。回酒店路上路过一家便利店，门口亮得很安心，货架上全是没见过的饭团、布丁、限定饮料和小零食。',
     sceneImage: {
       placement: 'scene-before-question',
-      src: './generated/quiz/scene-07-tokyo-konbini.webp?v=2',
+      src: './generated/quiz/scene-07-tokyo-konbini.webp?v=3',
       alt: '东京夜晚便利店、饭团布丁和限定饮料',
       description: '东京最后一晚，便利店像一盏不会追问你的灯。玻璃门里是饭团、布丁、限定饮料和一排排包装好看的小零食，门外是安静的街、细细的路灯和快结束旅行时那种舍不得。画面要像“再买一点，把今晚带回去”。',
       directorNote: '镜头从便利店外往里看，玻璃门和货架形成明亮窗口。不要画成拥挤超市，要有深夜路过、进去前停一下的感觉。货架颜色可以丰富，但所有包装都不能有可读品牌或文字。',
@@ -359,7 +359,7 @@ export const QUESTIONS = [
     scene: '后海村晚上，路边灯都亮了。有人刚冲浪回来，头发还湿着，烧烤摊在冒烟，旁边一桌人笑得很大声。',
     sceneImage: {
       placement: 'scene-before-question',
-      src: './generated/quiz/scene-08-sanya-houhai.webp?v=2',
+      src: './generated/quiz/scene-08-sanya-houhai.webp?v=3',
       alt: '三亚后海村夜晚、冲浪后的人、烧烤烟和笑声',
       description: '后海村入夜以后，路边灯一盏盏亮起来。有人抱着冲浪板回来，头发还滴着水；烧烤摊的烟往海风里散，旁边一桌人笑得很大声。画面要热闹但不拥挤，有海边夜晚的咸味、烟火气和“下一小时随便发生什么都行”的松动。',
       directorNote: '画面要有左右两种能量：一边是海风和冲浪板带来的湿润感，一边是烧烤摊和笑声带来的烟火气。人物可以是剪影或半身，不需要看清脸。重点是夜晚变得开放，像随时会发生一个小故事。',
@@ -386,7 +386,7 @@ export const QUESTIONS = [
     scene: '夜里，小宠物终于从三亚寄来第一封信。\n\n通知栏只能看到第一句话。',
     sceneImage: {
       placement: 'scene-before-question',
-      src: './generated/quiz/scene-09-sanya-first-letter.webp?v=2',
+      src: './generated/quiz/scene-09-sanya-first-letter.webp?v=3',
       alt: '三亚夜里手机通知亮起，小宠物寄来第一封信',
       description: '夜里房间很安静，窗外远远有海。手机屏幕亮起来，只露出一条看不清字的通知；桌边的小毛球趴着写明信片，旁边有一盏暖黄小灯和几张刚拍回来的照片。画面要有“第一封信终于来了”的轻微心跳。',
       directorNote: '这张要非常安静，像结果揭晓前的一秒。手机屏幕可以发光但不能有文字，小毛球在灯下写东西，照片散在旁边但内容只隐约可见。窗外海面和月光负责把空间拉远，桌面暖光负责把情绪拉近。',

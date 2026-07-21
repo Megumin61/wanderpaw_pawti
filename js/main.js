@@ -3,7 +3,7 @@
 // 切换到 quiz / result 时，隐藏顶部导航的 slogan 和"开始测试"按钮
 
 import { renderLanding } from './landing.js';
-import { QUESTIONS, ACT_BREAKS } from './data/quiz.js';
+import { QUESTIONS, ACT_BREAKS } from './data/quiz.js?v=12';
 import { FEATURED_PETS } from './data/pets.js';
 
 const sections = {
@@ -19,7 +19,7 @@ const quizProgressSlot = document.getElementById('quiz-progress-slot');
 let quizModulePromise = null;
 
 function loadQuizModule() {
-  if (!quizModulePromise) quizModulePromise = import('./quiz.js');
+  if (!quizModulePromise) quizModulePromise = import('./quiz.js?v=12');
   return quizModulePromise;
 }
 
@@ -102,7 +102,7 @@ if (document.readyState === 'loading') {
 function registerOfflineCache() {
   if (!('serviceWorker' in navigator) || location.protocol === 'file:') return;
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(error => {
+    navigator.serviceWorker.register('./sw.js?v=12').catch(error => {
       console.info('PAWTI cache unavailable:', error.message);
     });
   }, { once: true });
@@ -122,13 +122,22 @@ function warmSiteImages() {
   // 横向滚动的宠物墙使用 transform，浏览器原生 lazy-load 有时无法及时预测
   // 即将滑入视口的卡片，因此在页面加载完成后按顺序低优先级补齐正面插画。
   const landingSources = FEATURED_PETS.map(item => item.illustrationUrl).filter(Boolean);
-  const allSources = [...new Set([...landingSources, ...quizSources])];
+  // 问卷图优先于非首屏宠物墙插画，确保用户快速开始答题时后续题图已经在路上。
+  const allSources = [...new Set([...quizSources, ...landingSources])];
 
   const preloadImage = (src, priority) => new Promise(resolve => {
     const image = new Image();
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timeout);
+      resolve();
+    };
+    const timeout = window.setTimeout(finish, 6000);
     image.decoding = 'async';
     image.fetchPriority = priority;
-    image.onload = image.onerror = resolve;
+    image.onload = image.onerror = finish;
     image.src = src;
   });
 

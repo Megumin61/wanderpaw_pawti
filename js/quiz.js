@@ -3,7 +3,7 @@
 // 答完后调用评分函数并跳转到结果页
 // v11：序章 + 四站式代理旅行进度 + 答后学习反馈
 
-import { QUESTIONS, ACT_BREAKS, calculatePersona } from './data/quiz.js';
+import { QUESTIONS, ACT_BREAKS, calculatePersona } from './data/quiz.js?v=12';
 
 let userAnswers = new Array(QUESTIONS.length).fill(null);
 let currentIdx = 0;
@@ -280,17 +280,24 @@ function renderQuestion(container) {
 
   const sceneImage = content.querySelector('.quiz-scene-image img');
   if (sceneImage) {
-    const revealScene = () => sceneImage.classList.add('is-loaded');
+    const sceneFigure = sceneImage.closest('.quiz-scene-image');
+    const revealScene = () => {
+      sceneImage.classList.add('is-loaded');
+      sceneFigure?.classList.add('is-loaded');
+      sceneFigure?.classList.remove('is-error');
+    };
     if (sceneImage.complete && sceneImage.naturalWidth > 0) revealScene();
     else sceneImage.addEventListener('load', revealScene, { once: true });
     sceneImage.addEventListener('error', () => {
-      if (!sceneImage.dataset.fallbackTried && q.sceneImage?.src && sceneImage.currentSrc !== q.sceneImage.src) {
+      const desktopSrc = new URL(q.sceneImage?.src || '', document.baseURI).href;
+      if (!sceneImage.dataset.fallbackTried && desktopSrc && sceneImage.currentSrc !== desktopSrc) {
         sceneImage.dataset.fallbackTried = 'true';
         sceneImage.closest('picture')?.querySelectorAll('source').forEach(source => source.remove());
         sceneImage.src = q.sceneImage.src;
         return;
       }
       sceneImage.classList.add('is-error');
+      sceneFigure?.classList.add('is-error');
     });
   }
   preloadUpcomingMedia(currentIdx);
@@ -397,24 +404,26 @@ function renderSceneImage(q) {
   `;
 }
 
-const preloadedMedia = new Set();
+const preloadedMedia = new Map();
 
 function preloadMedia(source, priority = 'low') {
   if (!source) return;
   const nextSrc = window.matchMedia('(max-width: 640px)').matches ? toMobileImage(source) : source;
   if (preloadedMedia.has(nextSrc)) return;
-  preloadedMedia.add(nextSrc);
   const preload = new Image();
+  preloadedMedia.set(nextSrc, preload);
   preload.decoding = 'async';
   preload.fetchPriority = priority;
+  preload.onload = () => preloadedMedia.set(nextSrc, true);
+  preload.onerror = () => preloadedMedia.delete(nextSrc);
   preload.src = nextSrc;
 }
 
 function preloadUpcomingMedia(qIdx) {
   const nextIdx = qIdx + 1;
   const nextBreak = ACT_BREAKS.find(item => item.beforeQ === nextIdx);
-  preloadMedia(nextBreak?.image, 'low');
-  preloadMedia(QUESTIONS[nextIdx]?.sceneImage?.src, 'low');
+  preloadMedia(nextBreak?.image, 'high');
+  preloadMedia(QUESTIONS[nextIdx]?.sceneImage?.src, 'high');
   preloadMedia(QUESTIONS[nextIdx + 1]?.sceneImage?.src, 'low');
 }
 

@@ -1,14 +1,14 @@
-const CACHE_VERSION = 'pawti-media-v11';
+const CACHE_VERSION = 'pawti-media-v12';
 const CORE_CACHE = `${CACHE_VERSION}-core`;
 const MEDIA_CACHE = `${CACHE_VERSION}-media`;
 const CORE_ASSETS = [
   './',
   './index.html',
   './css/tailwind.generated.css',
-  './css/style.css',
-  './js/main.js',
+  './css/style.css?v=12',
+  './js/main.js?v=12',
   './js/landing.js',
-  './js/data/quiz.js',
+  './js/data/quiz.js?v=12',
   './js/data/pets.js',
 ];
 
