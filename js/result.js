@@ -7,7 +7,7 @@ import { FEATURED_PETS, PET_LETTERS } from './data/pets.js';
 
 const PAWTI_SITE_URL = 'https://megumin61.github.io/wanderpaw_pawti/';
 const PAWTI_SITE_QR = './generated/share/pawti-site-qr.svg';
-const WAITLIST_GROUP_QR = './generated/waitlist/wanderpaw-group-2.webp';
+const WAITLIST_GROUP_QR = './generated/waitlist/wanderpaw-group-3.jpg';
 
 export function renderResult(container, result) {
   const { persona, topTags, matchPercent, isMystery, insight } = result;
