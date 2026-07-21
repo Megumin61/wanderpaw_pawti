@@ -1,12 +1,12 @@
-const CACHE_VERSION = 'pawti-media-v12';
+const CACHE_VERSION = 'pawti-media-v14';
 const CORE_CACHE = `${CACHE_VERSION}-core`;
 const MEDIA_CACHE = `${CACHE_VERSION}-media`;
 const CORE_ASSETS = [
   './',
   './index.html',
   './css/tailwind.generated.css',
-  './css/style.css?v=12',
-  './js/main.js?v=12',
+  './css/style.css?v=14',
+  './js/main.js?v=14',
   './js/landing.js',
   './js/data/quiz.js?v=12',
   './js/data/pets.js',
@@ -65,11 +65,12 @@ async function staleWhileRevalidate(request, cacheName) {
 }
 
 async function networkFirst(request) {
+  const cache = await caches.open(CORE_CACHE);
   try {
     const response = await fetch(request);
-    if (response.ok) (await caches.open(CORE_CACHE)).put('./index.html', response.clone());
+    if (response.ok) cache.put(request, response.clone());
     return response;
   } catch {
-    return (await caches.match('./index.html')) || Response.error();
+    return (await cache.match(request)) || (await cache.match('./index.html')) || Response.error();
   }
 }

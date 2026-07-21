@@ -19,7 +19,7 @@ try {
 }
 
 const ROOT = path.resolve(__dirname, '..');
-const OUTPUT = path.join(ROOT, 'generated', 'share', 'posters', 'v2');
+const OUTPUT = path.join(ROOT, 'generated', 'share', 'posters', 'v3');
 const TEMP = path.join(OUTPUT, '.capture');
 const PORT = 4182;
 const EDGE = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
@@ -158,7 +158,7 @@ async function renderPet(page, petId) {
       matchPercent: 94,
       isMystery: false,
       insight: {
-        captureLine: persona.description,
+        captureLine: `它会优先捕捉${persona.primaryTags.join('、')}，把那些只有你才会在意的瞬间带回来。`,
         proxyLine: `它会沿着${persona.primaryTags.slice(0, 2).join('与')}，替你找到真正想停下来的地方。`,
         letterLine: `它会从${pet.city}寄回一封很像你的信，把沿途最舍不得忘记的片段留好。`,
       },
@@ -168,6 +168,8 @@ async function renderPet(page, petId) {
     document.body.appendChild(stage);
     renderResult(stage, result);
     window.__posterStage = stage;
+    window.__posterPetId = pet.id;
+    window.__posterPetName = pet.chinese;
   }, petId);
 
   await page.locator('#next-step-btn').waitFor({ state: 'visible' });
@@ -196,7 +198,7 @@ async function renderPet(page, petId) {
         <strong>你的毛孩子，会替你去哪里？</strong>
         <p>扫描二维码，测测你的旅行人格。<br>WanderPaw 即将上线 iOS 商店。</p>
       </div>
-      <img src="/generated/share/pawti-site-qr.svg" alt="PAWTI 网站二维码">
+      <img src="/generated/share/qr/${window.__posterPetId}.svg" alt="${window.__posterPetName}结果页二维码">
     `;
     capture.appendChild(footer);
     window.__posterStage.remove();

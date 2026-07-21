@@ -3,7 +3,7 @@
 // 切换到 quiz / result 时，隐藏顶部导航的 slogan 和"开始测试"按钮
 
 import { renderLanding } from './landing.js';
-import { QUESTIONS, ACT_BREAKS } from './data/quiz.js?v=12';
+import { QUESTIONS, ACT_BREAKS, PERSONAS } from './data/quiz.js?v=12';
 import { FEATURED_PETS } from './data/pets.js';
 
 const sections = {
@@ -49,20 +49,29 @@ function showSection(name) {
 }
 
 // 初始化渲染
-function init() {
+async function init() {
   registerOfflineCache();
+  const sharedPetId = getSharedPetId();
+
+  // 先隐藏非当前页面，避免动态模块加载时出现内容闪烁。
+  sections.landing.classList.add('section-hidden');
+  sections.quiz.classList.add('section-hidden');
+  sections.result.classList.add('section-hidden');
+
+  if (sharedPetId) {
+    await renderSharedResult(sharedPetId);
+    return;
+  }
+
   // 1. Landing
   renderLanding(sections.landing);
+  showSection('landing');
 
   // 用户浏览首页时提前把问卷首屏及后续场景放进浏览器缓存，
   // 避免移动网络进入答题后才看到大片空白或图片渐次下载。
   warmSiteImages();
 
-  // 2. 隐藏 quiz 和 result
-  sections.quiz.classList.add('section-hidden');
-  sections.result.classList.add('section-hidden');
-
-  // 3. 绑定「开始测试」按钮（Landing 和 顶部 nav 都触发）
+  // 2. 绑定「开始测试」按钮（Landing 和 顶部 nav 都触发）
   const startBtns = [
     document.getElementById('start-quiz-btn'),
     document.getElementById('nav-start-btn'),
@@ -78,6 +87,11 @@ function init() {
       });
     }
   });
+
+  if (new URLSearchParams(location.search).get('start') === '1') {
+    history.replaceState({}, '', '/');
+    await startQuiz();
+  }
 }
 
 async function startQuiz() {
@@ -87,9 +101,65 @@ async function startQuiz() {
 }
 
 async function handleQuizComplete(result) {
-  const { renderResult } = await import('./result.js');
+  const petId = result?.persona?.petId;
+  if (petId) history.replaceState({ pawtiResult: petId }, '', `/r/${encodeURIComponent(petId)}/`);
+  updateResultMeta(result);
+  const { renderResult } = await import('./result.js?v=14');
   renderResult(sections.result, result);
   showSection('result');
+}
+
+function getSharedPetId() {
+  const metaPetId = document.querySelector('meta[name="pawti-shared-pet"]')?.content;
+  const pathPetId = location.pathname.match(/\/r\/([^/]+)\/?$/i)?.[1];
+  const candidate = decodeURIComponent(metaPetId || pathPetId || '');
+  return FEATURED_PETS.some(pet => pet.id === candidate) ? candidate : null;
+}
+
+async function renderSharedResult(petId) {
+  const persona = PERSONAS.find(item => item.petId === petId);
+  const pet = FEATURED_PETS.find(item => item.id === petId);
+  if (!persona || !pet) {
+    location.replace('/');
+    return;
+  }
+  const result = {
+    persona,
+    topTags: persona.primaryTags,
+    matchPercent: 94,
+    isMystery: false,
+    isShared: true,
+    insight: {
+      captureLine: `它会优先捕捉${persona.primaryTags.join('、')}，把那些只有你才会在意的瞬间带回来。`,
+      proxyLine: `它会沿着${persona.primaryTags.slice(0, 2).join('与')}，替你找到真正想停下来的地方。`,
+      letterLine: `它会从${pet.city}寄回一封很像你的信，把沿途最舍不得忘记的片段留好。`,
+    },
+  };
+  updateResultMeta(result);
+  const { renderResult } = await import('./result.js?v=14');
+  renderResult(sections.result, result);
+  showSection('result');
+}
+
+function updateResultMeta(result) {
+  const persona = result?.persona;
+  const pet = FEATURED_PETS.find(item => item.id === persona?.petId);
+  if (!persona || !pet) return;
+  const resultUrl = `https://wanderpaw.cn/r/${encodeURIComponent(pet.id)}/`;
+  const title = `我的旅行人格是「${persona.chinese}」｜WanderPaw`;
+  const description = `${persona.description} 匹配到${pet.chinese}，它替我去了${pet.city}。`;
+  document.title = title;
+  setMeta('meta[name="description"]', 'content', description);
+  setMeta('meta[property="og:title"]', 'content', title);
+  setMeta('meta[property="og:description"]', 'content', description);
+  setMeta('meta[property="og:url"]', 'content', resultUrl);
+  setMeta('meta[property="og:image"]', 'content', `https://wanderpaw.cn/generated/share/cards/${pet.id}.jpg`);
+  setMeta('link[rel="canonical"]', 'href', resultUrl);
+}
+
+function setMeta(selector, attribute, value) {
+  const element = document.querySelector(selector);
+  if (element) element.setAttribute(attribute, value);
 }
 
 // DOMContentLoaded 后启动
@@ -102,7 +172,7 @@ if (document.readyState === 'loading') {
 function registerOfflineCache() {
   if (!('serviceWorker' in navigator) || location.protocol === 'file:') return;
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=12').catch(error => {
+    navigator.serviceWorker.register('./sw.js?v=14').catch(error => {
       console.info('PAWTI cache unavailable:', error.message);
     });
   }, { once: true });

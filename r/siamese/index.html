@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <!-- 首屏先展示宠物墙；问卷场景改由页面空闲时预热，避免抢占首屏图片带宽。 -->
-  <link rel="preload" as="image" href="./generated/pets/optimized/husky-illustration.webp" type="image/webp" fetchpriority="high">
-  <link rel="preload" as="image" href="./generated/pets/optimized/collie-illustration.webp" type="image/webp" fetchpriority="high">
+  <base href="/" />
+  <!-- 分享落地页只预加载当前结果宠物。 -->
+  <link rel="preload" as="image" href="./generated/pets/optimized/siamese-illustration.webp" type="image/webp" fetchpriority="high">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PAWTI · 测测你是哪只毛孩子旅行人格</title>
-  <meta name="description" content="PAWTI（Paw Traveller Indicator）· 每只毛孩子都是一种旅行人格，看看哪一只最像你的旅行方式。" />
-  <link rel="canonical" href="https://wanderpaw.cn/" />
+  <title>我的旅行人格是「就是要消费既然来都来了的鼠鼠」｜WanderPaw</title>
+  <meta name="description" content="它会替你把新鲜东西试个遍。好吃的、好看的、没见过的，都可以成为这一趟的具体快乐。 匹配到豚鼠鼠，它替我去了伊斯坦布尔。" />
+  <meta name="pawti-shared-pet" content="siamese" />
+  <link rel="canonical" href="https://wanderpaw.cn/r/siamese/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="WanderPaw · PAWTI" />
-  <meta property="og:title" content="PAWTI · 测测你是哪只毛孩子旅行人格" />
-  <meta property="og:description" content="每只毛孩子都是一种旅行人格，看看哪一只最像你的旅行方式。" />
-  <meta property="og:url" content="https://wanderpaw.cn/" />
-  <meta property="og:image" content="https://wanderpaw.cn/generated/share/cards/capybara.jpg" />
+  <meta property="og:title" content="我的旅行人格是「就是要消费既然来都来了的鼠鼠」｜WanderPaw" />
+  <meta property="og:description" content="它会替你把新鲜东西试个遍。好吃的、好看的、没见过的，都可以成为这一趟的具体快乐。 匹配到豚鼠鼠，它替我去了伊斯坦布尔。" />
+  <meta property="og:url" content="https://wanderpaw.cn/r/siamese/" />
+  <meta property="og:image" content="https://wanderpaw.cn/generated/share/cards/siamese.jpg" />
   <meta name="theme-color" content="#FFF8EA" />
 
   <!-- 所有样式均在仓库内生成，避免国内网络等待境外 CDN。 -->

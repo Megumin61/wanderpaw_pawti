@@ -5,7 +5,7 @@
 
 import { FEATURED_PETS, PET_LETTERS } from './data/pets.js';
 
-const PAWTI_SITE_URL = 'https://megumin61.github.io/wanderpaw_pawti/';
+const PAWTI_SITE_URL = 'https://wanderpaw.cn/';
 const PAWTI_SITE_QR = './generated/share/pawti-site-qr.svg';
 const WAITLIST_GROUP_QR = './generated/waitlist/wanderpaw-group-3-v2.jpg';
 
@@ -20,7 +20,7 @@ export function renderResult(container, result) {
 
   const pet = FEATURED_PETS.find(p => p.id === persona.petId) || FEATURED_PETS[0];
   warmResultMedia(result);
-  renderStep1(container, persona, pet, topTags, matchPercent, insight);
+  renderStep1(container, persona, pet, topTags, matchPercent, insight, result.isShared);
 }
 
 // ============ 彩蛋款：迷路宠格 ????? ============
@@ -110,9 +110,7 @@ function renderMystery(container, persona, topTags, result) {
     </div>
   `;
 
-  container.querySelector('#retake-btn').addEventListener('click', () => {
-    location.reload();
-  });
+  container.querySelector('#retake-btn').addEventListener('click', startNewQuiz);
   const waitlistButton = container.querySelector('#waitlist-btn');
   const shareButton = container.querySelector('#share-result-btn');
   const fallbackPet = FEATURED_PETS[0];
@@ -135,11 +133,18 @@ function renderMystery(container, persona, topTags, result) {
 }
 
 // ============ Step 1：宠物人格结果 ============
-function renderStep1(container, persona, pet, topTags, matchPercent, insight) {
+function renderStep1(container, persona, pet, topTags, matchPercent, insight, isShared = false) {
   container.innerHTML = `
     <div class="min-h-screen py-24 md:py-28 px-6 md:px-10 relative overflow-hidden">
 
-      <div class="max-w-5xl mx-auto relative z-10">
+        <div class="max-w-5xl mx-auto relative z-10">
+
+        ${isShared ? `
+          <div class="shared-result-notice anim-in">
+            <span>朋友分享给你的旅行档案</span>
+            <strong>看完它的旅程，也测测哪只毛孩子最像你</strong>
+          </div>
+        ` : ''}
 
         <!-- 顶部：结果标题 -->
         <div class="text-center mb-10 anim-in">
@@ -233,6 +238,7 @@ function renderStep1(container, persona, pet, topTags, matchPercent, insight) {
               <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
+          ${isShared ? `<button id="shared-retake-btn" class="result-retake-btn">我也测一次</button>` : ''}
           <p class="text-xs text-paw-bark">点击查看 ${pet.chinese} 在 ${pet.city} 的旅行足迹和来信</p>
         </div>
 
@@ -246,6 +252,7 @@ function renderStep1(container, persona, pet, topTags, matchPercent, insight) {
   nextStepButton.addEventListener('click', () => {
     renderStep2(container, persona, pet);
   });
+  container.querySelector('#shared-retake-btn')?.addEventListener('click', startNewQuiz);
 
 }
 
@@ -419,9 +426,7 @@ ${letter.content}
   `;
 
   // 按钮事件
-  container.querySelector('#retake-btn').addEventListener('click', () => {
-    location.reload();
-  });
+  container.querySelector('#retake-btn').addEventListener('click', startNewQuiz);
   const waitlistButton = container.querySelector('#waitlist-btn');
   const shareButton = container.querySelector('#share-result-btn');
   preloadOnIntent(waitlistButton, WAITLIST_GROUP_QR);
@@ -495,8 +500,8 @@ async function openShareDialog(data) {
           <button class="share-save-button" data-save-poster>
             <span>保存长图</span><small>下载高清版本</small>
           </button>
-          <button class="share-wechat-button" data-share-wechat>
-            <span>分享到微信</span><small>唤起系统分享</small>
+          <button class="share-copy-button" data-share-link>
+            <span>分享结果链接</span><small>好友打开可看结果</small>
           </button>
         </aside>
       </div>
@@ -514,12 +519,12 @@ async function openShareDialog(data) {
   }, { once: true });
 
   dialog.querySelector('[data-save-poster]').addEventListener('click', () => saveStaticPoster(poster, data));
-  dialog.querySelector('[data-share-wechat]').addEventListener('click', () => shareStaticPoster(poster, data));
+  dialog.querySelector('[data-share-link]').addEventListener('click', () => shareResultLink(data));
 }
 
 function getStaticPoster(data) {
   const id = data?.pet?.id || 'capybara';
-  const base = `./generated/share/posters/v2/${id}`;
+  const base = `./generated/share/posters/v3/${id}`;
   return {
     previewUrl: `${base}-preview.webp`,
     downloadUrl: `${base}.jpg`,
@@ -545,32 +550,6 @@ async function saveStaticPoster(poster, data) {
     console.error('PAWTI poster download:', error);
     window.open(poster.downloadUrl, '_blank', 'noopener');
     showToast('已打开高清长图，请长按保存');
-  }
-}
-
-async function shareStaticPoster(poster, data) {
-  try {
-    const blob = await getPosterBlob(poster);
-    const file = new File([blob], posterFilename(data), { type: 'image/jpeg' });
-    const shareData = {
-      title: '我的 WanderPaw 旅行档案',
-      text: buildShareText(data),
-      files: [file],
-    };
-    if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
-      await navigator.share(shareData);
-      return;
-    }
-    downloadBlob(blob, posterFilename(data));
-    await copyText(buildShareText(data));
-    showToast('长图已保存；打开微信即可发送，文案也已复制');
-    window.setTimeout(() => {
-      window.location.href = 'weixin://';
-    }, 350);
-  } catch (error) {
-    if (error?.name === 'AbortError') return;
-    console.error('PAWTI poster share:', error);
-    showToast('暂时无法唤起微信，请先保存长图');
   }
 }
 
@@ -691,7 +670,7 @@ async function drawSharePoster(canvas, data) {
   ctx.font = '500 20px "Noto Sans SC", sans-serif';
   ctx.fillText('扫描二维码，领取你的 PAWTI', 78, 1720);
   ctx.font = '500 15px "DM Mono", monospace';
-  ctx.fillText('megumin61.github.io/wanderpaw_pawti', 78, 1754);
+  ctx.fillText('wanderpaw.cn', 78, 1754);
 
   ctx.fillStyle = '#FFFAF0';
   roundCanvasRect(ctx, 772, 1632, 230, 230, 24);
@@ -878,11 +857,77 @@ async function copyShareText(data) {
   showToast('分享文案已复制 ✓');
 }
 
-function buildShareText(data) {
-  if (data.isMystery) {
-    return `我的 PAWTI 是「无法被归类的旅行者」——这一次，只能由我亲自出发。你也来测测：${PAWTI_SITE_URL}`;
+async function shareResultLink(data) {
+  const shareData = {
+    title: data.isMystery ? '我的 PAWTI 旅行人格' : `我的旅行人格是「${data.persona.chinese}」`,
+    text: data.isMystery
+      ? '这一次，只能由我亲自出发。你也来测测。'
+      : `我匹配到${data.pet.chinese}，它替我去了${data.pet.city}。你的小宠物会去哪里？`,
+    url: getResultShareUrl(data),
+  };
+
+  if (/MicroMessenger/i.test(navigator.userAgent)) {
+    await copyText(shareData.url);
+    closeResultDialog();
+    openWechatShareGuide(shareData.url);
+    return;
   }
-  return `我的旅行人格是「${data.persona.chinese}」，匹配到${data.pet.chinese}，它替我去了${data.pet.city}。你的小宠物会去哪里？${PAWTI_SITE_URL}`;
+
+  if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
+    try {
+      await navigator.share(shareData);
+      return;
+    } catch (error) {
+      if (error?.name === 'AbortError') return;
+    }
+  }
+
+  await copyText(buildShareText(data));
+  showToast('结果链接和分享文案已复制 ✓');
+}
+
+function openWechatShareGuide(url) {
+  const guide = document.createElement('div');
+  guide.className = 'wechat-share-guide';
+  guide.setAttribute('role', 'dialog');
+  guide.setAttribute('aria-modal', 'true');
+  guide.setAttribute('aria-label', '微信分享提示');
+  guide.innerHTML = `
+    <div class="wechat-share-guide-arrow">↗</div>
+    <div class="wechat-share-guide-card">
+      <div class="result-dialog-kicker">WECHAT SHARE</div>
+      <h2>点击右上角 <strong>···</strong></h2>
+      <p>选择“发送给朋友”或“分享到朋友圈”。朋友打开后会直接看到这份旅行人格。</p>
+      <small>结果链接已复制：${url}</small>
+      <button type="button" data-close-wechat-guide>知道了</button>
+    </div>
+  `;
+  document.body.appendChild(guide);
+  document.body.classList.add('result-dialog-open');
+  guide.querySelector('[data-close-wechat-guide]').addEventListener('click', () => {
+    guide.remove();
+    document.body.classList.remove('result-dialog-open');
+  });
+}
+
+function getResultShareUrl(data) {
+  if (data?.isMystery) return PAWTI_SITE_URL;
+  const petId = data?.pet?.id;
+  return petId ? new URL(`r/${encodeURIComponent(petId)}/`, PAWTI_SITE_URL).href : PAWTI_SITE_URL;
+}
+
+function buildShareText(data) {
+  const siteUrl = getResultShareUrl(data);
+  if (data.isMystery) {
+    return `我的 PAWTI 是「无法被归类的旅行者」——这一次，只能由我亲自出发。你也来测测：${siteUrl}`;
+  }
+  return `我的旅行人格是「${data.persona.chinese}」，匹配到${data.pet.chinese}，它替我去了${data.pet.city}。你的小宠物会去哪里？${siteUrl}`;
+}
+
+function startNewQuiz() {
+  const isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/i.test(location.hostname);
+  const target = isLocal ? new URL('/?start=1', location.origin).href : new URL('?start=1', PAWTI_SITE_URL).href;
+  location.href = target;
 }
 
 async function copyText(text) {

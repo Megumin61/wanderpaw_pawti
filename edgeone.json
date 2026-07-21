@@ -2,7 +2,34 @@
   "outputDirectory": ".",
   "headers": [
     {
-      "source": "/generated/share/posters/v2/*",
+      "source": "/r/*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/generated/share/qr/*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/generated/share/cards/*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/generated/share/posters/v3/*",
       "headers": [
         {
           "key": "Cache-Control",
