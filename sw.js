@@ -1,12 +1,12 @@
-const CACHE_VERSION = 'pawti-media-v14';
+const CACHE_VERSION = 'pawti-media-v15';
 const CORE_CACHE = `${CACHE_VERSION}-core`;
 const MEDIA_CACHE = `${CACHE_VERSION}-media`;
 const CORE_ASSETS = [
   './',
   './index.html',
   './css/tailwind.generated.css',
-  './css/style.css?v=14',
-  './js/main.js?v=14',
+  './css/style.css?v=15',
+  './js/main.js?v=15',
   './js/landing.js',
   './js/data/quiz.js?v=12',
   './js/data/pets.js',
@@ -48,10 +48,21 @@ self.addEventListener('fetch', event => {
 
 async function cacheFirst(request, cacheName) {
   const cached = await caches.match(request);
-  if (cached) return cached;
+  if (cached && isUsableImageResponse(request, cached)) return cached;
+  if (cached) {
+    const staleCache = await caches.open(cacheName);
+    await staleCache.delete(request);
+  }
   const response = await fetch(request);
-  if (response.ok) (await caches.open(cacheName)).put(request, response.clone());
+  if (response.ok && isUsableImageResponse(request, response)) {
+    (await caches.open(cacheName)).put(request, response.clone());
+  }
   return response;
+}
+
+function isUsableImageResponse(request, response) {
+  if (request.destination !== 'image') return true;
+  return response.ok && (response.headers.get('content-type') || '').toLowerCase().startsWith('image/');
 }
 
 async function staleWhileRevalidate(request, cacheName) {

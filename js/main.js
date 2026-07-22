@@ -104,7 +104,7 @@ async function handleQuizComplete(result) {
   const petId = result?.persona?.petId;
   if (petId) history.replaceState({ pawtiResult: petId }, '', `/r/${encodeURIComponent(petId)}/`);
   updateResultMeta(result);
-  const { renderResult } = await import('./result.js?v=14');
+  const { renderResult } = await import('./result.js?v=15');
   renderResult(sections.result, result);
   showSection('result');
 }
@@ -129,14 +129,9 @@ async function renderSharedResult(petId) {
     matchPercent: 94,
     isMystery: false,
     isShared: true,
-    insight: {
-      captureLine: `它会优先捕捉${persona.primaryTags.join('、')}，把那些只有你才会在意的瞬间带回来。`,
-      proxyLine: `它会沿着${persona.primaryTags.slice(0, 2).join('与')}，替你找到真正想停下来的地方。`,
-      letterLine: `它会从${pet.city}寄回一封很像你的信，把沿途最舍不得忘记的片段留好。`,
-    },
   };
   updateResultMeta(result);
-  const { renderResult } = await import('./result.js?v=14');
+  const { renderResult } = await import('./result.js?v=15');
   renderResult(sections.result, result);
   showSection('result');
 }
@@ -172,7 +167,7 @@ if (document.readyState === 'loading') {
 function registerOfflineCache() {
   if (!('serviceWorker' in navigator) || location.protocol === 'file:') return;
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=14').catch(error => {
+    navigator.serviceWorker.register('./sw.js?v=15').catch(error => {
       console.info('PAWTI cache unavailable:', error.message);
     });
   }, { once: true });

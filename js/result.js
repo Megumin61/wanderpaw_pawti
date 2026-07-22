@@ -6,11 +6,12 @@
 import { FEATURED_PETS, PET_LETTERS } from './data/pets.js';
 
 const PAWTI_SITE_URL = 'https://wanderpaw.cn/';
-const PAWTI_SITE_QR = './generated/share/pawti-site-qr.svg';
-const WAITLIST_GROUP_QR = './generated/waitlist/wanderpaw-group-3-v2.jpg';
+const RESULT_MEDIA_VERSION = '15';
+const PAWTI_SITE_QR = '/generated/share/pawti-site-qr.svg';
+const WAITLIST_GROUP_QR = '/generated/waitlist/wanderpaw-group-3-v2.jpg';
 
 export function renderResult(container, result) {
-  const { persona, topTags, matchPercent, isMystery, insight } = result;
+  const { persona, topTags, matchPercent, isMystery } = result;
 
   // 迷路宠格：彩蛋款单页结果
   if (isMystery || persona.isMystery) {
@@ -20,7 +21,7 @@ export function renderResult(container, result) {
 
   const pet = FEATURED_PETS.find(p => p.id === persona.petId) || FEATURED_PETS[0];
   warmResultMedia(result);
-  renderStep1(container, persona, pet, topTags, matchPercent, insight, result.isShared);
+  renderStep1(container, persona, pet, topTags, matchPercent, result.isShared);
 }
 
 // ============ 彩蛋款：迷路宠格 ????? ============
@@ -133,9 +134,9 @@ function renderMystery(container, persona, topTags, result) {
 }
 
 // ============ Step 1：宠物人格结果 ============
-function renderStep1(container, persona, pet, topTags, matchPercent, insight, isShared = false) {
+function renderStep1(container, persona, pet, topTags, matchPercent, isShared = false) {
   container.innerHTML = `
-    <div class="min-h-screen py-24 md:py-28 px-6 md:px-10 relative overflow-hidden">
+    <div class="result-step result-step-one min-h-screen py-24 md:py-28 px-6 md:px-10 relative overflow-hidden">
 
         <div class="max-w-5xl mx-auto relative z-10">
 
@@ -147,7 +148,7 @@ function renderStep1(container, persona, pet, topTags, matchPercent, insight, is
         ` : ''}
 
         <!-- 顶部：结果标题 -->
-        <div class="text-center mb-10 anim-in">
+        <div class="result-hero text-center mb-10 anim-in">
           <!-- 章戳：手帐红色 PAWTI RESULT -->
           <div class="mb-5">
             <span class="stamp-badge">PAWTI · RESULT</span>
@@ -155,12 +156,12 @@ function renderStep1(container, persona, pet, topTags, matchPercent, insight, is
           <div class="text-xs tracking-[0.35em] text-paw-bark mb-5 uppercase font-semibold">🐾 你的旅行人格是</div>
 
           <!-- 中文人格名（宠物视角 · 主视觉） -->
-          <h2 class="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-5 leading-tight pop-in text-paw-ink px-4" style="animation-delay:0.4s">
+          <h2 class="result-persona-title font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-5 leading-tight pop-in text-paw-ink px-4" style="animation-delay:0.4s">
             「${persona.chinese}」
           </h2>
 
           <!-- 金句标语（手写体引号风） -->
-          <p class="font-hand text-2xl md:text-3xl text-paw-forest pop-in" style="animation-delay:0.55s">
+          <p class="result-persona-tagline font-hand text-2xl md:text-3xl text-paw-forest pop-in" style="animation-delay:0.55s">
             "${persona.tagline}"
           </p>
 
@@ -172,12 +173,12 @@ function renderStep1(container, persona, pet, topTags, matchPercent, insight, is
         </div>
 
         <!-- 主卡片：左右布局 -->
-        <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-start mb-12">
+        <div class="result-summary-grid grid md:grid-cols-2 gap-8 md:gap-12 items-start mb-12">
 
           <!-- 左：宠物照片宝丽来 -->
           <div class="pop-in" style="animation-delay:1s">
-            <div class="polaroid max-w-xs mx-auto" style="background:${pet.bgColor}">
-              <img src="${pet.illustrationUrl}" alt="${pet.chinese}" class="rounded-lg"
+            <div class="result-polaroid polaroid max-w-xs mx-auto" style="background:${pet.bgColor}">
+              <img src="${resultMediaUrl(pet.illustrationUrl)}" data-pawti-image alt="${pet.chinese}" class="rounded-lg"
                 loading="eager" fetchpriority="high" decoding="async" width="800" height="800" />
               <div class="text-center mt-3 text-sm text-paw-ink/70 font-medium">
                 🐾 ${pet.chinese} · 正在代你穿过林子
@@ -186,33 +187,11 @@ function renderStep1(container, persona, pet, topTags, matchPercent, insight, is
           </div>
 
           <!-- 右：人格描述 -->
-          <div class="pop-in space-y-5" style="animation-delay:1.1s">
+          <div class="result-persona-copy pop-in space-y-5" style="animation-delay:1.1s">
             <div>
               <div class="text-xs tracking-wider text-paw-bark mb-2 uppercase font-semibold">你是这样的旅人</div>
-              <p class="font-serif text-xl md:text-2xl leading-relaxed text-paw-ink">${persona.description}</p>
+              <p class="result-persona-description font-serif text-xl md:text-2xl leading-relaxed text-paw-ink">${persona.description}</p>
             </div>
-
-            ${insight ? `
-              <div class="proxy-insight-card">
-                <div class="proxy-insight-head">
-                  <span class="proxy-insight-code">PAWTI / PROXY</span>
-                  <span class="proxy-insight-kicker">代理旅行画像</span>
-                </div>
-                <h3 class="proxy-insight-title">它会怎样替你旅行</h3>
-                <p class="proxy-insight-lead">${insight.captureLine}</p>
-                <div class="proxy-insight-divider"></div>
-                <div class="proxy-insight-details">
-                  <div>
-                    <span>沿途</span>
-                    <p>${insight.proxyLine}</p>
-                  </div>
-                  <div>
-                    <span>来信</span>
-                    <p>${insight.letterLine}</p>
-                  </div>
-                </div>
-              </div>
-            ` : ''}
 
             <div class="dashed-divider"></div>
 
@@ -246,9 +225,11 @@ function renderStep1(container, persona, pet, topTags, matchPercent, insight, is
     </div>
   `;
 
+  bindResilientImages(container);
+
   // 下一步
   const nextStepButton = container.querySelector('#next-step-btn');
-  preloadOnIntent(nextStepButton, pet.travelPhotoUrl || pet.photoUrl);
+  preloadOnIntent(nextStepButton, resultMediaUrl(pet.travelPhotoUrl || pet.photoUrl));
   nextStepButton.addEventListener('click', () => {
     renderStep2(container, persona, pet);
   });
@@ -268,7 +249,7 @@ function renderStep2(container, persona, pet) {
   const cityImg = pet.travelPhotoUrl || pet.photoUrl || '';
 
   container.innerHTML = `
-    <div class="min-h-screen py-24 md:py-28 px-6 md:px-10 relative overflow-hidden">
+    <div class="result-step result-step-two min-h-screen py-24 md:py-28 px-6 md:px-10 relative overflow-hidden">
 
       <div class="max-w-5xl mx-auto relative z-10">
 
@@ -287,7 +268,7 @@ function renderStep2(container, persona, pet) {
         <div class="mb-14 anim-in" style="animation-delay:0.15s">
           <div class="relative rounded-3xl overflow-hidden shadow-2xl aspect-[16/9] md:aspect-[21/9]">
             ${cityImg ? `
-              <img src="${cityImg}" alt="${pet.city}" class="absolute inset-0 w-full h-full object-cover"
+              <img src="${resultMediaUrl(cityImg)}" data-pawti-image alt="${pet.city}" class="absolute inset-0 w-full h-full object-cover"
                 loading="eager" fetchpriority="high" decoding="async" />
               <div class="absolute inset-0 bg-gradient-to-t from-paw-ink/80 via-paw-ink/10 to-transparent"></div>
             ` : `<div class="absolute inset-0" style="background:${pet.bgColor}"></div>`}
@@ -344,7 +325,7 @@ function renderStep2(container, persona, pet) {
 
             <!-- 左：宠物在城市里的旅行场景照 + 叠加文字（保留原图比例） -->
             <div class="relative w-full bg-paw-ink/5 md:min-h-[520px]">
-              <img src="${pet.travelPhotoUrl || pet.photoUrl}" alt="${pet.chinese}在${pet.city}的旅行照"
+              <img src="${resultMediaUrl(pet.travelPhotoUrl || pet.photoUrl)}" data-pawti-image alt="${pet.chinese}在${pet.city}的旅行照"
                 class="block w-full h-auto md:absolute md:inset-0 md:w-full md:h-full md:object-cover"
                 loading="lazy" fetchpriority="low" decoding="async"/>
               <!-- 底部渐变 -->
@@ -378,7 +359,7 @@ function renderStep2(container, persona, pet) {
               <!-- 信头 -->
               <div class="flex items-center gap-3 mb-5 pb-4 border-b border-dashed border-paw-bark/30">
                 <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border-2 border-paw-bark/45">
-                  <img src="${pet.travelPhotoUrl || pet.photoUrl}" alt="${pet.chinese}" class="w-full h-full object-cover"
+                  <img src="${resultMediaUrl(pet.travelPhotoUrl || pet.photoUrl)}" data-pawti-image alt="${pet.chinese}" class="w-full h-full object-cover"
                     loading="lazy" fetchpriority="low" decoding="async" width="40" height="40"/>
                 </div>
                 <div class="flex-1 min-w-0">
@@ -424,6 +405,8 @@ ${letter.content}
       </div>
     </div>
   `;
+
+  bindResilientImages(container);
 
   // 按钮事件
   container.querySelector('#retake-btn').addEventListener('click', startNewQuiz);
@@ -524,7 +507,7 @@ async function openShareDialog(data) {
 
 function getStaticPoster(data) {
   const id = data?.pet?.id || 'capybara';
-  const base = `./generated/share/posters/v3/${id}`;
+  const base = `/generated/share/posters/v3/${id}`;
   return {
     previewUrl: `${base}-preview.webp`,
     downloadUrl: `${base}.jpg`,
@@ -682,6 +665,50 @@ async function drawSharePoster(canvas, data) {
   ctx.fillText('WANDERPAW · COMING SOON TO THE iOS APP STORE', 78, 1852);
 }
 
+function resultMediaUrl(src) {
+  if (!src) return '';
+  const siteRoot = new URL('/', window.location.href);
+  const url = new URL(src, siteRoot);
+  if (url.origin === window.location.origin && url.pathname.startsWith('/generated/pets/')) {
+    url.searchParams.set('v', RESULT_MEDIA_VERSION);
+  }
+  return url.href;
+}
+
+function bindResilientImages(root) {
+  root.querySelectorAll('img[data-pawti-image]').forEach(image => {
+    image.classList.add('pawti-image-loading');
+    const frame = image.parentElement;
+
+    const reveal = () => {
+      image.classList.remove('pawti-image-loading', 'pawti-image-error');
+      image.classList.add('pawti-image-ready');
+      frame?.classList.add('pawti-image-frame-ready');
+      frame?.classList.remove('pawti-image-frame-error');
+    };
+
+    const retry = () => {
+      if (!image.dataset.retryAttempted) {
+        image.dataset.retryAttempted = 'true';
+        const retryUrl = new URL(image.currentSrc || image.src, window.location.href);
+        retryUrl.searchParams.set('retry', Date.now().toString(36));
+        image.src = retryUrl.href;
+        return;
+      }
+      image.classList.remove('pawti-image-loading');
+      image.classList.add('pawti-image-error');
+      frame?.classList.add('pawti-image-frame-error');
+    };
+
+    image.addEventListener('load', reveal);
+    image.addEventListener('error', retry);
+    if (image.complete) {
+      if (image.naturalWidth > 0) reveal();
+      else retry();
+    }
+  });
+}
+
 function loadCanvasImage(src, timeoutMs = 4000) {
   return new Promise(resolve => {
     if (!src) return resolve(null);
@@ -697,7 +724,7 @@ function loadCanvasImage(src, timeoutMs = 4000) {
     const timer = setTimeout(() => finish(null), timeoutMs);
     image.onload = () => finish(image);
     image.onerror = () => finish(null);
-    image.src = src;
+    image.src = resultMediaUrl(src);
   });
 }
 
@@ -707,7 +734,7 @@ function warmResultMedia(result) {
   const critical = new Image();
   critical.decoding = 'async';
   critical.fetchPriority = 'high';
-  critical.src = pet.illustrationUrl;
+  critical.src = resultMediaUrl(pet.illustrationUrl);
 
   const warmDeferred = () => {
     const src = pet.travelPhotoUrl || pet.photoUrl;
@@ -715,7 +742,7 @@ function warmResultMedia(result) {
     const image = new Image();
     image.decoding = 'async';
     image.fetchPriority = 'low';
-    image.src = src;
+    image.src = resultMediaUrl(src);
   };
   if ('requestIdleCallback' in window) window.requestIdleCallback(warmDeferred, { timeout: 1000 });
   else window.setTimeout(warmDeferred, 180);
@@ -730,7 +757,7 @@ function preloadOnIntent(element, src, priority = 'high') {
     const image = new Image();
     image.decoding = 'async';
     image.fetchPriority = priority;
-    image.src = src;
+    image.src = resultMediaUrl(src);
   };
   element.addEventListener('pointerenter', preload, { once: true, passive: true });
   element.addEventListener('focus', preload, { once: true, passive: true });
@@ -902,6 +929,7 @@ function openWechatShareGuide(url) {
       <button type="button" data-close-wechat-guide>知道了</button>
     </div>
   `;
+
   document.body.appendChild(guide);
   document.body.classList.add('result-dialog-open');
   guide.querySelector('[data-close-wechat-guide]').addEventListener('click', () => {
