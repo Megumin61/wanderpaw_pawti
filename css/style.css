@@ -2442,6 +2442,11 @@ img[data-pawti-image].pawti-image-error {
   .result-step {
     padding: 82px 20px 42px;
   }
+  .result-city-card {
+    width: calc(100% - 24px);
+    margin-inline: auto;
+    aspect-ratio: 2 / 1;
+  }
   .result-hero {
     margin-bottom: 30px;
   }

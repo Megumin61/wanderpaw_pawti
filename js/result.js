@@ -3,10 +3,10 @@
 // Step 2：它去了哪里（城市高清图）+ 寄回的随手拍（左图右文）
 // 特殊：迷路宠格 ?????（isMystery=true）走单页彩蛋分支
 
-import { FEATURED_PETS, PET_CITY_IMAGES, PET_LETTERS } from './data/pets.js?v=17';
+import { FEATURED_PETS, PET_CITY_IMAGES, PET_LETTERS } from './data/pets.js?v=18';
 
 const PAWTI_SITE_URL = 'https://wanderpaw.cn/';
-const RESULT_MEDIA_VERSION = '17';
+const RESULT_MEDIA_VERSION = '18';
 const PAWTI_SITE_QR = '/generated/share/pawti-site-qr.svg';
 const WAITLIST_GROUP_QR = '/generated/waitlist/wanderpaw-group-3-v2.jpg';
 
@@ -299,7 +299,7 @@ function renderStep2(container, persona, pet) {
 
         <!-- ======= 板块 1：城市高清大图 ======= -->
         <div class="mb-14 anim-in" style="animation-delay:0.15s">
-          <div class="relative rounded-3xl overflow-hidden shadow-2xl aspect-[16/9] md:aspect-[21/9]">
+          <div class="result-city-card relative rounded-3xl overflow-hidden shadow-2xl aspect-[16/9] md:aspect-[21/9]">
             ${cityImg ? `
               <img src="${resultMediaUrl(cityImg)}" data-pawti-image alt="${pet.city}" class="absolute inset-0 w-full h-full object-cover"
                 loading="eager" fetchpriority="high" decoding="async" />

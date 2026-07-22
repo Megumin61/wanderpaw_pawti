@@ -2,9 +2,9 @@
 // 负责页面初始化，以及三个 section 间的切换
 // 切换到 quiz / result 时，隐藏顶部导航的 slogan 和"开始测试"按钮
 
-import { renderLanding } from './landing.js?v=17';
+import { renderLanding } from './landing.js?v=18';
 import { QUESTIONS, ACT_BREAKS, PERSONAS } from './data/quiz.js?v=12';
-import { FEATURED_PETS } from './data/pets.js?v=17';
+import { FEATURED_PETS } from './data/pets.js?v=18';
 
 const sections = {
   landing: document.getElementById('section-landing'),
@@ -104,7 +104,7 @@ async function handleQuizComplete(result) {
   const petId = result?.persona?.petId;
   if (petId) history.replaceState({ pawtiResult: petId }, '', `/r/${encodeURIComponent(petId)}/`);
   updateResultMeta(result);
-  const { renderResult } = await import('./result.js?v=17');
+  const { renderResult } = await import('./result.js?v=18');
   renderResult(sections.result, result);
   showSection('result');
 }
@@ -131,7 +131,7 @@ async function renderSharedResult(petId) {
     isShared: true,
   };
   updateResultMeta(result);
-  const { renderResult } = await import('./result.js?v=17');
+  const { renderResult } = await import('./result.js?v=18');
   renderResult(sections.result, result);
   showSection('result');
 }
@@ -167,7 +167,7 @@ if (document.readyState === 'loading') {
 function registerOfflineCache() {
   if (!('serviceWorker' in navigator) || location.protocol === 'file:') return;
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=16').catch(error => {
+    navigator.serviceWorker.register('./sw.js?v=18').catch(error => {
       console.info('PAWTI cache unavailable:', error.message);
     });
   }, { once: true });
