@@ -82,6 +82,27 @@ export const PET_TRAVEL_PHOTOS = {
   siamese:    './generated/pets/optimized/siamese-travel.webp',                                                                                                                          // 豚鼠鼠 @ 伊斯坦布尔 大巴扎（v2 · 全新生成）
 };
 
+// ============ 目的地城市风景（结果页顶部城市卡片用） ============
+// 与宠物旅行自拍分开：城市卡展示目的地，随手拍展示宠物。
+export const PET_CITY_IMAGES = {
+  husky:      './generated/cities/optimized/tibet-namtso-city.webp',
+  collie:     './generated/cities/optimized/kyoto-city.webp',
+  orange:     './generated/cities/optimized/emeishan-city.webp',
+  ragdoll:    './generated/cities/optimized/shanghai-city.webp',
+  capybara:   './generated/cities/optimized/dali-city.webp',
+  shiba:      './generated/cities/optimized/bangkok-city.webp',
+  frenchie:   './generated/cities/optimized/chongqing-city.webp',
+  lihua:      './generated/cities/optimized/quanzhou-city.webp',
+  calico:     './generated/cities/optimized/tokyo-city.webp',
+  corgi:      './generated/cities/optimized/seoul-city.webp',
+  british:    './generated/cities/optimized/iceland-city.webp',
+  golden:     './generated/cities/optimized/chengdu-city.webp',
+  samoyed:    './generated/cities/optimized/chiangmai-city.webp',
+  lop:        './generated/cities/optimized/bali-city.webp',
+  pomeranian: './generated/cities/optimized/tibet-yamdrok-city.webp',
+  siamese:    './generated/cities/optimized/istanbul-city.webp',
+};
+
 // ============ 16 只毛孩子完整资料 ============
 // 每只宠物锁定：主城市 + 打卡地点 + 旅行主题
 export const FEATURED_PETS = [

@@ -3,10 +3,10 @@
 // Step 2：它去了哪里（城市高清图）+ 寄回的随手拍（左图右文）
 // 特殊：迷路宠格 ?????（isMystery=true）走单页彩蛋分支
 
-import { FEATURED_PETS, PET_LETTERS } from './data/pets.js?v=20';
+import { FEATURED_PETS, PET_CITY_IMAGES, PET_LETTERS } from './data/pets.js?v=21';
 
 const PAWTI_SITE_URL = 'https://wanderpaw.cn/';
-const RESULT_MEDIA_VERSION = '20';
+const RESULT_MEDIA_VERSION = '21';
 const PAWTI_SITE_QR = '/generated/share/pawti-site-qr.svg';
 const WAITLIST_GROUP_QR = '/generated/waitlist/wanderpaw-group-3-v2.jpg';
 
@@ -30,6 +30,10 @@ function buildProxyInsight(persona, pet) {
     proxyLine: `它会沿着${persona.primaryTags.slice(0, 2).join('与')}，替你找到真正想停下来的地方。`,
     letterLine: `它会从${pet.city}寄回一封很像你的信，把沿途最舍不得忘记的片段留好。`,
   };
+}
+
+function getPetCityImage(pet) {
+  return PET_CITY_IMAGES[pet?.id] || '';
 }
 
 // ============ 彩蛋款：迷路宠格 ????? ============
@@ -135,7 +139,7 @@ function renderMystery(container, persona, topTags, result) {
       letter: {
         content: '世界上最有意思的旅行者，往往最难被归类。\n这一次，只能由你亲自出发。',
       },
-      cityImg: fallbackPet.travelPhotoUrl || fallbackPet.photoUrl,
+      cityImg: getPetCityImage(fallbackPet),
       isMystery: true,
     });
   });
@@ -256,7 +260,7 @@ function renderStep1(container, persona, pet, topTags, matchPercent, insight, is
 
   // 下一步
   const nextStepButton = container.querySelector('#next-step-btn');
-  preloadOnIntent(nextStepButton, pet.travelPhotoUrl || pet.photoUrl);
+  preloadOnIntent(nextStepButton, getPetCityImage(pet));
   nextStepButton.addEventListener('click', () => {
     renderStep2(container, persona, pet);
   });
@@ -273,7 +277,7 @@ function renderStep2(container, persona, pet) {
     content: `亲爱的主人：\n\n我在${pet.city}${pet.location}，一切都好。\n\n想你的${pet.chinese}敬上`,
     photoCaption: [`来自 ${pet.city}`, '想让你也看看'],
   };
-  const cityImg = pet.travelPhotoUrl || pet.photoUrl || '';
+  const cityImg = getPetCityImage(pet);
 
   container.innerHTML = `
     <div class="result-step result-step-two min-h-screen py-24 md:py-28 px-6 md:px-10 relative overflow-hidden">
@@ -606,7 +610,7 @@ async function drawSharePoster(canvas, data) {
   const ctx = canvas.getContext('2d');
   const heroSrc = isMystery
     ? (cityImg || pet.photoUrl)
-    : (pet.travelPhotoUrl || cityImg || pet.photoUrl || pet.illustrationUrl);
+    : (cityImg || pet.photoUrl || pet.illustrationUrl);
   const [hero, petPortrait, qrImage] = await Promise.all([
     loadCanvasImage(heroSrc),
     loadCanvasImage(pet.illustrationUrl || pet.photoUrl),
@@ -712,7 +716,10 @@ function resultMediaUrl(src) {
   if (!src) return '';
   const siteRoot = new URL('/', window.location.href);
   const url = new URL(src, siteRoot);
-  if (url.origin === window.location.origin && url.pathname.startsWith('/generated/pets/')) {
+  if (url.origin === window.location.origin && (
+    url.pathname.startsWith('/generated/pets/') ||
+    url.pathname.startsWith('/generated/cities/')
+  )) {
     url.searchParams.set('v', RESULT_MEDIA_VERSION);
   }
   return url.href;
@@ -780,7 +787,7 @@ function warmResultMedia(result) {
   critical.src = resultMediaUrl(pet.illustrationUrl);
 
   const warmDeferred = () => {
-    const sources = [pet.travelPhotoUrl || pet.photoUrl].filter(Boolean);
+    const sources = [getPetCityImage(pet), pet.travelPhotoUrl || pet.photoUrl].filter(Boolean);
     [...new Set(sources)].forEach(src => {
       const image = new Image();
       image.decoding = 'async';
