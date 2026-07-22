@@ -1906,6 +1906,98 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
   50% { transform: scale(1.06) translateY(-2px); opacity: 0.85; }
 }
 
+/* ============ 结果页：代理旅行画像卡（保留摘要，去掉重复总述） ============ */
+.proxy-insight-card {
+  position: relative;
+  overflow: hidden;
+  padding: 22px 22px 20px;
+  border: 1px solid rgba(104, 121, 73, 0.24);
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(255, 253, 246, 0.98), rgba(248, 238, 215, 0.94));
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 6px 0 rgba(227, 206, 153, 0.56),
+    0 24px 48px -38px rgba(61, 74, 42, 0.62);
+}
+.proxy-insight-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 5px;
+  background: linear-gradient(180deg, #687949, #A8B386);
+}
+.proxy-insight-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.proxy-insight-code {
+  color: rgba(124, 107, 71, 0.66);
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+}
+.proxy-insight-kicker {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(104, 121, 73, 0.1);
+  color: #687949;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+.proxy-insight-title {
+  color: #3D4A2A;
+  font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+  font-size: 17px;
+  font-weight: 850;
+  letter-spacing: 0.01em;
+}
+.proxy-insight-divider {
+  height: 1px;
+  margin: 15px 0 13px;
+  background: linear-gradient(90deg, rgba(104, 121, 73, 0.3), transparent);
+}
+.proxy-insight-details {
+  display: grid;
+  gap: 11px;
+}
+.proxy-insight-details > div {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: start;
+  gap: 9px;
+}
+.proxy-insight-details span {
+  display: inline-flex;
+  justify-content: center;
+  padding: 3px 6px;
+  border: 1px solid rgba(104, 121, 73, 0.2);
+  border-radius: 999px;
+  color: #687949;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+.proxy-insight-details p {
+  color: #7C6B47;
+  font-size: 13px;
+  font-weight: 550;
+  line-height: 1.62;
+}
+@media (max-width: 480px) {
+  .proxy-insight-card {
+    padding: 19px 17px 18px;
+    border-radius: 19px;
+  }
+  .proxy-insight-title { font-size: 16px; }
+}
+
 /* ============ 结果页：分享与等候名单 ============ */
 .result-cta {
   display: flex;
@@ -2144,6 +2236,26 @@ body::-webkit-scrollbar-thumb:hover { background: #3D4A2A; }
   box-shadow: 0 4px 0 #D8C185;
 }
 .share-copy-button small { color: rgba(255, 250, 240, 0.78); }
+.pawti-toast {
+  position: fixed;
+  z-index: 700;
+  bottom: max(24px, calc(env(safe-area-inset-bottom) + 16px));
+  left: 50%;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  padding: 12px 20px;
+  border: 1px solid rgba(255, 250, 240, 0.22);
+  border-radius: 999px;
+  background: #3D4A2A;
+  color: #FFFAF0;
+  box-shadow: 0 14px 38px rgba(35, 43, 27, 0.34);
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.4;
+  text-align: center;
+  transform: translateX(-50%);
+  animation: slideUp 0.3s both;
+}
 .shared-result-notice {
   display: flex;
   width: min(100%, 660px);

@@ -6,7 +6,7 @@
 //   · hover 停留 600ms 自动翻面（并触发快门闪白特效）；离开立刻收回
 //   · 点击仍可 toggle 翻面（老用户习惯）
 
-import { FEATURED_PETS } from './data/pets.js';
+import { FEATURED_PETS } from './data/pets.js?v=17';
 
 // —— 按宠物 id 映射的 emoji（气泡里展示）——
 // 注：id 名是历史命名，承载的角色已重映射；emoji 按"当前承载角色"调整

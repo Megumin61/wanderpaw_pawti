@@ -3,10 +3,10 @@
 // Step 2：它去了哪里（城市高清图）+ 寄回的随手拍（左图右文）
 // 特殊：迷路宠格 ?????（isMystery=true）走单页彩蛋分支
 
-import { FEATURED_PETS, PET_LETTERS } from './data/pets.js';
+import { FEATURED_PETS, PET_CITY_IMAGES, PET_LETTERS } from './data/pets.js?v=17';
 
 const PAWTI_SITE_URL = 'https://wanderpaw.cn/';
-const RESULT_MEDIA_VERSION = '15';
+const RESULT_MEDIA_VERSION = '17';
 const PAWTI_SITE_QR = '/generated/share/pawti-site-qr.svg';
 const WAITLIST_GROUP_QR = '/generated/waitlist/wanderpaw-group-3-v2.jpg';
 
@@ -20,8 +20,22 @@ export function renderResult(container, result) {
   }
 
   const pet = FEATURED_PETS.find(p => p.id === persona.petId) || FEATURED_PETS[0];
+  const insight = result.insight || buildProxyInsight(persona, pet);
   warmResultMedia(result);
-  renderStep1(container, persona, pet, topTags, matchPercent, result.isShared);
+  renderStep1(container, persona, pet, topTags, matchPercent, insight, result.isShared);
+}
+
+function buildProxyInsight(persona, pet) {
+  return {
+    proxyLine: `它会沿着${persona.primaryTags.slice(0, 2).join('与')}，替你找到真正想停下来的地方。`,
+    letterLine: `它会从${pet.city}寄回一封很像你的信，把沿途最舍不得忘记的片段留好。`,
+  };
+}
+
+function getPetCityImage(pet) {
+  // Never fall back to a pet photo here: the city banner and the pet check-in
+  // photo are deliberately separate visual roles.
+  return PET_CITY_IMAGES[pet?.id] || '';
 }
 
 // ============ 彩蛋款：迷路宠格 ????? ============
@@ -127,14 +141,14 @@ function renderMystery(container, persona, topTags, result) {
       letter: {
         content: '世界上最有意思的旅行者，往往最难被归类。\n这一次，只能由你亲自出发。',
       },
-      cityImg: fallbackPet.travelPhotoUrl || fallbackPet.photoUrl,
+      cityImg: getPetCityImage(fallbackPet),
       isMystery: true,
     });
   });
 }
 
 // ============ Step 1：宠物人格结果 ============
-function renderStep1(container, persona, pet, topTags, matchPercent, isShared = false) {
+function renderStep1(container, persona, pet, topTags, matchPercent, insight, isShared = false) {
   container.innerHTML = `
     <div class="result-step result-step-one min-h-screen py-24 md:py-28 px-6 md:px-10 relative overflow-hidden">
 
@@ -193,6 +207,25 @@ function renderStep1(container, persona, pet, topTags, matchPercent, isShared = 
               <p class="result-persona-description font-serif text-xl md:text-2xl leading-relaxed text-paw-ink">${persona.description}</p>
             </div>
 
+            <div class="proxy-insight-card">
+              <div class="proxy-insight-head">
+                <span class="proxy-insight-code">PAWTI / PROXY</span>
+                <span class="proxy-insight-kicker">代理旅行画像</span>
+              </div>
+              <h3 class="proxy-insight-title">它会怎样替你旅行</h3>
+              <div class="proxy-insight-divider"></div>
+              <div class="proxy-insight-details">
+                <div>
+                  <span>沿途</span>
+                  <p>${insight.proxyLine}</p>
+                </div>
+                <div>
+                  <span>来信</span>
+                  <p>${insight.letterLine}</p>
+                </div>
+              </div>
+            </div>
+
             <div class="dashed-divider"></div>
 
             <div>
@@ -229,7 +262,7 @@ function renderStep1(container, persona, pet, topTags, matchPercent, isShared = 
 
   // 下一步
   const nextStepButton = container.querySelector('#next-step-btn');
-  preloadOnIntent(nextStepButton, resultMediaUrl(pet.travelPhotoUrl || pet.photoUrl));
+  preloadOnIntent(nextStepButton, getPetCityImage(pet));
   nextStepButton.addEventListener('click', () => {
     renderStep2(container, persona, pet);
   });
@@ -246,7 +279,7 @@ function renderStep2(container, persona, pet) {
     content: `亲爱的主人：\n\n我在${pet.city}${pet.location}，一切都好。\n\n想你的${pet.chinese}敬上`,
     photoCaption: [`来自 ${pet.city}`, '想让你也看看'],
   };
-  const cityImg = pet.travelPhotoUrl || pet.photoUrl || '';
+  const cityImg = getPetCityImage(pet);
 
   container.innerHTML = `
     <div class="result-step result-step-two min-h-screen py-24 md:py-28 px-6 md:px-10 relative overflow-hidden">
@@ -484,7 +517,7 @@ async function openShareDialog(data) {
             <span>保存长图</span><small>下载高清版本</small>
           </button>
           <button class="share-copy-button" data-share-link>
-            <span>分享结果链接</span><small>好友打开可看结果</small>
+            <span>复制文字链接</span><small>文案和结果链接一并复制</small>
           </button>
         </aside>
       </div>
@@ -502,15 +535,31 @@ async function openShareDialog(data) {
   }, { once: true });
 
   dialog.querySelector('[data-save-poster]').addEventListener('click', () => saveStaticPoster(poster, data));
-  dialog.querySelector('[data-share-link]').addEventListener('click', () => shareResultLink(data));
+  const copyShareButton = dialog.querySelector('[data-share-link]');
+  copyShareButton.addEventListener('click', async () => {
+    try {
+      await copyResultTextAndLink(data);
+      const label = copyShareButton.querySelector('span');
+      label.textContent = '已复制 ✓';
+      window.setTimeout(() => {
+        if (copyShareButton.isConnected) label.textContent = '复制文字链接';
+      }, 1400);
+    } catch (error) {
+      console.error('PAWTI share copy:', error);
+      showToast('复制失败，请稍后再试');
+    }
+  });
 }
 
 function getStaticPoster(data) {
   const id = data?.pet?.id || 'capybara';
   const base = `/generated/share/posters/v3/${id}`;
   return {
-    previewUrl: `${base}-preview.webp`,
-    downloadUrl: `${base}.jpg`,
+    // v3 poster assets are served with an immutable one-year cache. Keep the
+    // query version in sync with result media so regenerated posters replace
+    // previously cached versions immediately after deployment.
+    previewUrl: `${base}-preview.webp?v=${RESULT_MEDIA_VERSION}`,
+    downloadUrl: `${base}.jpg?v=${RESULT_MEDIA_VERSION}`,
   };
 }
 
@@ -563,7 +612,7 @@ async function drawSharePoster(canvas, data) {
   const ctx = canvas.getContext('2d');
   const heroSrc = isMystery
     ? (cityImg || pet.photoUrl)
-    : (pet.travelPhotoUrl || cityImg || pet.photoUrl || pet.illustrationUrl);
+    : (cityImg || pet.photoUrl || pet.illustrationUrl);
   const [hero, petPortrait, qrImage] = await Promise.all([
     loadCanvasImage(heroSrc),
     loadCanvasImage(pet.illustrationUrl || pet.photoUrl),
@@ -669,7 +718,10 @@ function resultMediaUrl(src) {
   if (!src) return '';
   const siteRoot = new URL('/', window.location.href);
   const url = new URL(src, siteRoot);
-  if (url.origin === window.location.origin && url.pathname.startsWith('/generated/pets/')) {
+  if (url.origin === window.location.origin && (
+    url.pathname.startsWith('/generated/pets/') ||
+    url.pathname.startsWith('/generated/cities/')
+  )) {
     url.searchParams.set('v', RESULT_MEDIA_VERSION);
   }
   return url.href;
@@ -737,12 +789,13 @@ function warmResultMedia(result) {
   critical.src = resultMediaUrl(pet.illustrationUrl);
 
   const warmDeferred = () => {
-    const src = pet.travelPhotoUrl || pet.photoUrl;
-    if (!src) return;
-    const image = new Image();
-    image.decoding = 'async';
-    image.fetchPriority = 'low';
-    image.src = resultMediaUrl(src);
+    const sources = [getPetCityImage(pet), pet.travelPhotoUrl || pet.photoUrl].filter(Boolean);
+    [...new Set(sources)].forEach(src => {
+      const image = new Image();
+      image.decoding = 'async';
+      image.fetchPriority = 'low';
+      image.src = resultMediaUrl(src);
+    });
   };
   if ('requestIdleCallback' in window) window.requestIdleCallback(warmDeferred, { timeout: 1000 });
   else window.setTimeout(warmDeferred, 180);
@@ -884,33 +937,9 @@ async function copyShareText(data) {
   showToast('分享文案已复制 ✓');
 }
 
-async function shareResultLink(data) {
-  const shareData = {
-    title: data.isMystery ? '我的 PAWTI 旅行人格' : `我的旅行人格是「${data.persona.chinese}」`,
-    text: data.isMystery
-      ? '这一次，只能由我亲自出发。你也来测测。'
-      : `我匹配到${data.pet.chinese}，它替我去了${data.pet.city}。你的小宠物会去哪里？`,
-    url: getResultShareUrl(data),
-  };
-
-  if (/MicroMessenger/i.test(navigator.userAgent)) {
-    await copyText(shareData.url);
-    closeResultDialog();
-    openWechatShareGuide(shareData.url);
-    return;
-  }
-
-  if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
-    try {
-      await navigator.share(shareData);
-      return;
-    } catch (error) {
-      if (error?.name === 'AbortError') return;
-    }
-  }
-
+async function copyResultTextAndLink(data) {
   await copyText(buildShareText(data));
-  showToast('结果链接和分享文案已复制 ✓');
+  showToast('分享文案和结果链接已复制 ✓');
 }
 
 function openWechatShareGuide(url) {
@@ -960,8 +989,12 @@ function startNewQuiz() {
 
 async function copyText(text) {
   if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text);
-    return;
+    try {
+      await navigator.clipboard.writeText(text);
+      return;
+    } catch {
+      // 部分微信/安卓 WebView 暴露了 clipboard API，但会拒绝写入；继续使用兼容方案。
+    }
   }
   const textarea = document.createElement('textarea');
   textarea.value = text;
@@ -969,15 +1002,19 @@ async function copyText(text) {
   textarea.style.opacity = '0';
   document.body.appendChild(textarea);
   textarea.select();
-  document.execCommand('copy');
+  const copied = document.execCommand('copy');
   textarea.remove();
+  if (!copied) throw new Error('Clipboard write failed');
 }
 
 function showToast(msg) {
+  document.getElementById('pawti-toast')?.remove();
   const toast = document.createElement('div');
-  toast.className = 'fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] bg-paw-ink text-paw-cream px-5 py-3 rounded-full text-sm shadow-2xl';
+  toast.id = 'pawti-toast';
+  toast.className = 'pawti-toast';
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
   toast.textContent = msg;
-  toast.style.animation = 'slideUp 0.3s both';
   document.body.appendChild(toast);
   setTimeout(() => {
     toast.style.opacity = '0';
