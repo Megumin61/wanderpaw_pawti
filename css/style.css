@@ -2388,11 +2388,6 @@ img[data-pawti-image].pawti-image-ready {
 img[data-pawti-image].pawti-image-error {
   opacity: 0;
 }
-.result-city-card {
-  width: 100%;
-  max-width: 48rem;
-  margin-inline: auto;
-}
 .pawti-image-frame-error {
   background:
     radial-gradient(circle at 30% 25%, rgba(255, 250, 240, 0.72), transparent 38%),
@@ -2446,11 +2441,6 @@ img[data-pawti-image].pawti-image-error {
 
   .result-step {
     padding: 82px 20px 42px;
-  }
-  .result-city-card {
-    width: calc(100% - 24px);
-    margin-inline: auto;
-    aspect-ratio: 2 / 1;
   }
   .result-hero {
     margin-bottom: 30px;
