@@ -1,15 +1,15 @@
-const CACHE_VERSION = 'pawti-media-v18';
+const CACHE_VERSION = 'pawti-media-v19';
 const CORE_CACHE = `${CACHE_VERSION}-core`;
 const MEDIA_CACHE = `${CACHE_VERSION}-media`;
 const CORE_ASSETS = [
   './',
   './index.html',
   './css/tailwind.generated.css',
-  './css/style.css?v=18',
-  './js/main.js?v=18',
-  './js/landing.js?v=18',
+  './css/style.css?v=19',
+  './js/main.js?v=19',
+  './js/landing.js?v=19',
   './js/data/quiz.js?v=12',
-  './js/data/pets.js?v=18',
+  './js/data/pets.js?v=19',
 ];
 
 self.addEventListener('install', event => {

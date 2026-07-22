@@ -3,10 +3,10 @@
 // Step 2：它去了哪里（城市高清图）+ 寄回的随手拍（左图右文）
 // 特殊：迷路宠格 ?????（isMystery=true）走单页彩蛋分支
 
-import { FEATURED_PETS, PET_CITY_IMAGES, PET_LETTERS } from './data/pets.js?v=18';
+import { FEATURED_PETS, PET_CITY_IMAGES, PET_LETTERS } from './data/pets.js?v=19';
 
 const PAWTI_SITE_URL = 'https://wanderpaw.cn/';
-const RESULT_MEDIA_VERSION = '18';
+const RESULT_MEDIA_VERSION = '19';
 const PAWTI_SITE_QR = '/generated/share/pawti-site-qr.svg';
 const WAITLIST_GROUP_QR = '/generated/waitlist/wanderpaw-group-3-v2.jpg';
 

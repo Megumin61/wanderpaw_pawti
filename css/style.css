@@ -2388,6 +2388,11 @@ img[data-pawti-image].pawti-image-ready {
 img[data-pawti-image].pawti-image-error {
   opacity: 0;
 }
+.result-city-card {
+  width: 100%;
+  max-width: 48rem;
+  margin-inline: auto;
+}
 .pawti-image-frame-error {
   background:
     radial-gradient(circle at 30% 25%, rgba(255, 250, 240, 0.72), transparent 38%),
